@@ -11,10 +11,22 @@ export default function LoginPage() {
   const { customer, loading } = useCustomer();
   const navigate = useNavigate();
 
-  // 已登录则直接跳转账户页
+  // 已登录则直接跳转账户页（仅在通过后端 API 检测到登录时）
+  // 注意：Shopify OAuth 登录使用 localStorage，不会通过 /api/auth/me 检测
   useEffect(() => {
-    if (!loading && customer) navigate('/account');
-  }, [customer, loading]);
+    // 检查 localStorage 中是否有 Shopify token
+    const hasShopifyToken = localStorage.getItem('customer_access_token');
+    
+    if (!loading) {
+      if (hasShopifyToken) {
+        // 有 Shopify token，跳转到订单页
+        navigate('/account/orders');
+      } else if (customer) {
+        // 有后端 session，跳转到账户页
+        navigate('/account');
+      }
+    }
+  }, [customer, loading, navigate]);
 
   const handleLogin = async () => {
     const { codeVerifier, codeChallenge } = await generatePKCE();

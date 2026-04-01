@@ -59,6 +59,8 @@ export default function AccountOrdersPage() {
     getCurrentCustomer()
       .then((data) => {
         if (!data) {
+          // 没有用户数据，清除 token 并跳转
+          localStorage.removeItem('customer_access_token');
           navigate('/login');
           return;
         }
@@ -66,6 +68,8 @@ export default function AccountOrdersPage() {
       })
       .catch((err) => {
         console.error('Failed to load customer:', err);
+        // token 无效或过期，清除 token 并跳转
+        localStorage.removeItem('customer_access_token');
         navigate('/login');
       })
       .finally(() => {

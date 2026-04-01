@@ -16,28 +16,37 @@ export async function customerAccountFetch(query: string) {
     throw new Error('未登录');
   }
 
-  const res = await fetch(
-    'https://shopify.com/authentication/customer/api/2025-01/graphql',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({ query }),
+  try {
+    const res = await fetch(
+      'https://api.shopify.com/customer-account-api/graphql',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query }),
+      }
+    );
+
+    if (!res.ok) {
+      if (res.status === 401) {
+        localStorage.removeItem('customer_access_token');
+        throw new Error('登录已过期，请重新登录');
+      }
+      throw new Error(`API 请求失败：${res.status}`);
     }
-  );
 
-  const json = await res.json();
+    const json = await res.json();
 
-  // token 过期处理
-  if (res.status === 401) {
-    localStorage.removeItem('customer_access_token');
-    throw new Error('登录已过期');
+    if (json.errors) throw new Error(json.errors[0].message);
+    return json.data;
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error('Customer Account API error:', error);
+    }
+    throw error;
   }
-
-  if (json.errors) throw new Error(json.errors[0].message);
-  return json.data;
 }
 
 /**
