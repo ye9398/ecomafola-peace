@@ -1,0 +1,278 @@
+{
+  "coconutbowl": {
+    "name": "手工椰子碗",
+    "category": "coconut-bowls",
+    "images": {
+      "story": {
+        "url": "/product-images/coconutbowl-story.jpg",
+        "alt": "Samoan artisan crafting coconut bowl",
+        "prompt": "Traditional Samoan artisan hand-carving a coconut bowl with intricate patterns, natural workshop setting, warm lighting, authentic Pacific Island craftsmanship, photorealistic, high detail"
+      },
+      "environmental": {
+        "url": "/product-images/coconutbowl-environmental.jpg",
+        "alt": "Sustainable coconut sourcing in Samoa",
+        "prompt": "Coconut palm trees on tropical beach in Samoa, fallen coconuts on sand, ocean background, sustainable natural resources, eco-friendly, vibrant greens and blues, nature photography style"
+      },
+      "partnership": {
+        "url": "/product-images/coconutbowl-partnership.jpg",
+        "alt": "Artisan collective collaboration",
+        "prompt": "Group of Samoan artisans working together in community workshop, smiling, collaborative atmosphere, traditional tools, cultural heritage preservation, documentary photography style"
+      },
+      "features": {
+        "url": "/product-images/coconutbowl-features.jpg",
+        "alt": "Handcrafted coconut bowl details",
+        "prompt": "Beautiful handcrafted coconut bowl on wooden table, natural wood grain patterns visible, smooth polished finish, food safe, rustic aesthetic, product photography, soft natural lighting"
+      },
+      "specifications": {
+        "url": "/product-images/coconutbowl-specifications.jpg",
+        "alt": "Coconut bowl size specifications",
+        "prompt": "Coconut bowl with measurement indicators, size comparison with common objects, clean white background, technical illustration style, dimensions标注, informative layout"
+      },
+      "guarantee": {
+        "url": "/product-images/coconutbowl-guarantee.jpg",
+        "alt": "Lifetime craftsmanship guarantee",
+        "prompt": "Quality guarantee badge with coconut bowl, trust symbols, premium craftsmanship certification, elegant design, gold and green colors, professional branding"
+      },
+      "shipping": {
+        "url": "/product-images/coconutbowl-shipping.jpg",
+        "alt": "Carbon-conscious shipping",
+        "prompt": "Eco-friendly packaging box with coconut bowl inside, biodegradable materials, carbon-neutral shipping label, world map background, sustainable logistics concept"
+      },
+      "faqs": {
+        "url": "/product-images/coconutbowl-faqs.jpg",
+        "alt": "Customer enjoying coconut bowl",
+        "prompt": "Happy customer using coconut bowl for healthy breakfast, smoothie bowl with fruits, modern kitchen setting, lifestyle photography, natural morning light"
+      }
+    }
+  },
+  "wovenbasket": {
+    "name": "编织篮",
+    "category": "woven-baskets",
+    "images": {
+      "story": {
+        "url": "/product-images/wovenbasket-story.jpg",
+        "alt": "Traditional weaving knowledge transfer",
+        "prompt": "Samoan woman master weaver teaching young girl traditional pandanus basket weaving, intergenerational knowledge transfer, village setting, cultural heritage, warm sunlight, documentary style"
+      },
+      "environmental": {
+        "url": "/product-images/wovenbasket-environmental.jpg",
+        "alt": "Sustainable pandanus leaf harvesting",
+        "prompt": "Pandanus palm leaves growing on Samoan coastline, sustainable harvesting, tropical beach background, lush green vegetation, eco-friendly natural materials, nature photography"
+      },
+      "partnership": {
+        "url": "/product-images/wovenbasket-partnership.jpg",
+        "alt": "Women-led weaving collective",
+        "prompt": "Women's weaving cooperative in Samoa, group of artisans working together, sharing techniques, community empowerment, traditional crafts, authentic village atmosphere"
+      },
+      "features": {
+        "url": "/product-images/wovenbasket-features.jpg",
+        "alt": "Traditional woven basket patterns",
+        "prompt": "Intricately woven pandanus basket with traditional geometric patterns, natural plant-based dyes, detailed close-up showing craftsmanship, neutral background, product photography"
+      },
+      "specifications": {
+        "url": "/product-images/wovenbasket-specifications.jpg",
+        "alt": "Woven basket size options",
+        "prompt": "Three sizes of woven baskets displayed together (small, medium, large), size comparison, clean studio background, measurement indicators, informative product display"
+      },
+      "guarantee": {
+        "url": "/product-images/wovenbasket-guarantee.jpg",
+        "alt": "Artisan quality promise",
+        "prompt": "Artisan quality guarantee seal with woven basket, traditional Samoan design elements, trust badge, cultural authenticity certification, earth tones, professional design"
+      },
+      "shipping": {
+        "url": "/product-images/wovenbasket-shipping.jpg",
+        "alt": "Protective eco-friendly packaging",
+        "prompt": "Carefully packaged woven basket in eco-friendly box with biodegradable padding, protective wrapping, sustainable shipping materials, ready for delivery"
+      },
+      "faqs": {
+        "url": "/product-images/wovenbasket-faqs.jpg",
+        "alt": "Basket as home decor",
+        "prompt": "Woven basket used as home decor in modern living room, storing blankets and magazines, interior design styling, lifestyle photography, natural lighting"
+      }
+    }
+  },
+  "naturalsoap": {
+    "name": "天然肥皂",
+    "category": "natural-soaps",
+    "images": {
+      "story": {
+        "url": "/product-images/naturalsoap-story.jpg",
+        "alt": "Traditional cold-process soap making",
+        "prompt": "Traditional Samoan soap-making process, artisan pouring cold-pressed coconut oil soap into wooden molds, village workshop, natural ingredients surrounding, authentic craft, warm lighting"
+      },
+      "environmental": {
+        "url": "/product-images/naturalsoap-environmental.jpg",
+        "alt": "Zero-waste coconut oil sourcing",
+        "prompt": "Virgin coconut oil extraction from fresh coconuts, zero-waste process, natural ingredients like turmeric and moringa, eco-friendly production, tropical setting"
+      },
+      "partnership": {
+        "url": "/product-images/naturalsoap-partnership.jpg",
+        "alt": "Village family cooperative",
+        "prompt": "Family cooperative soap makers in Samoan village, multiple generations working together, fair trade community, traditional knowledge sharing, authentic documentary style"
+      },
+      "features": {
+        "url": "/product-images/naturalsoap-features.jpg",
+        "alt": "Natural botanical soap bars",
+        "prompt": "Hand-cut bars of natural coconut oil soap with botanical infusions, noni, moringa, turmeric visible, artisanal texture, natural colors, spa aesthetic, product photography"
+      },
+      "specifications": {
+        "url": "/product-images/naturalsoap-specifications.jpg",
+        "alt": "Soap bar specifications",
+        "prompt": "Single bar of coconut oil soap with size reference, ingredient list overlay, clean minimalist background, apothecary style, informative product shot"
+      },
+      "guarantee": {
+        "url": "/product-images/naturalsoap-guarantee.jpg",
+        "alt": "Satisfaction guarantee",
+        "prompt": "30-day satisfaction guarantee badge with natural soap, organic certification symbols, trust seals, green and white color scheme, professional branding"
+      },
+      "shipping": {
+        "url": "/product-images/naturalsoap-shipping.jpg",
+        "alt": "Climate-safe shipping",
+        "prompt": "Temperature-controlled shipping box with insulated liners for soap, climate protection packaging, multiple soap bars in gift box, careful preparation"
+      },
+      "faqs": {
+        "url": "/product-images/naturalsoap-faqs.jpg",
+        "alt": "Soap usage experience",
+        "prompt": "Person using natural coconut oil soap in luxurious bathroom setting, rich lather, spa experience, self-care moment, soft warm lighting, lifestyle photography"
+      }
+    }
+  },
+  "woven-tote": {
+    "name": "草编托特包",
+    "category": "woven-baskets",
+    "images": {
+      "story": {
+        "url": "/product-images/woven-tote-story.jpg",
+        "alt": "Modern tote bag weaving",
+        "prompt": "Samoan weaver creating pandanus tote bag with triple-layer reinforced handles, traditional technique meets modern design, workshop setting, skilled craftsmanship"
+      },
+      "environmental": {
+        "url": "/product-images/woven-tote-environmental.jpg",
+        "alt": "Eco-friendly material sourcing",
+        "prompt": "Sustainable pandanus leaf harvesting in coastal Samoa, zero-waste collection, regenerative natural resources, tropical environment, eco-conscious sourcing"
+      },
+      "partnership": {
+        "url": "/product-images/woven-tote-partnership.jpg",
+        "alt": "Women-led tote cooperative",
+        "prompt": "Women-run tote bag weaving cooperative in Apia, artisans collaborating, fair wages, economic empowerment, community development, authentic workplace scene"
+      },
+      "features": {
+        "url": "/product-images/woven-tote-features.jpg",
+        "alt": "Tote bag craftsmanship details",
+        "prompt": "Handwoven pandanus tote bag with traditional Samoan patterns, reinforced handles, spacious interior, market bag style, natural fibers, product photography"
+      },
+      "specifications": {
+        "url": "/product-images/woven-tote-specifications.jpg",
+        "alt": "Tote bag size and capacity",
+        "prompt": "Pandanus tote bag with dimensions标注, capacity demonstration with groceries inside, size reference, functional display, clean background"
+      },
+      "guarantee": {
+        "url": "/product-images/woven-tote-guarantee.jpg",
+        "alt": "Durability guarantee",
+        "prompt": "Quality guarantee emblem with woven tote bag, durability certification, traditional Samoan motifs, trust badge design, earth tone colors"
+      },
+      "shipping": {
+        "url": "/product-images/woven-tote-shipping.jpg",
+        "alt": "Eco-friendly tote packaging",
+        "prompt": "Folded tote bag in recyclable packaging, flat shipping envelope, eco-friendly materials, ready for worldwide delivery, sustainable logistics"
+      },
+      "faqs": {
+        "url": "/product-images/woven-tote-faqs.jpg",
+        "alt": "Tote bag in daily use",
+        "prompt": "Woman carrying pandanus tote bag at farmers market, filled with fresh produce, sustainable shopping lifestyle, outdoor natural setting, candid photography"
+      }
+    }
+  },
+  "shell-necklace": {
+    "name": "贝壳项链",
+    "category": "jewelry",
+    "images": {
+      "story": {
+        "url": "/product-images/shell-necklace-story.jpg",
+        "alt": "Shell necklace craftsmanship",
+        "prompt": "Samoan jewelry artisan handcrafting shell necklace from Pacific seashells, traditional carving tools, delicate work, cultural artistry, workshop close-up, natural lighting"
+      },
+      "environmental": {
+        "url": "/product-images/shell-necklace-environmental.jpg",
+        "alt": "Sustainable shell collection",
+        "prompt": "Beach in Samoa with naturally shed seashells, sustainable collection from shoreline, ocean conservation, marine ecosystem respect, tropical paradise, nature photography"
+      },
+      "partnership": {
+        "url": "/product-images/shell-necklace-partnership.jpg",
+        "alt": "Artisan jewelry collective",
+        "prompt": "Jewelry artisan collective in Samoan village, craftspeople sharing techniques, fair trade jewelry making, cultural preservation, community support"
+      },
+      "features": {
+        "url": "/product-images/shell-necklace-features.jpg",
+        "alt": "Shell necklace design",
+        "prompt": "Beautiful handmade shell necklace with natural pearls and Pacific shells, intricate design, worn on model, island jewelry aesthetic, elegant product photography"
+      },
+      "specifications": {
+        "url": "/product-images/shell-necklace-specifications.jpg",
+        "alt": "Necklace specifications",
+        "prompt": "Shell necklace laid flat with length measurement, clasp detail close-up, natural materials showcase, jewelry photography, white background"
+      },
+      "guarantee": {
+        "url": "/product-images/shell-necklace-guarantee.jpg",
+        "alt": "Jewelry authenticity guarantee",
+        "prompt": "Jewelry quality guarantee certificate with shell necklace, authenticity seal, craftsmanship warranty, elegant presentation, premium branding"
+      },
+      "shipping": {
+        "url": "/product-images/shell-necklace-shipping.jpg",
+        "alt": "Premium jewelry packaging",
+        "prompt": "Luxury jewelry gift box with shell necklace, protective velvet lining, elegant packaging, ready for gifting, premium unboxing experience"
+      },
+      "faqs": {
+        "url": "/product-images/shell-necklace-faqs.jpg",
+        "alt": "Necklace styling",
+        "prompt": "Woman wearing shell necklace at tropical beach sunset, island vacation style, bohemian fashion, golden hour lighting, lifestyle photography"
+      }
+    }
+  },
+  "tapa-cloth": {
+    "name": "Tapa 布艺",
+    "category": "home-decor",
+    "images": {
+      "story": {
+        "url": "/product-images/tapa-cloth-story.jpg",
+        "alt": "Traditional tapa cloth creation",
+        "prompt": "Traditional Samoan tapa cloth making process, beating mulberry bark, applying natural dyes, ancient Polynesian technique, cultural heritage craft, documentary photography"
+      },
+      "environmental": {
+        "url": "/product-images/tapa-cloth-environmental.jpg",
+        "alt": "Sustainable mulberry bark",
+        "prompt": "Paper mulberry trees in Samoa, sustainable bark harvesting for tapa, regenerative agriculture, traditional plant sources, lush tropical forest, eco-friendly materials"
+      },
+      "partnership": {
+        "url": "/product-images/tapa-cloth-partnership.jpg",
+        "alt": "Tapa knowledge传承",
+        "prompt": "Master tapa cloth artists in Samoan village, elders teaching youth traditional patterns, cultural knowledge preservation, intergenerational learning, authentic scene"
+      },
+      "features": {
+        "url": "/product-images/tapa-cloth-features.jpg",
+        "alt": "Tapa cloth patterns",
+        "prompt": "Finished tapa cloth with traditional Samoan geometric patterns, natural brown and black dyes, textile art, wall hanging display, cultural artifact, museum quality"
+      },
+      "specifications": {
+        "url": "/product-images/tapa-cloth-specifications.jpg",
+        "alt": "Tapa cloth dimensions and patterns",
+        "prompt": "Tapa cloth fully spread out showing full pattern, size reference, texture detail, traditional motifs explanation, educational display style"
+      },
+      "guarantee": {
+        "url": "/product-images/tapa-cloth-guarantee.jpg",
+        "alt": "Cultural authenticity certification",
+        "prompt": "Cultural authenticity certificate with tapa cloth, master artisan signature, heritage art verification, traditional design elements, prestigious documentation"
+      },
+      "shipping": {
+        "url": "/product-images/tapa-cloth-shipping.jpg",
+        "alt": "Archival-quality shipping",
+        "prompt": "Tapa cloth carefully rolled in acid-free tissue, protective tube packaging, museum-quality shipping, archival materials, safe transport"
+      },
+      "faqs": {
+        "url": "/product-images/tapa-cloth-faqs.jpg",
+        "alt": "Tapa cloth home display",
+        "prompt": "Tapa cloth displayed as wall art in modern home, cultural decor, interior design feature, contemporary meets traditional, gallery wall setting"
+      }
+    }
+  }
+}

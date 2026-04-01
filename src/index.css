@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', 'Lato', system-ui, sans-serif;
+    background-color: #F5E6D3;
+    color: #1a1a1a;
+  }
+
+  /* 所有标题统一使用 Playfair Display */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* 所有正文、段落、说明文字统一使用 Inter */
+  p, span, div, li, td, th, label, input, textarea, select, button {
+    font-family: 'Inter', 'Lato', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Button Styles - Handcrafted Island Style */
+  .btn-primary {
+    @apply bg-ocean-blue text-white px-8 py-3 font-sans font-medium text-sm tracking-wide transition-all duration-300 hover:bg-ocean-blue-dark hover:shadow-lg hover:-translate-y-0.5 border-2 border-transparent;
+  }
+
+  .btn-outline {
+    @apply border-2 border-white text-white px-8 py-3 font-sans font-medium text-sm tracking-wide transition-all duration-300 hover:bg-white hover:text-ocean-blue bg-transparent;
+  }
+
+  .btn-green {
+    @apply bg-tropical-green text-white px-8 py-3 font-sans font-medium text-sm tracking-wide transition-all duration-300 hover:bg-tropical-green-dark hover:shadow-lg hover:-translate-y-0.5 border-2 border-transparent;
+  }
+
+  /* Section Titles - Island Craft Style */
+  .section-title {
+    @apply font-serif text-3xl md:text-4xl font-semibold text-ocean-blue leading-tight mb-6;
+  }
+
+  .section-subtitle {
+    @apply font-sans text-base text-gray-600 leading-relaxed;
+  }
+
+  /* Card Hover Effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  /* Handcrafted Card with Rough Edges */
+  .handcrafted-card {
+    @apply bg-white/90 backdrop-blur-sm border-2 border-tropical-green/30 shadow-md;
+    clip-path: polygon(
+      0% 0%, 
+      100% 0%, 
+      100% calc(100% - 10px), 
+      calc(100% - 10px) 100%, 
+      0% 100%
+    );
+  }
+
+  /* Ocean Gradient */
+  .ocean-gradient {
+    background: linear-gradient(135deg, #3A7CA5 0%, #2D5016 50%, #F5E6D3 100%);
+  }
+}

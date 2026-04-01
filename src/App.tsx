@@ -1,0 +1,148 @@
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import LoadingSkeleton from './components/LoadingSkeleton'
+import SlideOverCheckout from './components/SlideOverCheckout'
+import HomePage from './pages/HomePage'
+import LoginPage from './pages/LoginPage'
+import AuthCallback from './pages/AuthCallback'
+import AccountPage from './pages/AccountPage'
+import AccountOrdersPage from './pages/AccountOrdersPage'
+import ProductListPage from './pages/ProductListPage'
+import TrackOrderPage from './pages/TrackOrderPage'
+import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
+import { AuthProvider } from './context/AuthContext'
+// 管理后台页面（独立布局，无 Navbar/Footer）
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminPage from './pages/admin/AdminPage'
+import ProductContentAdmin from './pages/admin/ProductContentAdmin'
+import HomeContentAdmin from './pages/admin/HomeContentAdmin'
+
+// 低频访问页面（懒加载）
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'))
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
+
+function App() {
+  return (
+   <AuthProvider>
+     <Routes>
+       {/* 管理后台路由 - 独立布局，无 Navbar/Footer */}
+       <Route path="/dashboard/login" element={<AdminLogin />} />
+       <Route path="/dashboard" element={<AdminPage />} />
+       <Route path="/dashboard/products" element={<ProductContentAdmin />} />
+       <Route path="/dashboard/home" element={<HomeContentAdmin />} />
+       
+       {/* 前台页面路由 - 带 Navbar/Footer */}
+       <Route path="/" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><HomePage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/products" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ProductListPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/products/:category" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ProductListPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/product/:id" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main>
+             <Suspense fallback={<LoadingSkeleton />}>
+               <ProductDetailPage />
+             </Suspense>
+           </main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/track" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><TrackOrderPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/account/orders" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><AccountOrdersPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/login" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><LoginPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/auth/callback" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><AuthCallback /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/account" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><AccountPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/our-story" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><OurStoryPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/impact" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ImpactPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/contact" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ContactPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/privacy-policy" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><PrivacyPolicyPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="*" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><HomePage /></main>
+           <Footer />
+         </div>
+       } />
+     </Routes>
+     
+     {/* 全局购物车抽屉 */}
+     <SlideOverCheckout />
+   </AuthProvider>
+  )
+}
+
+export default App
