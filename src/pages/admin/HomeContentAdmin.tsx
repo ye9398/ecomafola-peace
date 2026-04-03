@@ -998,6 +998,15 @@ export default function HomeContentAdmin() {
           <span>已保存！</span>
         </div>
       )}
+
+      {/* 隐藏的文件选择输入 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileSelect}
+      />
     </div>
   )
 }
