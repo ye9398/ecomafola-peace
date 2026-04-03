@@ -1127,6 +1127,15 @@ export default function ProductContentAdmin() {
         </div>
       </main>
 
+      {/* 隐藏的文件选择输入 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileSelect}
+      />
+
       {/* 裁剪弹窗（仅用于图片库） */}
       {showCropModal && !editingSectionImage && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
