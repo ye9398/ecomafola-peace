@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -13,11 +13,6 @@ import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { AuthProvider } from './context/AuthContext'
-// 管理后台页面（独立布局，无 Navbar/Footer）
-import AdminLogin from './pages/admin/AdminLogin'
-import AdminPage from './pages/admin/AdminPage'
-import ProductContentAdmin from './pages/admin/ProductContentAdmin'
-import HomeContentAdmin from './pages/admin/HomeContentAdmin'
 
 // 懒加载页面组件
 import {
@@ -29,15 +24,26 @@ import {
   AccountOrdersSuspense,
 } from './components/LazyLoading'
 
+// 管理后台懒加载（避免静态+动态双重引用）
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const AdminPage = lazy(() => import('./pages/admin/AdminPage'))
+const ProductContentAdmin = lazy(() => import('./pages/admin/ProductContentAdmin'))
+const HomeContentAdmin = lazy(() => import('./pages/admin/HomeContentAdmin'))
+
+/** 管理后台 Suspense 容器 */
+function AdminSuspense({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><span className="text-xl text-gray-600">加载中...</span></div>}>{children}</Suspense>
+}
+
 function App() {
   return (
    <AuthProvider>
      <Routes>
        {/* 管理后台路由 - 独立布局，无 Navbar/Footer */}
-       <Route path="/dashboard/login" element={<AdminLogin />} />
-       <Route path="/dashboard" element={<AdminPage />} />
-       <Route path="/dashboard/products" element={<ProductContentAdmin />} />
-       <Route path="/dashboard/home" element={<HomeContentAdmin />} />
+       <Route path="/dashboard/login" element={<AdminSuspense><AdminLogin /></AdminSuspense>} />
+       <Route path="/dashboard" element={<AdminSuspense><AdminPage /></AdminSuspense>} />
+       <Route path="/dashboard/products" element={<AdminSuspense><ProductContentAdmin /></AdminSuspense>} />
+       <Route path="/dashboard/home" element={<AdminSuspense><HomeContentAdmin /></AdminSuspense>} />
 
        {/* 前台页面路由 - 带 Navbar/Footer */}
        <Route path="/" element={

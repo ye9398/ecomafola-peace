@@ -1,0 +1,28 @@
+# Claude Code Step 2: Code Review
+
+You are a senior code reviewer. Review the changes made by the TDD developer.
+
+## Context
+First read these files to understand what was changed:
+1. .ai-memory/step1-tdd.md (what was done)
+2. .ai-memory/task-queue.md (task overview)
+
+## Files to Review
+1. src/lib/imageOptimizer.ts (AVIF detection fix)
+2. src/lib/dataFetcher.ts (data dedup fix)
+3. src/App.tsx (lazy loading route integration)
+
+## Review Criteria
+- Code correctness: Do the changes work correctly?
+- Edge cases: Are edge cases handled?
+- Performance: Any regressions?
+- Maintainability: Is the code clean?
+- Testing: Are tests adequate?
+
+## Output
+Write a structured review report to:
+  .ai-memory/step2-review.md
+
+Include: what looks good, what needs fixing, severity ratings for each issue found.
+
+If you find issues that need fixing, also list the files and line numbers.
