@@ -72,6 +72,9 @@ export default function ProductContentAdmin() {
   const [activeSection, setActiveSection] = useState<'story' | 'environmental' | 'partnership' | 'specifications' | 'guarantee' | 'faqs' | 'reviews' | 'gallery'>('story')
   
   // 图片编辑状态
+  // 模板标准尺寸 (宽x高)
+  const TEMPLATE_SIZE = { width: 800, height: 400, aspect: 2 }
+
   const [currentImage, setCurrentImage] = useState<string>('')
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
@@ -79,6 +82,10 @@ export default function ProductContentAdmin() {
   const [showCropModal, setShowCropModal] = useState(false)
   const [editingGalleryIndex, setEditingGalleryIndex] = useState<number | null>(null)
   const [editingSectionImage, setEditingSectionImage] = useState<'story' | 'environmental' | 'partnership' | 'guarantee' | null>(null)
+  // 内嵌裁剪：在哪个板块显示裁剪工具
+  const [inlineCropSection, setInlineCropSection] = useState<'story' | 'environmental' | 'partnership' | 'guarantee' | 'gallery' | null>(null)
+  // 图片缩放：让原图自动填充模板
+  const [autoZoom, setAutoZoom] = useState(1)
 
   useEffect(() => {
     const authenticated = localStorage.getItem('admin_authenticated')
@@ -119,75 +126,97 @@ export default function ProductContentAdmin() {
     })
   }
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !selectedProduct) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const result = e.target?.result as string
       setCurrentImage(result)
       
-      // 如果是板块配图上传，直接保存不裁剪
+      // 自动计算缩放比例
+      const zoom = await calculateAutoZoom(result)
+      setAutoZoom(zoom)
+
+      // 进入内嵌裁剪模式（所有上传图片都经过裁剪）
       if (editingSectionImage) {
-        setContent({
-          ...content,
-          [selectedProduct]: {
-            ...content[selectedProduct],
-            [editingSectionImage]: {
-              ...content[selectedProduct]?.[editingSectionImage],
-              image: result,
-            } as SectionBlock,
-          },
-        })
-        setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
-        setShowCropModal(false)
-        setEditingSectionImage(null)
+        setInlineCropSection(editingSectionImage)
       } else {
-        // 否则进入裁剪模式（用于图片库）
+        // gallery mode
         setShowCropModal(true)
       }
     }
     reader.readAsDataURL(file)
   }
 
+  // 自动计算缩放比例，让图片刚好覆盖目标尺寸
+  const calculateAutoZoom = useCallback((imageSrc: string): Promise<number> => {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => {
+        const targetAspect = TEMPLATE_SIZE.height > 0 ? TEMPLATE_SIZE.width / TEMPLATE_SIZE.height : 2
+        const imageAspect = img.width / img.height
+        const zoom = Math.max(
+          targetAspect > imageAspect ? targetAspect / imageAspect : imageAspect / targetAspect,
+          1
+        )
+        resolve(zoom)
+      }
+      img.src = imageSrc
+    })
+  }, [])
+
   const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
-  const createCroppedImage = useCallback(async (): Promise<string> => {
+  /** 将裁剪后的图片保存到数据中 */
+  const saveCroppedImage = useCallback(async (imageSrc: string, pixels: any, size: { width: number, height: number }): Promise<string> => {
     const image = new Image()
-    image.src = currentImage
-    await new Promise((resolve) => {
-      image.onload = resolve
-    })
+    image.src = imageSrc
+    await new Promise((resolve) => { image.onload = resolve })
 
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     if (!ctx) throw new Error('No 2d context')
 
-    const { width, height, x, y } = croppedAreaPixels
-    canvas.width = width
-    canvas.height = height
-    ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
+    const { width, height, x, y } = pixels
+    canvas.width = size.width
+    canvas.height = size.height
+    ctx.drawImage(image, x, y, width, height, 0, 0, size.width, size.height)
     return canvas.toDataURL('image/jpeg', 0.9)
-  }, [currentImage, croppedAreaPixels])
+  }, [])
 
-  const handleCropSave = async () => {
+  /** 确认裁剪并保存 */
+  const handleCropConfirm = async () => {
+    if (!croppedAreaPixels || !currentImage) return
     try {
-      const croppedImage = await createCroppedImage()
-      
-      if (editingGalleryIndex !== null) {
-        // 替换图片库中的现有图片
-        const updatedGallery = [...(content[selectedProduct]?.gallery || [])]
-        updatedGallery[editingGalleryIndex] = croppedImage
+      // 板块模板图：固定尺寸
+      const isSection = inlineCropSection && inlineCropSection !== 'gallery'
+      const targetSize = isSection ? TEMPLATE_SIZE : { width: 800, height: 600 }
+
+      const croppedImage = await saveCroppedImage(currentImage, croppedAreaPixels, targetSize)
+
+      if (isSection) {
+        // 保存到板块配图
         setContent({
           ...content,
           [selectedProduct]: {
             ...content[selectedProduct],
-            gallery: updatedGallery,
+            [inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>]: {
+              ...content[selectedProduct]?.[inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>],
+              image: croppedImage,
+            } as SectionBlock,
           },
+        })
+      } else if (editingGalleryIndex !== null) {
+        // 替换图片库图片
+        const updatedGallery = [...(content[selectedProduct]?.gallery || [])]
+        updatedGallery[editingGalleryIndex] = croppedImage
+        setContent({
+          ...content,
+          [selectedProduct]: { ...content[selectedProduct], gallery: updatedGallery },
         })
       } else {
         // 添加到图片库
@@ -199,16 +228,29 @@ export default function ProductContentAdmin() {
           },
         })
       }
-      
-      setShowCropModal(false)
+
+      // 重置状态
       setCurrentImage('')
+      setInlineCropSection(null)
+      setShowCropModal(false)
       setEditingGalleryIndex(null)
       setEditingSectionImage(null)
+      setAutoZoom(1)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
       console.error('Error cropping image:', error)
     }
+  }
+
+  /** 取消裁剪 */
+  const handleCropCancel = () => {
+    setCurrentImage('')
+    setInlineCropSection(null)
+    setShowCropModal(false)
+    setEditingGalleryIndex(null)
+    setEditingSectionImage(null)
+    setAutoZoom(1)
   }
 
   const handleRemoveImage = (index: number) => {
@@ -383,7 +425,6 @@ export default function ProductContentAdmin() {
                       <button
                         onClick={() => {
                           setEditingSectionImage('story')
-                          setCurrentImage(content[selectedProduct]?.story?.image || '')
                           fileInputRef.current?.click()
                         }}
                         className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
@@ -497,7 +538,6 @@ export default function ProductContentAdmin() {
                       <button
                         onClick={() => {
                           setEditingSectionImage('environmental')
-                          setCurrentImage(content[selectedProduct]?.environmental?.image || '')
                           fileInputRef.current?.click()
                         }}
                         className="flex items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
@@ -605,7 +645,6 @@ export default function ProductContentAdmin() {
                       <button
                         onClick={() => {
                           setEditingSectionImage('partnership')
-                          setCurrentImage(content[selectedProduct]?.partnership?.image || '')
                           fileInputRef.current?.click()
                         }}
                         className="flex items-center gap-2 px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
@@ -761,7 +800,6 @@ export default function ProductContentAdmin() {
                       <button
                         onClick={() => {
                           setEditingSectionImage('guarantee')
-                          setCurrentImage(content[selectedProduct]?.guarantee?.image || '')
                           fileInputRef.current?.click()
                         }}
                         className="flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
@@ -1136,55 +1174,68 @@ export default function ProductContentAdmin() {
         onChange={handleFileSelect}
       />
 
-      {/* 裁剪弹窗（仅用于图片库） */}
-      {showCropModal && !editingSectionImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-bold">{editingGalleryIndex !== null ? '重新裁剪图片' : '裁剪图片'}</h3>
-              <button onClick={() => { setShowCropModal(false); setCurrentImage(''); setEditingGalleryIndex(null); setEditingSectionImage(null) }} className="text-gray-600 hover:text-gray-900">
-                ✕
-              </button>
-            </div>
-            <div className="p-4" style={{ height: '500px', position: 'relative' }}>
-              <Cropper
-                image={currentImage}
-                crop={crop}
-                zoom={zoom}
-                aspect={4 / 3}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={onCropComplete}
+      {/* 内嵌裁剪工具 — 板块配图 & 图片库 */}
+      {currentImage && (inlineCropSection || showCropModal) && (
+        <div className="mt-6 bg-white rounded-xl shadow-sm border-2 border-blue-200 p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-gray-900">
+              ✂️ 裁剪图片
+            </h3>
+            <button onClick={handleCropCancel} className="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
+          </div>
+          
+          {/* 提示 */}
+          <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+            {inlineCropSection && inlineCropSection !== 'gallery' 
+              ? `📐 模板尺寸：${TEMPLATE_SIZE.width}×${TEMPLATE_SIZE.height} — 拖动调整位置，滚轮缩放` 
+              : '📐 图片库尺寸：800×600 — 拖动调整位置，滚轮缩放'}
+          </div>
+
+          {/* 图片比例显示 */}
+          <p className="text-xs text-gray-400 mb-2">蓝色框内为最终显示区域</p>
+
+          {/* 裁剪区域 */}
+          <div className="relative rounded-lg overflow-hidden bg-gray-900" style={{ width: '100%', maxWidth: 800, maxHeight: 400, aspectRatio: `${TEMPLATE_SIZE.aspect}/1`, margin: '0 auto' }}>
+            <Cropper
+              image={currentImage}
+              crop={crop}
+              zoom={autoZoom}
+              aspect={TEMPLATE_SIZE.aspect}
+              onCropChange={setCrop}
+              onZoomChange={(z) => setAutoZoom(z)}
+              onCropComplete={onCropComplete}
+            />
+          </div>
+
+          {/* 控制栏 */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600">🔍 缩放：</span>
+              <input
+                type="range"
+                min="1"
+                max={Math.ceil(autoZoom * 3 * 10) / 10}
+                step="0.1"
+                defaultValue={autoZoom}
+                onChange={(e) => setAutoZoom(Number(e.target.value))}
+                className="w-48 accent-blue-600"
               />
+              <span className="text-sm text-gray-500">{autoZoom.toFixed(1)}x</span>
             </div>
-            <div className="p-4 border-t flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <label className="text-sm text-gray-700">缩放：</label>
-                <input
-                  type="range"
-                  min="1"
-                  max="3"
-                  step="0.1"
-                  value={zoom}
-                  onChange={(e) => setZoom(Number(e.target.value))}
-                  className="w-48"
-                />
-              </div>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => { setShowCropModal(false); setCurrentImage(''); setEditingGalleryIndex(null) }}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  取消
-                </button>
-                <button
-                  onClick={handleCropSave}
-                  className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <Save size={20} />
-                  <span>保存裁剪</span>
-                </button>
-              </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleCropCancel}
+                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-600"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleCropConfirm}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <Save size={18} />
+                保存裁剪
+              </button>
             </div>
           </div>
         </div>
