@@ -145,30 +145,72 @@ export default function HomeContentAdmin() {
     navigate('/')
   }
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 智能压缩：自动降至目标大小以下
+  const compressImage = useCallback(async (dataUrl: string, targetSizeKB = 150): Promise<{ dataUrl: string, sizeKB: number }> => {
+    const img = new Image()
+    img.src = dataUrl
+    await new Promise((resolve) => { img.onload = resolve })
+
+    let quality = 0.9
+    let result: string
+    
+    do {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) break
+
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0)
+      result = canvas.toDataURL('image/jpeg', quality)
+      
+      const base64Length = result.length - result.indexOf(',') - 1
+      const sizeKB = Math.round((base64Length * 0.75) / 1024)
+      
+      if (sizeKB <= targetSizeKB) {
+        return { dataUrl: result, sizeKB }
+      }
+      
+      quality -= 0.1
+    } while (quality >= 0.3)
+
+    const base64Length = result.length - result.indexOf(',') - 1
+    const sizeKB = Math.round((base64Length * 0.75) / 1024)
+    return { dataUrl: result, sizeKB }
+  }, [])
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const result = e.target?.result as string
       setCurrentImage(result)
 
+      // 自动压缩
+      const { dataUrl: compressedImage, sizeKB } = await compressImage(result)
+      
       if (editingImage) {
         if (editingImage === 'hero') {
           setContent({
             ...content,
-            hero: { ...content.hero, backgroundImage: result } as HeroBanner,
+            hero: { ...content.hero, backgroundImage: compressedImage } as HeroBanner,
           })
         } else if (editingImage === 'impact') {
           setContent({
             ...content,
-            impact: { ...content.impact, image: result } as ImpactSection,
+            impact: { ...content.impact, image: compressedImage } as ImpactSection,
           })
         }
         setSaved(true)
         setTimeout(() => setSaved(false), 3000)
         setEditingImage(null)
+        
+        // 显示压缩信息
+        alert(`✅ 图片已保存！
+压缩后大小：${sizeKB}KB
+自动压缩：${sizeKB <= 150 ? '是' : '否（图片过大，建议换更小的原图）'}`)
       }
     }
     reader.readAsDataURL(file)

@@ -171,21 +171,42 @@ export default function ProductContentAdmin() {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
-  /** 将裁剪后的图片保存到数据中 */
-  const saveCroppedImage = useCallback(async (imageSrc: string, pixels: any, size: { width: number, height: number }): Promise<string> => {
+  /** 将裁剪后的图片保存到数据中 — 带自动压缩 */
+  const saveCroppedImage = useCallback(async (imageSrc: string, pixels: any, size: { width: number, height: number }, targetSizeKB = 150): Promise<{ dataUrl: string, compressedSizeKB: number }> => {
     const image = new Image()
     image.src = imageSrc
     await new Promise((resolve) => { image.onload = resolve })
 
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('No 2d context')
+    // 迭代压缩，直到小于目标大小
+    let quality = 0.9
+    let dataUrl: string
+    
+    do {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error('No 2d context')
 
-    const { width, height, x, y } = pixels
-    canvas.width = size.width
-    canvas.height = size.height
-    ctx.drawImage(image, x, y, width, height, 0, 0, size.width, size.height)
-    return canvas.toDataURL('image/jpeg', 0.9)
+      const { width, height, x, y } = pixels
+      canvas.width = size.width
+      canvas.height = size.height
+      ctx.drawImage(image, x, y, width, height, 0, 0, size.width, size.height)
+      dataUrl = canvas.toDataURL('image/jpeg', quality)
+      
+      // 估算 base64 大小 (KB)
+      const base64Length = dataUrl.length - dataUrl.indexOf(',') - 1
+      const sizeKB = Math.round((base64Length * 0.75) / 1024)
+      
+      if (sizeKB <= targetSizeKB) {
+        return { dataUrl, compressedSizeKB: sizeKB }
+      }
+      
+      quality -= 0.1
+    } while (quality >= 0.3)
+
+    // 最终保底：即使最低质量也记录实际大小
+    const base64Length = dataUrl.length - dataUrl.indexOf(',') - 1
+    const sizeKB = Math.round((base64Length * 0.75) / 1024)
+    return { dataUrl, compressedSizeKB: sizeKB }
   }, [])
 
   /** 确认裁剪并保存 */
@@ -196,7 +217,7 @@ export default function ProductContentAdmin() {
       const isSection = inlineCropSection && inlineCropSection !== 'gallery'
       const targetSize = isSection ? TEMPLATE_SIZE : { width: 800, height: 600 }
 
-      const croppedImage = await saveCroppedImage(currentImage, croppedAreaPixels, targetSize)
+      const { dataUrl: croppedImage, compressedSizeKB: sizeKB } = await saveCroppedImage(currentImage, croppedAreaPixels, targetSize)
 
       if (isSection) {
         // 保存到板块配图
@@ -238,6 +259,12 @@ export default function ProductContentAdmin() {
       setAutoZoom(1)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
+      
+      // 显示压缩信息
+      alert(`✅ 图片已保存！
+裁剪尺寸：${targetSize.width}×${targetSize.height}
+压缩后大小：${sizeKB}KB
+自动压缩：${sizeKB <= 150 ? '是' : '否（图片过大，建议换更小的原图）'}`)
     } catch (error) {
       console.error('Error cropping image:', error)
     }
