@@ -71,6 +71,13 @@ export function CheckoutSuspense({ children }: SuspenseBoundaryProps) {
 }
 
 /**
+ * Account Orders Suspense wrapper with PageSkeleton fallback.
+ */
+export function AccountOrdersSuspense({ children }: SuspenseBoundaryProps) {
+  return <Suspense fallback={<PageSkeleton />}>{children}</Suspense>;
+}
+
+/**
  * Generic lazy loader with error boundary.
  *
  * @param importFn - Dynamic import function

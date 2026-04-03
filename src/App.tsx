@@ -26,7 +26,7 @@ import {
   LazyAccountOrdersPage,
   ProductDetailSuspense,
   CheckoutSuspense,
-  SuspenseBoundary,
+  AccountOrdersSuspense,
 } from './components/LazyLoading'
 
 function App() {
@@ -94,9 +94,9 @@ function App() {
          <div className="min-h-screen bg-coral-white">
            <Navbar />
            <main>
-             <SuspenseBoundary fallback={<LoadingSkeleton />}>
+             <AccountOrdersSuspense fallback={<LoadingSkeleton />}>
                <LazyAccountOrdersPage />
-             </SuspenseBoundary>
+             </AccountOrdersSuspense>
            </main>
            <Footer />
          </div>
