@@ -337,7 +337,7 @@ export function calculateOptimalQuality(width: number): number {
 
 /**
  * Detects if the browser supports AVIF format.
- * Uses feature detection rather than UA sniffing when possible.
+ * Uses CSS.supports() for feature detection instead of UA sniffing.
  *
  * @returns true if AVIF is supported
  *
@@ -347,29 +347,14 @@ export function calculateOptimalQuality(width: number): number {
  * }
  */
 export function shouldUseAVIF(): boolean {
-  if (typeof navigator === 'undefined') return false;
-
-  const userAgent = navigator.userAgent;
-
-  // Older browsers that definitely don't support AVIF
-  if (/MSIE|Trident/.test(userAgent)) {
+  // SSR check - CSS is not available on server
+  if (typeof CSS === 'undefined' || typeof CSS.supports !== 'function') {
     return false;
   }
 
-  // Simple heuristic: modern browsers on Windows 10+ or macOS support AVIF
-  // AVIF supported in Chrome 85+, Firefox 83+, Safari 16+, Edge 85+
-  const modernBrowserPatterns = [
-    /Windows NT 10\.0/i,
-    /Windows NT 11\.0/i,
-    /Mac OS X 10_[1-9][0-9]/i, // macOS 10.10+
-    /Mac OS X [1-9][0-9]/i,    // macOS 11+
-    /Linux x86_64/i,
-    /Android [8-9]|Android [1-9][0-9]/i, // Android 8+
-    /iPhone OS (1[3-9]|[2-9][0-9])/i,    // iOS 13+
-  ];
-
-  // If no modern browser pattern detected, assume no AVIF support
-  return modernBrowserPatterns.some(pattern => pattern.test(userAgent));
+  // Use CSS feature detection for AVIF support
+  // Tests if browser supports image/avif MIME type
+  return CSS.supports('image-type', 'image/avif');
 }
 
 /**

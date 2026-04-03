@@ -498,12 +498,23 @@ export async function fetchHomePageData(options: {
   }
 
   // Parallel fetch for all homepage data
+  // featuredProducts: Get featured products (first N products)
+  // collections: Get all collections
+  // newProducts: Get products starting after featured count to avoid duplication
   const [featuredProducts, collectionsResult, newProducts] = await Promise.allSettled([
     getProducts(featuredCount),
     shopifyClient.request(SHOPIFY_QUERIES.getCollections, {
       variables: { first: collectionsCount },
     }),
-    getProducts(featuredCount), // In real app, this would fetch newest products
+    // Fetch more products and skip the ones already in featured
+    // This ensures newProducts doesn't duplicate featuredProducts
+    (async () => {
+      // Fetch extra products beyond featured count
+      const extraCount = Math.max(featuredCount, 4); // At least 4 new products
+      const allProducts = await getProducts(featuredCount + extraCount);
+      // Skip the first N products (featured) to get truly new products
+      return allProducts.slice(featuredCount);
+    })(),
   ]);
 
   const collections =

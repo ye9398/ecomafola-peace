@@ -249,19 +249,40 @@ describe('imageOptimizer', () => {
   });
 
   describe('shouldUseAVIF', () => {
-    it('should return true for modern browsers', () => {
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        configurable: true,
-      });
+    let originalCSSSupports: typeof CSS.supports | undefined;
+
+    beforeEach(() => {
+      originalCSSSupports = CSS.supports;
+    });
+
+    afterEach(() => {
+      if (originalCSSSupports) {
+        CSS.supports = originalCSSSupports;
+      }
+    });
+
+    it('should return true when CSS.supports detects AVIF support', () => {
+      CSS.supports = vi.fn().mockReturnValue(true);
       expect(shouldUseAVIF()).toBe(true);
     });
 
-    it('should return false for older browsers', () => {
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1)',
-        configurable: true,
-      });
+    it('should return false when CSS.supports detects no AVIF support', () => {
+      CSS.supports = vi.fn().mockReturnValue(false);
+      expect(shouldUseAVIF()).toBe(false);
+    });
+
+    it('should return false in SSR environment', () => {
+      // Simulate SSR by temporarily removing CSS
+      const originalCSS = global.CSS;
+      (global as any).CSS = undefined;
+
+      expect(shouldUseAVIF()).toBe(false);
+
+      (global as any).CSS = originalCSS;
+    });
+
+    it('should fall back to false when CSS.supports is not available', () => {
+      CSS.supports = undefined as any;
       expect(shouldUseAVIF()).toBe(false);
     });
   });
@@ -269,28 +290,40 @@ describe('imageOptimizer', () => {
   describe('getOptimizedImageUrl', () => {
     const baseUrl = 'https://cdn.shopify.com/s/files/1/0001/image.jpg';
 
+    beforeEach(() => {
+      vi.restoreAllMocks();
+    });
+
     it('should apply automatic quality optimization based on size', () => {
       const url = getOptimizedImageUrl(baseUrl, { width: 1920 });
       expect(url).toContain('quality=');
       expect(url).toContain('width=1920');
     });
 
-    it('should use AVIF format when supported', () => {
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        configurable: true,
-      });
+    it('should use AVIF format when CSS.supports detects support', () => {
+      // Mock CSS.supports to return true for AVIF
+      const originalCSS = global.CSS;
+      (global as any).CSS = {
+        supports: vi.fn().mockReturnValue(true),
+      };
+
       const url = getOptimizedImageUrl(baseUrl, { width: 800, autoFormat: true });
       expect(url).toContain('format=avif');
+
+      (global as any).CSS = originalCSS;
     });
 
-    it('should fall back to WebP when AVIF not supported', () => {
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)',
-        configurable: true,
-      });
+    it('should fall back to WebP when CSS.supports detects no AVIF support', () => {
+      // Mock CSS.supports to return false for AVIF
+      const originalCSS = global.CSS;
+      (global as any).CSS = {
+        supports: vi.fn().mockReturnValue(false),
+      };
+
       const url = getOptimizedImageUrl(baseUrl, { width: 800, autoFormat: true });
       expect(url).toContain('format=webp');
+
+      (global as any).CSS = originalCSS;
     });
 
     it('should apply lazy loading by default', () => {
@@ -304,10 +337,12 @@ describe('imageOptimizer', () => {
     });
 
     it('should combine multiple optimizations', () => {
-      Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        configurable: true,
-      });
+      // Mock CSS.supports to return true for AVIF
+      const originalCSS = global.CSS;
+      (global as any).CSS = {
+        supports: vi.fn().mockReturnValue(true),
+      };
+
       const url = getOptimizedImageUrl(baseUrl, {
         width: 1200,
         autoFormat: true,
@@ -317,6 +352,9 @@ describe('imageOptimizer', () => {
       expect(url).toContain('format=avif');
       expect(url).toContain('quality=85');
       expect(url).toContain('width=1200');
+      expect(url).not.toContain('loading=lazy');
+
+      (global as any).CSS = originalCSS;
     });
   });
 

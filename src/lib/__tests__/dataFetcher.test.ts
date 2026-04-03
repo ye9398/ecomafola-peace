@@ -273,21 +273,21 @@ describe('dataFetcher', () => {
   });
 
   describe('fetchHomePageData', () => {
+    const mockProduct = {
+      id: '1',
+      title: 'Product',
+      handle: 'product',
+      description: 'Desc',
+      productType: 'Type',
+      vendor: 'Vendor',
+      tags: [],
+      images: { edges: [] },
+      variants: { edges: [] },
+      options: [],
+    };
+
     it('should fetch all homepage data in parallel', async () => {
-      vi.mocked(getProducts).mockResolvedValue([
-        {
-          id: '1',
-          title: 'Product',
-          handle: 'product',
-          description: 'Desc',
-          productType: 'Type',
-          vendor: 'Vendor',
-          tags: [],
-          images: { edges: [] },
-          variants: { edges: [] },
-          options: [],
-        },
-      ]);
+      vi.mocked(getProducts).mockResolvedValue([mockProduct]);
       vi.mocked(shopifyClient.request).mockResolvedValue({
         data: {
           collections: {
@@ -335,6 +335,28 @@ describe('dataFetcher', () => {
       });
 
       expect(getProducts).toHaveBeenCalled();
+    });
+
+    it('should deduplicate newProducts from featuredProducts', async () => {
+      const sharedProduct = { ...mockProduct, handle: 'shared-product' };
+      const featuredOnly = { ...mockProduct, handle: 'featured-only', id: '2' };
+      const newOnly = { ...mockProduct, handle: 'new-only', id: '3' };
+
+      // featuredProducts returns [sharedProduct, featuredOnly]
+      vi.mocked(getProducts).mockResolvedValueOnce([sharedProduct, featuredOnly]);
+
+      // newProducts should NOT return the same products as featured
+      // In the implementation, newProducts should skip products already in featured
+      vi.mocked(getProducts).mockResolvedValueOnce([sharedProduct, newOnly]);
+
+      const result = await fetchHomePageData({ featuredCount: 2 });
+
+      // Verify that newProducts does not contain products already in featuredProducts
+      const featuredHandles = result.featuredProducts.map(p => p.handle);
+      const newHandles = result.newProducts.map(p => p.handle);
+
+      const duplicates = newHandles.filter(handle => featuredHandles.includes(handle));
+      expect(duplicates).toHaveLength(0);
     });
   });
 

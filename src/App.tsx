@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -8,7 +8,6 @@ import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import AuthCallback from './pages/AuthCallback'
 import AccountPage from './pages/AccountPage'
-import AccountOrdersPage from './pages/AccountOrdersPage'
 import ProductListPage from './pages/ProductListPage'
 import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
@@ -20,9 +19,15 @@ import AdminPage from './pages/admin/AdminPage'
 import ProductContentAdmin from './pages/admin/ProductContentAdmin'
 import HomeContentAdmin from './pages/admin/HomeContentAdmin'
 
-// 低频访问页面（懒加载）
-const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'))
-const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
+// 懒加载页面组件
+import {
+  LazyProductDetailPage,
+  LazyCheckoutPage,
+  LazyAccountOrdersPage,
+  ProductDetailSuspense,
+  CheckoutSuspense,
+  SuspenseBoundary,
+} from './components/LazyLoading'
 
 function App() {
   return (
@@ -33,7 +38,7 @@ function App() {
        <Route path="/dashboard" element={<AdminPage />} />
        <Route path="/dashboard/products" element={<ProductContentAdmin />} />
        <Route path="/dashboard/home" element={<HomeContentAdmin />} />
-       
+
        {/* 前台页面路由 - 带 Navbar/Footer */}
        <Route path="/" element={
          <div className="min-h-screen bg-coral-white">
@@ -60,9 +65,20 @@ function App() {
          <div className="min-h-screen bg-coral-white">
            <Navbar />
            <main>
-             <Suspense fallback={<LoadingSkeleton />}>
-               <ProductDetailPage />
-             </Suspense>
+             <ProductDetailSuspense>
+               <LazyProductDetailPage />
+             </ProductDetailSuspense>
+           </main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/checkout" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main>
+             <CheckoutSuspense>
+               <LazyCheckoutPage />
+             </CheckoutSuspense>
            </main>
            <Footer />
          </div>
@@ -77,7 +93,11 @@ function App() {
        <Route path="/account/orders" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
-           <main><AccountOrdersPage /></main>
+           <main>
+             <SuspenseBoundary fallback={<LoadingSkeleton />}>
+               <LazyAccountOrdersPage />
+             </SuspenseBoundary>
+           </main>
            <Footer />
          </div>
        } />
@@ -138,7 +158,7 @@ function App() {
          </div>
        } />
      </Routes>
-     
+
      {/* 全局购物车抽屉 */}
      <SlideOverCheckout />
    </AuthProvider>
