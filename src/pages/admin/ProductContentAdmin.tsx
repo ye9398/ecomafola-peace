@@ -14,10 +14,10 @@ import { Save, Download, LogOut, ChevronLeft, Package, Image as ImageIcon, Messa
 const PRODUCTS = [
   { handle: 'samoan-handcrafted-coconut-bowl', name: 'Coconut Bowl' },
   { handle: 'samoan-woven-basket', name: 'Woven Basket' },
-  { handle: 'natural-coconut-soap', name: 'Natural Soap' },
   { handle: 'samoan-handwoven-grass-tote-bag', name: 'Woven Tote Bag' },
   { handle: 'samoan-handcrafted-shell-necklace', name: 'Shell Necklace' },
-  { handle: 'tapa-cloth-wall-art', name: 'Tapa Cloth Wall Art' },
+  { handle: 'handwoven-papua-new-guinea-beach-bag', name: 'Beach Bag' },
+  { handle: 'natural-coir-handwoven-coconut-palm-doormat', name: 'Doormat' },
 ]
 
 interface Review {
