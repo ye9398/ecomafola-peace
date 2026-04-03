@@ -114,7 +114,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [cart, isInitialized]);
 
   // 计算购物车商品数量
-  const count = cart?.lines?.edges?.reduce((sum, edge) => sum + edge.node.quantity, 0) || 0;
+  const count = cart?.lines?.edges?.reduce((sum, edge) => sum + (edge.node.quantity || 0), 0) || 0;
 
   // 检查购物车中是否已存在某个 variant
   const findExistingLine = useCallback((variantId: string) => {

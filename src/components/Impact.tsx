@@ -63,11 +63,12 @@ export default function Impact() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16" role="list" aria-label="Impact statistics">
           {stats.map((stat) => (
             <div 
               key={stat.label} 
               className="text-center p-6 bg-[#4A7C59]/85 border-2 border-[#7FB895] shadow-lg relative overflow-hidden rounded-lg"
+              role="listitem"
             >
               {/* Background image layer - positioned absolutely behind content */}
               <div 
@@ -79,6 +80,7 @@ export default function Impact() {
                   filter: 'none',
                   transform: 'scale(1.1)',
                 }}
+                aria-hidden="true"
               />
               
               {/* Dark overlay for text readability */}

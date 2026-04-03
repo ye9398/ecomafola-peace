@@ -254,7 +254,7 @@ describe('Order Tracking System', () => {
       const mockCustomer = {
         id: 'gid://shopify/Customer/123',
         displayName: 'Test User',
-        email: 'test@example.com',
+        emailAddress: { emailAddress: 'test@example.com' },
         orders: {
           nodes: [
             {
@@ -269,7 +269,7 @@ describe('Order Tracking System', () => {
                   {
                     title: 'Coconut Bowl Set',
                     quantity: 2,
-                    originalTotalPrice: {
+                    price: {
                       amount: '59.98',
                       currencyCode: 'USD',
                     },
@@ -297,14 +297,14 @@ describe('Order Tracking System', () => {
       renderWithRouter(<AccountOrdersPage />)
 
       await waitFor(() => {
-        expect(screen.getByText('我的订单')).toBeInTheDocument()
+        expect(screen.getByText('My Orders')).toBeInTheDocument()
       })
 
-      expect(screen.getByText('欢迎，Test User (test@example.com)')).toBeInTheDocument()
-      expect(screen.getByText('订单 #EM-2024-001')).toBeInTheDocument()
+      expect(screen.getByText('Welcome, Test User (test@example.com)')).toBeInTheDocument()
+      expect(screen.getByText('Order #EM-2024-001')).toBeInTheDocument()
       expect(screen.getByText('Coconut Bowl Set')).toBeInTheDocument()
-      expect(screen.getByText('数量：2')).toBeInTheDocument()
-      expect(screen.getByText('已付款')).toBeInTheDocument()
+      expect(screen.getByText('Qty: 2')).toBeInTheDocument()
+      expect(screen.getByText('Paid')).toBeInTheDocument()
     })
 
     it('shows empty state when no orders', async () => {
@@ -319,7 +319,7 @@ describe('Order Tracking System', () => {
       const mockCustomer = {
         id: 'gid://shopify/Customer/123',
         displayName: 'Test User',
-        email: 'test@example.com',
+        emailAddress: { emailAddress: 'test@example.com' },
         orders: {
           nodes: [],
         },
@@ -330,10 +330,10 @@ describe('Order Tracking System', () => {
       renderWithRouter(<AccountOrdersPage />)
 
       await waitFor(() => {
-        expect(screen.getByText('暂无订单记录')).toBeInTheDocument()
+        expect(screen.getByText('No orders yet')).toBeInTheDocument()
       })
 
-      expect(screen.getByText('去购物 →')).toBeInTheDocument()
+      expect(screen.getByText('Start Shopping →')).toBeInTheDocument()
     })
 
     it('handles loading state', () => {

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { saveTokens } from '../lib/customerAccount';
 
+const CLIENT_ID = import.meta.env.VITE_SHOPIFY_CLIENT_ID;
+const SHOP_ID = '67818717289'; // ✅ 数字 ID
 const REDIRECT_URI = `${import.meta.env.VITE_APP_URL}/auth/callback`;
 
 export default function AuthCallback() {
@@ -8,49 +11,52 @@ export default function AuthCallback() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const state = params.get('state');
-    const savedState = localStorage.getItem('oauth_state');
-    const codeVerifier = localStorage.getItem('pkce_verifier');
+    const handleCallback = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const state = params.get('state');
+      const savedState = localStorage.getItem('oauth_state');
+      const codeVerifier = localStorage.getItem('pkce_verifier');
 
-    if (!code || !codeVerifier || state !== savedState) {
-      setError('Authentication failed. Please try again.');
-      setTimeout(() => navigate('/login'), 2000);
-      return;
-    }
+      if (!code || !codeVerifier || state !== savedState) {
+        setError('Authentication failed. Please try again.');
+        setTimeout(() => navigate('/login'), 2000);
+        return;
+      }
 
-    localStorage.removeItem('pkce_verifier');
-    localStorage.removeItem('oauth_state');
+      try {
+        // ✅ 调用自己的 Vercel Function，绕过 CORS
+        const tokenRes = await fetch('/api/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            code_verifier: codeVerifier,
+            redirect_uri: REDIRECT_URI,
+          }),
+        });
 
-    fetch('/api/auth/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ code, codeVerifier, redirectUri: REDIRECT_URI }),
-    })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then((data) => {
-        // ✅ 保存 token 到 localStorage（持久化，关闭浏览器不丢失）
-        console.log('AuthCallback data:', data);
-        if (data.access_token) {
-          localStorage.setItem('customer_access_token', data.access_token);
-          console.log('Token saved:', data.access_token.substring(0, 20) + '...');
-        } else if (data.token) {
-          localStorage.setItem('customer_access_token', data.token);
-          console.log('Token saved (token field):', data.token.substring(0, 20) + '...');
+        const tokenData = await tokenRes.json();
+
+        if (tokenData.access_token) {
+          saveTokens(tokenData); // ✅ 同时保存 access_token、refresh_token、expires_in、id_token
+          navigate('/account/orders');
+        } else {
+          setError('Failed to get access token');
+          setTimeout(() => navigate('/login'), 2000);
         }
-        // ✅ 跳转到订单页面
-        navigate('/account/orders');
-      })
-      .catch(() => {
+      } catch (err) {
+        console.error('Token exchange error:', err);
         setError('Sign in failed. Please try again.');
         setTimeout(() => navigate('/login'), 2000);
-      });
-  }, []);
+      } finally {
+        localStorage.removeItem('pkce_verifier');
+        localStorage.removeItem('oauth_state');
+      }
+    };
+
+    handleCallback();
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

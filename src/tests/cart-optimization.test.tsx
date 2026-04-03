@@ -11,13 +11,34 @@ const cartState = {
 
 // Set up module mocks - vi.mock is hoisted, so define everything inline
 vi.mock('../lib/cart', async () => {
+  const cartState = {
+    lines: [] as any[]
+  };
   return {
-    createCart: vi.fn(async () => ({
-      id: 'gid://shopify/Cart/test-cart-123',
-      checkoutUrl: 'https://checkout.shopify.com/test',
-      lines: { edges: [] as any[] },
-      cost: { totalAmount: { amount: '0.00', currencyCode: 'USD' } }
-    })),
+    createCart: vi.fn(async (items: Array<{ merchandiseId: string; quantity: number }>) => {
+      const item = items[0];
+      cartState.lines = [{
+        node: {
+          id: `line-${item?.merchandiseId}`,
+          quantity: item?.quantity || 1,
+          merchandise: {
+            id: item?.merchandiseId || 'gid://shopify/ProductVariant/12345',
+            title: 'Test Product',
+            price: { amount: '29.99', currencyCode: 'USD' },
+            product: {
+              title: 'Test Product',
+              images: { edges: [{ node: { url: 'https://example.com/image.jpg' } }] }
+            }
+          }
+        }
+      }];
+      return {
+        id: 'gid://shopify/Cart/test-cart-123',
+        checkoutUrl: 'https://checkout.shopify.com/test',
+        lines: { edges: cartState.lines },
+        cost: { totalAmount: { amount: '29.99', currencyCode: 'USD' } }
+      };
+    }),
     addToCart: vi.fn(async (cartId: string, variantId: string, quantity: number = 1) => {
       // Check if variant already exists - deduplication logic
       const existingLine = cartState.lines.find(

@@ -9,11 +9,23 @@ const CATEGORIES = [
   { slug: '', label: 'All Products' },
   { slug: 'coconut-bowls', label: 'Coconut Bowls' },
   { slug: 'woven-baskets', label: 'Woven Baskets' },
+  { slug: 'beach-bags', label: 'Beach Bags' },
+  { slug: 'home-decor', label: 'Home Decor' },
   { slug: 'natural-soaps', label: 'Natural Soaps' },
   { slug: 'wood-carvings', label: 'Wood Carvings' },
   { slug: 'textiles', label: 'Textiles' },
   { slug: 'shell-jewelry', label: 'Shell Jewelry' },
 ]
+
+// ✅ 优化 Shopify 图片 URL - 添加尺寸和质量参数
+function optimizeImageUrl(url: string, width: number = 665, quality: number = 80): string {
+  if (!url || url.includes('unsplash.com')) return url
+  
+  // Shopify 图片 URL 格式：https://cdn.shopify.com/.../image.jpg
+  // 添加尺寸参数：?width=665&quality=80
+  const separator = url.includes('?') ? '&' : '?'
+  return `${url}${separator}width=${width}&quality=${quality}`
+}
 
 export default function ProductListPage() {
   const { category } = useParams<{ category?: string }>()
@@ -38,7 +50,7 @@ export default function ProductListPage() {
           subtitle: product.productType || 'Handcrafted',
           tag: 'Handmade',
           price_usd: parseFloat(product.priceRange.minVariantPrice.amount),
-          image_url: product.images.edges[0]?.node.url || 'https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=800&q=80',
+          image_url: optimizeImageUrl(product.images.edges[0]?.node.url || 'https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=800&q=80', 665),
           weight_kg: 0.5,
           available: product.variants.edges[0]?.node.availableForSale ?? true,
           variantId: product.variants.edges[0]?.node.id, // Shopify Variant GID

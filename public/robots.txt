@@ -1,0 +1,18 @@
+# EcoMafola Peace - robots.txt
+# https://ecomafola.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://ecomafola.com/sitemap.xml
+
+# Crawl-delay (optional)
+Crawl-delay: 1
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Allow all search engines to crawl public pages

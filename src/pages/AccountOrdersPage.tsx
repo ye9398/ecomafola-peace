@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, ChevronRight, ExternalLink } from 'lucide-react';
-import { getCurrentCustomer } from '../lib/customerAccount';
+import { Package, ChevronRight, ExternalLink, LogOut } from 'lucide-react';
+import { getCurrentCustomer, clearTokens } from '../lib/customerAccount';
 
 // URL 验证函数，防止 XSS 攻击
 const isValidUrl = (url: string): boolean => {
@@ -19,19 +19,21 @@ interface Order {
   processedAt: string;
   fulfillmentStatus: string;
   financialStatus: string;
-  statusUrl: string;
+  statusPageUrl: string;
   fulfillments?: {
-    trackingInfo?: {
-      number: string;
-      url: string;
-      company: string;
+    nodes: {
+      trackingInformation?: {
+        number: string;
+        url: string;
+        company: string;
+      }[];
     }[];
-  }[];
+  };
   lineItems: {
     nodes: {
       title: string;
       quantity: number;
-      originalTotalPrice: {
+      price: {
         amount: string;
         currencyCode: string;
       };
@@ -42,8 +44,8 @@ interface Order {
 interface Customer {
   id: string;
   displayName: string;
-  email: string;
-  phone?: string;
+  emailAddress: { emailAddress: string };
+  phoneNumber?: { phoneNumber: string };
   orders: {
     nodes: Order[];
   };
@@ -92,6 +94,7 @@ export default function AccountOrdersPage() {
     return null;
   }
 
+  const customerEmail = customer.emailAddress?.emailAddress || customer.email || 'Unknown';
   const orders = customer.orders.nodes;
 
   return (
@@ -99,24 +102,49 @@ export default function AccountOrdersPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-serif text-3xl font-bold text-ocean-blue mb-2">
-            我的订单
-          </h1>
-          <p className="text-gray-500 font-sans text-sm">
-            欢迎，{customer.displayName} ({customer.email})
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-serif text-3xl font-bold text-ocean-blue mb-2">
+                My Orders
+              </h1>
+              <p className="text-gray-500 font-sans text-sm">
+                Welcome, {customer.displayName} ({customerEmail})
+              </p>
+            </div>
+            <button
+              onClick={async () => {
+                const idToken = localStorage.getItem('customer_id_token');
+                clearTokens();
+                if (idToken) {
+                  const res = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_token: idToken }),
+                  });
+                  const { logout_url } = await res.json();
+                  window.location.href = logout_url;
+                } else {
+                  window.location.href = '/';
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-red-600 transition-colors"
+            >
+              <LogOut size={16} />
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {/* Orders List */}
         {orders.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-sm p-12 text-center">
             <Package size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 font-sans mb-4">暂无订单记录</p>
+            <p className="text-gray-500 font-sans mb-4">No orders yet</p>
             <Link
               to="/products"
               className="inline-block bg-ocean-blue text-white px-6 py-2.5 rounded-full font-sans font-medium text-sm hover:bg-tropical-green transition-colors"
             >
-              去购物 →
+              Start Shopping →
             </Link>
           </div>
         ) : (
@@ -133,10 +161,10 @@ export default function AccountOrdersPage() {
                   <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
                     <div>
                       <p className="font-serif font-semibold text-lg text-ocean-blue">
-                        订单 #{order.number}
+                        Order #{order.number}
                       </p>
                       <p className="text-sm text-gray-500 font-sans">
-                        {new Date(order.processedAt).toLocaleDateString('zh-CN', {
+                        {new Date(order.processedAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -149,7 +177,7 @@ export default function AccountOrdersPage() {
                           ? 'bg-green-100 text-green-700'
                           : 'bg-amber-100 text-amber-700'
                       }`}>
-                        {order.financialStatus === 'paid' ? '已付款' : '待付款'}
+                        {order.financialStatus === 'paid' ? 'Paid' : 'Pending'}
                       </span>
                     </div>
                   </div>
@@ -167,41 +195,41 @@ export default function AccountOrdersPage() {
                               {item.title}
                             </p>
                             <p className="text-xs text-gray-500">
-                              数量：{item.quantity}
+                              Qty: {item.quantity}
                             </p>
                           </div>
                         </div>
                         <p className="font-sans text-sm font-semibold text-ocean-blue">
-                          ${item.originalTotalPrice.amount} {item.originalTotalPrice.currencyCode}
+                          ${item.price.amount} {item.price.currencyCode}
                         </p>
                       </div>
                     ))}
                   </div>
 
                   {/* Tracking Info */}
-                  {tracking && (
+                  {order.fulfillments?.nodes?.[0]?.trackingInformation?.[0] && (
                     <div className="bg-gray-50 rounded-xl p-4 mb-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Package size={16} className="text-ocean-blue" />
                         <span className="font-sans text-sm font-medium text-gray-700">
-                          物流信息
+                          Shipping Info
                         </span>
                       </div>
                       <div className="space-y-1">
                         <p className="text-sm text-gray-600">
-                          物流公司：{tracking.company}
+                          Carrier: {order.fulfillments.nodes[0].trackingInformation[0].company}
                         </p>
                         <p className="text-sm text-gray-600">
-                          快递单号：{tracking.number}
+                          Tracking #: {order.fulfillments.nodes[0].trackingInformation[0].number}
                         </p>
-                        {tracking.url && isValidUrl(tracking.url) && (
+                        {order.fulfillments.nodes[0].trackingInformation[0].url && isValidUrl(order.fulfillments.nodes[0].trackingInformation[0].url) && (
                           <a
-                            href={tracking.url}
+                            href={order.fulfillments.nodes[0].trackingInfo[0].url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-sm text-ocean-blue hover:text-tropical-green transition-colors"
                           >
-                            追踪物流 <ExternalLink size={12} />
+                            Track Package <ExternalLink size={12} />
                           </a>
                         )}
                       </div>
@@ -211,16 +239,16 @@ export default function AccountOrdersPage() {
                   {/* Footer Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <span className="font-sans text-sm text-gray-500">
-                      物流状态：{order.fulfillmentStatus || '待处理'}
+                      Fulfillment: {order.fulfillmentStatus || 'Unfulfilled'}
                     </span>
-                    {isValidUrl(order.statusUrl) && (
+                    {isValidUrl(order.statusPageUrl) && (
                       <a
-                        href={order.statusUrl}
+                        href={order.statusPageUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm text-ocean-blue hover:text-tropical-green transition-colors"
                       >
-                        查看订单详情 <ChevronRight size={14} />
+                        View Order Details <ChevronRight size={14} />
                       </a>
                     )}
                   </div>

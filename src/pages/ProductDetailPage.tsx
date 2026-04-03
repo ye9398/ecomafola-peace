@@ -21,12 +21,22 @@ const URL_TO_SHOPIFY_HANDLE: Record<string, string> = {
   'naturalsoap': 'natural-coconut-soap',
   'natural-soap': 'natural-coconut-soap',
   'tapa-cloth': 'tapa-cloth-wall-art',
+  // 沙滩包 - Shopify handle: handwoven-papua-new-guinea-beach-bag
+  'beachbag': 'handwoven-papua-new-guinea-beach-bag',
+  'beach-bag': 'handwoven-papua-new-guinea-beach-bag',
+  'handwoven-beach-bag': 'handwoven-papua-new-guinea-beach-bag',
+  // 门垫 - Shopify handle: natural-coir-handwoven-coconut-palm-doormat
+  'doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+  'coir-doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+  'natural-coir-doormat': 'natural-coir-handwoven-coconut-palm-doormat',
   // 中文名称映射
   '手工椰子碗': 'samoan-handcrafted-coconut-bowl',
   '编织篮': 'samoan-woven-basket',
   '天然肥皂': 'natural-coconut-soap',
   '草编手工托特包': 'samoan-handwoven-grass-tote-bag',
   '萨摩亚手工贝壳项链': 'samoan-handcrafted-shell-necklace',
+  '沙滩包': 'handwoven-beach-bag',
+  '椰棕门垫': 'natural-coir-doormat',
   // 完整 Shopify handle（直接匹配）
   'samoan-handcrafted-coconut-bowl': 'samoan-handcrafted-coconut-bowl',
   'samoan-handwoven-grass-tote-bag': 'samoan-handwoven-grass-tote-bag',
@@ -44,6 +54,12 @@ const SHOPIFY_HANDLE_TO_DESCRIPTION: Record<string, string> = {
   'samoan-woven-basket': 'wovenbasket',
   'natural-coconut-soap': 'naturalsoap',
   'tapa-cloth-wall-art': 'tapa-cloth',
+  // 沙滩包 - 支持短别名和完整 handle
+  'handwoven-beach-bag': 'beachbag',
+  'handwoven-papua-new-guinea-beach-bag': 'beachbag',
+  // 门垫 - 支持短别名和完整 handle
+  'natural-coir-doormat': 'doormat',
+  'natural-coir-handwoven-coconut-palm-doormat': 'doormat',
 }
 
 interface Product {
@@ -73,10 +89,13 @@ interface Review {
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
+  console.log('[ProductDetailPage] URL param id:', id)
   // URL 参数 → Shopify handle
   const shopifyHandle = id ? (URL_TO_SHOPIFY_HANDLE[id] || id) : ''
+  console.log('[ProductDetailPage] Mapped shopifyHandle:', shopifyHandle)
   // Shopify handle → 本地描述内容 handle
   const descriptionHandle = shopifyHandle ? (SHOPIFY_HANDLE_TO_DESCRIPTION[shopifyHandle] || shopifyHandle) : ''
+  console.log('[ProductDetailPage] descriptionHandle:', descriptionHandle)
   
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -88,6 +107,13 @@ export default function ProductDetailPage() {
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 })
   const [isHovering, setIsHovering] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+
+  // ✅ 优化图片 URL（与 ProductListPage 保持一致）
+  const optimizeImageUrl = (url: string, width: number = 800, quality: number = 80): string => {
+    if (!url || url.includes('unsplash.com')) return url
+    const separator = url.includes('?') ? '&' : '?'
+    return `${url}${separator}width=${width}&quality=${quality}`
+  }
   const { addToCart: shopifyAddToCart, goToCheckout } = useCart()
   const navigate = useNavigate()
   const { geo, loading: geoLoading } = useGeoLocation()
@@ -230,13 +256,35 @@ export default function ProductDetailPage() {
   ]
 
   useEffect(() => {
-    if (!shopifyHandle) return
+    if (!shopifyHandle && !descriptionHandle) return
     setLoading(true)
     const fetchProduct = async () => {
       try {
-        const shopifyProduct = await getProductByHandle(shopifyHandle)
+        console.log('[ProductDetailPage] Fetching product:', shopifyHandle)
+        let shopifyProduct = null
+        let apiError = null
+        
+        if (shopifyHandle) {
+          try {
+            shopifyProduct = await getProductByHandle(shopifyHandle)
+            console.log('[ProductDetailPage] Shopify API result:', shopifyProduct ? 'Found' : 'Not found')
+            if (!shopifyProduct) {
+              console.error('[ProductDetailPage] Product not found in Shopify. Handle:', shopifyHandle)
+              console.error('[ProductDetailPage] Please check in Shopify Admin:')
+              console.error('  1. Product status is Active (not Draft)')
+              console.error('  2. Online Store sales channel is enabled')
+              console.error('  3. Product has inventory > 0')
+            }
+          } catch (error) {
+            apiError = error
+            console.error('[ProductDetailPage] Shopify API error:', error)
+          }
+        }
+        
+        // ✅ 删除本地 fallback：强制所有产品图片和数据从 Shopify API 拉取
+        // 如果 Shopify 返回 null，说明产品未上架或未启用 Online Store 渠道
         if (!shopifyProduct) {
-          console.error('Product not found:', id)
+          console.error('Product not found in Shopify API. Handle:', shopifyHandle)
           setProduct(null)
         } else {
           const firstVariant = shopifyProduct.variants.edges[0]?.node
@@ -371,7 +419,7 @@ export default function ProductDetailPage() {
           {/* Multi-angle Product Images */}
           <div className="space-y-4">
             <div ref={zoomContainerRef} className="relative aspect-square rounded-3xl overflow-hidden shadow-xl cursor-zoom-in group" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => { setIsHovering(false); setZoomPosition({ x: 50, y: 50 }) }} onMouseMove={handleMouseMove}>
-              <img ref={imageRef} src={(product.images.length > 1 ? product.images : [product.image_url])[selectedImageIndex] || product.image_url} alt={product.name} className="w-full h-full object-cover" style={{ transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`, transform: isHovering ? 'scale(2)' : 'scale(1)', transition: isHovering ? 'transform 0.1s ease-out' : 'transform 0.3s ease' }} />
+              <img ref={imageRef} src={optimizeImageUrl((product.images.length > 1 ? product.images : [product.image_url])[selectedImageIndex] || product.image_url, 1200, 85)} alt={product.name} className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px" style={{ transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`, transform: isHovering ? 'scale(2)' : 'scale(1)', transition: isHovering ? 'transform 0.1s ease-out' : 'transform 0.3s ease' }} />
               {isHovering && <div className="absolute inset-0 border-2 border-white/50 rounded-3xl pointer-events-none" style={{ left: `${zoomPosition.x - 25}%`, top: `${zoomPosition.y - 25}%`, width: '50%', height: '50%' }} />}
               <span className="absolute top-5 left-5 bg-tropical-green text-white text-xs font-serif font-semibold px-3 py-1 rounded-full">{product.tag}</span>
               <div className={`absolute bottom-5 right-5 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 transition-opacity duration-300 ${isHovering ? 'opacity-0' : 'opacity-100'}`}>
@@ -386,7 +434,7 @@ export default function ProductDetailPage() {
                   onClick={() => handleThumbnailClick(idx)}
                   className={`aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${selectedImageIndex === idx ? 'border-ocean-blue ring-2 ring-ocean-blue/20' : 'border-gray-200 hover:border-ocean-blue'}`}
                 >
-                  <img src={img} alt={`${product.name} view ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={optimizeImageUrl(img, 400, 75)} alt={`${product.name} view ${idx + 1}`} className="w-full h-full object-cover" sizes="(max-width: 768px) 20vw, 15vw" loading="lazy" />
                 </div>
               ))}
             </div>

@@ -19,7 +19,7 @@ export default function Navbar() {
   const [productsOpen, setProductsOpen] = useState(false)
   const productsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeDelay = 1300
-  const { count } = useCart()
+  const { count, setIsOpen } = useCart()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -76,8 +76,8 @@ export default function Navbar() {
                 productsTimeoutRef.current = setTimeout(() => setProductsOpen(false), closeDelay)
               }}
             >
-              <Link 
-                to="/products" 
+              <Link
+                to="/products"
                 className={`flex items-center gap-1 font-sans text-sm font-medium transition-colors duration-200 hover:text-tropical-green ${
                   isScrolled ? 'text-gray-700' : 'text-white'
                 }`}
@@ -117,8 +117,8 @@ export default function Navbar() {
             {/* Login/User Button */}
             {user ? (
               <div className="flex items-center gap-2">
-                <Link 
-                  to="/account" 
+                <Link
+                  to="/account"
                   className={`flex items-center gap-1.5 font-sans text-sm font-medium transition-colors duration-200 hover:text-tropical-green ${
                     isScrolled ? 'text-gray-700' : 'text-white'
                   }`}
@@ -126,7 +126,7 @@ export default function Navbar() {
                   <User size={16} />
                   <span className="hidden lg:inline">{user.name}</span>
                 </Link>
-                <button 
+                <button
                   onClick={handleLogout}
                   className={`p-1.5 rounded-full transition-colors duration-200 hover:bg-white/20 ${
                     isScrolled ? 'text-gray-700' : 'text-white'
@@ -137,11 +137,11 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className={`flex items-center gap-1.5 font-sans text-sm font-medium px-3 py-1.5 rounded-full transition-all duration-200 ${
-                  isScrolled 
-                    ? 'text-ocean-blue hover:bg-ocean-blue/10' 
+                  isScrolled
+                    ? 'text-ocean-blue hover:bg-ocean-blue/10'
                     : 'text-white bg-white/20 hover:bg-white/30'
                 }`}
               >
@@ -150,12 +150,13 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Cart — links to checkout, shows real count */}
+            {/* Cart - opens cart drawer, shows real count */}
             <button
-              onClick={() => navigate('/checkout')}
+              onClick={() => setIsOpen(true)}
               className={`relative p-2 rounded-full transition-colors duration-200 hover:bg-white/20 ${
                 isScrolled ? 'text-gray-700' : 'text-white'
               }`}
+              aria-label="Open shopping cart"
             >
               <ShoppingCart size={20} />
               {count > 0 && (
@@ -169,6 +170,7 @@ export default function Navbar() {
             <button
               className={`md:hidden p-2 rounded-full transition-colors duration-200 ${isScrolled ? 'text-gray-700' : 'text-white'}`}
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -218,7 +220,7 @@ export default function Navbar() {
                 </Link>
               )}
               <button
-                onClick={() => { setMobileOpen(false); navigate('/checkout') }}
+                onClick={() => { setMobileOpen(false); setIsOpen(true) }}
                 className="flex items-center gap-2 text-sm font-sans text-gray-700 hover:text-tropical-green"
               >
                 <ShoppingCart size={16} />

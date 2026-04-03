@@ -3,49 +3,51 @@ import { useCustomer } from '../hooks/useCustomer';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-const AUTH_URL = import.meta.env.VITE_SHOPIFY_AUTH_URL;
 const CLIENT_ID = import.meta.env.VITE_SHOPIFY_CLIENT_ID;
+const SHOP_ID = '67818717289'; // ✅ 数字 ID，不是域名前缀
 const REDIRECT_URI = `${import.meta.env.VITE_APP_URL}/auth/callback`;
 
 export default function LoginPage() {
   const { customer, loading } = useCustomer();
   const navigate = useNavigate();
 
-  // 已登录则直接跳转账户页（仅在通过后端 API 检测到登录时）
-  // 注意：Shopify OAuth 登录使用 localStorage，不会通过 /api/auth/me 检测
+  // 已登录则直接跳转账户页
   useEffect(() => {
-    // 检查 localStorage 中是否有 Shopify token
-    const hasShopifyToken = localStorage.getItem('customer_access_token');
-    
     if (!loading) {
+      // 检查 localStorage 中是否有 Shopify token
+      const hasShopifyToken = localStorage.getItem('customer_access_token');
+      
       if (hasShopifyToken) {
         // 有 Shopify token，跳转到订单页
         navigate('/account/orders');
-      } else if (customer) {
-        // 有后端 session，跳转到账户页
-        navigate('/account');
       }
     }
-  }, [customer, loading, navigate]);
+  }, [loading, navigate]);
 
   const handleLogin = async () => {
     const { codeVerifier, codeChallenge } = await generatePKCE();
     const state = crypto.randomUUID();
+    const nonce = crypto.randomUUID(); // ✅ Customer Account API 需要 nonce
 
-    sessionStorage.setItem('pkce_verifier', codeVerifier);
-    sessionStorage.setItem('oauth_state', state);
+    // 使用 localStorage 保证跨标签页一致性
+    localStorage.setItem('pkce_verifier', codeVerifier);
+    localStorage.setItem('oauth_state', state);
+    localStorage.setItem('oauth_nonce', nonce);
 
-    const params = new URLSearchParams({
-      client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-      response_type: 'code',
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
-      scope: 'openid email customer-account-api:full',
-      state,
-    });
+    // ✅ 正确的 Customer Account API 授权 URL
+    const loginUrl = new URL(
+      `https://shopify.com/authentication/${SHOP_ID}/oauth/authorize`
+    );
+    loginUrl.searchParams.set('client_id', CLIENT_ID);
+    loginUrl.searchParams.set('redirect_uri', REDIRECT_URI);
+    loginUrl.searchParams.set('scope', 'openid email customer-account-api:full');
+    loginUrl.searchParams.set('state', state);
+    loginUrl.searchParams.set('nonce', nonce); // ✅ 必须加
+    loginUrl.searchParams.set('code_challenge', codeChallenge);
+    loginUrl.searchParams.set('code_challenge_method', 'S256');
+    loginUrl.searchParams.set('response_type', 'code');
 
-    window.location.href = `${AUTH_URL}?${params}`;
+    window.location.href = loginUrl.toString();
   };
 
   if (loading) return null;

@@ -69,6 +69,7 @@ export default function Products() {
                           src={image?.url || 'https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=600&q=80'}
                           alt={image?.altText || product.title}
                           loading="lazy"
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                         <div className="absolute top-4 left-4">

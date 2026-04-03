@@ -1,7 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!assets|images|.*\\..*).*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -14,38 +13,92 @@
       ]
     },
     {
-      "source": "/static/(.*)",
+      "source": "/product-images/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=604800, s-maxage=2592000, stale-while-revalidate=604800"
         }
       ]
     },
     {
-      "source": "/(.*).html",
+      "source": "/images/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"
         }
       ]
     },
     {
-      "source": "/(.*).js",
+      "source": "/logo.png",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=2592000, s-maxage=604800"
         }
       ]
     },
     {
-      "source": "/(.*).css",
+      "source": "/sitemap.xml",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=3600, s-maxage=43200"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, s-maxage=604800"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/products",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=120, stale-while-revalidate=600"
+        }
+      ]
+    },
+    {
+      "source": "/products/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=300, stale-while-revalidate=1800"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
         }
       ]
     }

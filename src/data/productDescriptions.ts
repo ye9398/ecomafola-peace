@@ -122,6 +122,88 @@ faqs: "/product-images/wovenbasket-v5/faq.jpg"
 }
 },
 {
+category: "beach-bags",
+handle: "beachbag",
+title: "Handwoven Beach Bag",
+subtitle: "Spacious Pandanus Tote for Sun & Sand Adventures",
+story: `Designed for coastal living, our handwoven beach bag combines traditional Samoan weaving techniques with modern beach-day functionality. Each bag is crafted by master weavers who have perfected their art over generations.\n\nThe extra-large design easily accommodates beach towels, sunscreen, water bottles, and all your seaside essentials. The open-weave pattern allows sand to fall through naturally, while the reinforced handles support heavy loads without stretching.\n\nMaster weaver Sina, who leads our beach bag collective in Falease'ela, developed the signature diamond weave pattern specifically for beach use — tight enough to hold small items, yet breathable enough to dry quickly after ocean dips.`,
+environmental: ` **Sustainable Pandanus Harvesting**\n\nPandanus leaves are collected from coastal groves without harming the plants. Only mature leaves are harvested, allowing natural regeneration.\n\n **Natural & Biodegradable**\n\nUnlike synthetic beach bags made from petroleum-based materials, our pandanus bags decompose naturally at end of life — no microplastics, no environmental guilt.\n\n **Ocean-Safe Production**\n\nNo chemical treatments, no synthetic dyes, no plastic coatings. What touches the ocean is 100% natural and ocean-safe.`,
+partnership: ` **Coastal Artisan Collective**\n\nOur beach bag program employs 14 weavers from coastal villages. Each artisan receives:\n- Fair piece-rate compensation per completed bag\n- Quarterly bonuses for quality excellence\n- Flexible schedules accommodating fishing seasons\n- Access to design workshops for skill development\n\n **Community Investment**\n\n15% of beach bag sales fund coastal cleanup initiatives in our partner villages, keeping Samoa's beaches pristine for future generations.`,
+features: [
+" Extra-Large Capacity - Fits towels, bottles, and beach gear",
+" Sand-Through Weave - Natural drainage, easy shake-out",
+" Quick-Dry Material - Pandanus dries faster than cotton",
+" Reinforced Handles - Triple-woven for heavy loads",
+" Lightweight & Foldable - Packs flat in luggage",
+" Saltwater-Resistant - Naturally withstands ocean exposure"
+],
+specifications: {
+size: "20\" width × 16\" height × 6\" depth | Handle drop: 12\"",
+weight: "Approximately 0.8 lbs (360g)",
+material: "100% natural pandanus leaves, cotton thread reinforcement",
+origin: "Handwoven in Falease'ela village, Savai'i island, Samoa",
+care: "Rinse with fresh water after beach use. Air dry in shade. Do not machine wash."
+},
+guarantee: `**Beach-Ready Guarantee**\n\nWe guarantee your beach bag against weaving defects and handle failure for 2 years. If seams unravel or handles break under normal beach use, we'll repair or replace it free.\n\nNatural wear from sand and saltwater exposure is expected and adds character to your bag.`,
+shipping: `**Flat-Pack Shipping**\n\n Processing: Orders ship within 24 hours, flattened for efficient packaging\n\n Delivery Times:\n- Australia & NZ: 2-5 days\n- US & Canada: 5-8 days\n- UK & Europe: 7-10 days\n- Asia Pacific: 3-7 days\n\n Eco-Packaging: Shipped in compostable mailers with zero plastic`,
+faqs: [
+{ question: "Will sand get stuck in the weave?", answer: "The open-weave design actually allows sand to fall through naturally. A quick shake removes most sand, and rinsing with fresh water clears the rest." },
+{ question: "Can this bag get wet?", answer: "Absolutely! Pandanus is naturally water-resistant and dries quickly. Just rinse with fresh water after saltwater exposure and air dry." },
+{ question: "How much weight can it hold?", answer: "Tested to safely carry up to 25 lbs (11 kg) — perfect for beach towels, coolers, umbrellas, and all your beach day essentials." }
+],
+images: {
+story: "/product-images/coconutbowl-v5/product-story.jpg",
+environmental: "/product-images/coconutbowl-v5/eco-value.jpg",
+partnership: "/product-images/coconutbowl-v5/partnership-model.jpg",
+features: "/product-images/coconutbowl-v5/product-features.jpg",
+specifications: "/product-images/coconutbowl-v5/specifications.jpg",
+guarantee: "/product-images/coconutbowl-v5/quality-assurance.jpg",
+shipping: "/product-images/coconutbowl-v5/shipping-info.jpg",
+faqs: "/product-images/coconutbowl-v5/faq.jpg"
+}
+},
+{
+category: "home-decor",
+handle: "doormat",
+title: "Natural Coir Doormat",
+subtitle: "Coconut Fiber Welcome Mat, Handwoven by Samoan Artisans",
+story: `Our natural coir doormats transform coconut husk fibers — a traditional agricultural byproduct — into durable, beautiful welcome mats that honor both function and heritage.\n\nCoconut coir has been used throughout the Pacific for centuries due to its remarkable durability and natural resistance to moisture and pests. Our artisans collect husks from local coconut groves, extract the fibers through traditional retting methods, and hand-spin them into thick, resilient strands.\n\nThe weaving process creates a naturally abrasive surface that effectively scrapes dirt and debris from shoes, while the dense construction ensures years of daily use. Master weaver Paulo has been crafting coir mats for over 30 years, perfecting the tight weave pattern that defines our signature quality.`,
+environmental: ` **Upcycled Coconut Waste**\n\nCoconut husks are typically burned as agricultural waste. By utilizing these fibers, we prevent unnecessary burning and give new purpose to what would be discarded.\n\n **100% Biodegradable**\n\nAt end of life, your coir mat can be composted or left to decompose naturally — no synthetic materials, no landfill persistence.\n\n **Natural Pest Resistance**\n\nCoconut coir naturally repels dust mites, mold, and common household pests without chemical treatments.`,
+partnership: ` **Husker & Weaver Cooperative**\n\nOur doormat program supports a cooperative of 10 families who handle every step from husk collection to final weaving. Each family receives:\n- Fair compensation per kilogram of fiber processed\n- Additional premium for finished woven mats\n- Equipment stipends for maintaining tools\n- Healthcare contributions for all family members\n\n **Skills Preservation**\n\nWe sponsor apprenticeship programs where master weavers teach traditional coir processing and weaving techniques to younger generations.`,
+features: [
+" Heavy-Duty Construction - Withstands high-traffic entryways",
+" Natural Dirt Scraper - Coarse fibers effectively clean shoes",
+" Moisture-Resistant - Naturally repels water and humidity",
+" Non-Slip Backing - Optional rubber backing for stability",
+" Weather-Resistant - Suitable for covered outdoor use",
+" Easy Maintenance - Shake or vacuum to clean"
+],
+specifications: {
+size: "Standard: 18\" × 30\" | Large: 24\" × 36\" | Custom sizes available",
+weight: "Standard: 2.5 lbs | Large: 4.0 lbs",
+material: "100% natural coconut coir fiber, optional rubber backing",
+origin: "Handwoven in Leulumoega village, Upolu island, Samoa",
+care: "Shake regularly or vacuum to remove dirt. Hose down for deep cleaning. Air dry completely. Avoid prolonged direct sunlight."
+},
+guarantee: `**Durability Promise**\n\nWe guarantee your coir doormat against premature wear and weaving failure for 3 years. If the mat falls apart or fibers shed excessively under normal use, we'll replace it free.\n\nNatural fiber shedding in the first few weeks is normal and will decrease with use.`,
+shipping: `**Flat-Ship Packaging**\n\n Processing: Orders ship within 24-48 hours, rolled for efficient packaging\n\n Delivery Times:\n- Australia & NZ: 2-5 days\n- US & Canada: 5-8 days\n- UK & Europe: 7-10 days\n- Asia Pacific: 3-7 days\n\n Rubber Backing Option: Add non-slip rubber backing for +$5`,
+faqs: [
+{ question: "How do I clean my coir doormat?", answer: "Simply shake it out regularly or vacuum on a low setting. For deep cleaning, hose it down and let it air dry completely before placing it back." },
+{ question: "Will this mat shed fibers?", answer: "Some initial shedding is normal for natural coir mats. This will decrease significantly after the first few weeks of use. Vacuum or sweep around the mat during this period." },
+{ question: "Can I use this outdoors?", answer: "Yes! Coir is naturally weather-resistant. However, we recommend covered outdoor areas (porches, entryways) to extend the mat's lifespan. Prolonged direct sun may cause fading." }
+],
+images: {
+story: "/product-images/wovenbasket-v5/product-story.jpg",
+environmental: "/product-images/wovenbasket-v5/eco-value.jpg",
+partnership: "/product-images/wovenbasket-v5/partnership-model.jpg",
+features: "/product-images/wovenbasket-v5/product-features.jpg",
+specifications: "/product-images/wovenbasket-v5/specifications.jpg",
+guarantee: "/product-images/wovenbasket-v5/quality-assurance.jpg",
+shipping: "/product-images/wovenbasket-v5/shipping-info.jpg",
+faqs: "/product-images/wovenbasket-v5/faq.jpg"
+}
+},
+{
 category: "natural-soaps",
 handle: "naturalsoap",
 title: "Samoan Virgin Coconut Oil Soap",

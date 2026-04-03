@@ -46,12 +46,19 @@ export default function Footer() {
             {/* Social */}
             <div className="flex gap-3">
               {[
-                { icon: Instagram, href: '#' },
-                { icon: Facebook, href: '#' },
-                { icon: Twitter, href: '#' },
-                { icon: Youtube, href: '#' },
-              ].map(({ icon: Icon, href }, i) => (
-                <a key={i} href={href} className="w-9 h-9 rounded-full bg-white/10 hover:bg-tropical-green flex items-center justify-center transition-colors duration-200">
+                { icon: Instagram, href: '#', name: 'Instagram' },
+                { icon: Facebook, href: '#', name: 'Facebook' },
+                { icon: Twitter, href: '#', name: 'Twitter' },
+                { icon: Youtube, href: '#', name: 'YouTube' },
+              ].map(({ icon: Icon, href, name }) => (
+                <a 
+                  key={name} 
+                  href={href} 
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-tropical-green flex items-center justify-center transition-colors duration-200"
+                  aria-label={`Follow us on ${name}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Icon size={15} />
                 </a>
               ))}

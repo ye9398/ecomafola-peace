@@ -1078,7 +1078,179 @@ try {
 
 ---
 
-**最后更新：** 2026-04-01 13:10  
+---
+
+### 问题 5：新产品详情页显示"Product not found"（2026-04-02）⭐⭐⭐
+
+**时间：** 2026-04-02 21:15  
+**现象：** 访问新产品详情页（如沙滩包、椰棕门垫）显示"Product not found"，但 Shopify 后台产品已上架
+
+**修复状态：** ✅ 已完成
+
+---
+
+### 问题 6：谷歌搜索控制台报告站点地图缺失（2026-04-02）⭐⭐
+
+**时间：** 2026-04-02 22:14  
+**现象：** 谷歌搜索控制台提示站点地图（sitemap.xml）不存在或无效
+
+**根本原因：**
+1. `robots.txt` 中引用了 `Sitemap: https://ecomafola.com/sitemap.xml`
+2. 但 `public/sitemap.xml` 文件实际不存在
+3. 谷歌爬虫访问 `/sitemap.xml` 返回 404 错误
+
+**修复方案：**
+
+创建完整的 `public/sitemap.xml` 文件，包含：
+
+**收录的页面类型：**
+- ✅ 首页（优先级 1.0）
+- ✅ 产品列表页（优先级 0.9）
+- ✅ 产品分类页（优先级 0.8）
+- ✅ 产品详情页（优先级 0.9，含图片标记）
+- ✅ 品牌故事页（优先级 0.7）
+- ✅ 影响力页（优先级 0.7）
+- ✅ 联系我们页（优先级 0.6）
+- ✅ 隐私政策页（优先级 0.3）
+- ✅ 订单追踪页（优先级 0.5）
+
+**XML 格式规范：**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://ecomafola.com/product/handwoven-papua-new-guinea-beach-bag</loc>
+    <lastmod>2026-04-02T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://cdn.shopify.com/...</image:loc>
+      <image:title>Product Name</image:title>
+    </image:image>
+  </url>
+</urlset>
+```
+
+**关键配置：**
+- **更新频率：** 产品页 `weekly`，首页 `weekly`，政策页 `yearly`
+- **图片标记：** 每个产品页包含主图 URL（用于谷歌图片搜索）
+- **最后修改时间：** ISO 8601 格式
+- **优先级分配：** 首页 1.0 > 产品页 0.9 > 分类页 0.8 > 信息页 0.5-0.7
+
+**验证步骤：**
+
+```bash
+# 1. 本地验证 XML 格式
+Invoke-WebRequest -Uri "https://ecomafola.com/sitemap.xml"
+
+# 2. 谷歌搜索控制台提交
+# 访问：https://search.google.com/search-console
+# 选择属性 → 站点地图 → 提交 sitemap.xml
+
+# 3. 检查 robots.txt 配置
+cat public/robots.txt
+# 应包含：Sitemap: https://ecomafola.com/sitemap.xml
+```
+
+**教训：**
+- ⚠️ **robots.txt 中引用的文件必须存在** - 否则爬虫会报告错误
+- ⚠️ **站点地图要包含所有公开页面** - 特别是产品详情页
+- ⚠️ **使用图片标记** - 电商网站应该为产品图片添加 `<image:image>` 标记
+- ⚠️ **定期更新** - 每次添加新产品后要更新 sitemap
+- ⚠️ **提交到谷歌搜索控制台** - 创建后主动提交加速索引
+
+**相关文件：**
+- `public/sitemap.xml` - 站点地图文件
+- `public/robots.txt` - 爬虫配置，引用 sitemap
+
+**后续优化：**
+- [ ] 考虑使用动态生成 sitemap（如 `vite-plugin-sitemap`）
+- [ ] 添加产品变体图片到 sitemap
+- [ ] 设置自动更新机制（每次部署后重新生成）
+
+**修复状态：** ✅ 已完成
+
+---
+
+**受影响产品：**
+- `handwoven-papua-new-guinea-beach-bag`（沙滩包）
+- `natural-coir-handwoven-coconut-palm-doormat`（椰棕门垫）
+
+**排查过程：**
+
+1. ✅ **确认 Shopify API 正常** - 用 curl/PowerShell 测试 API，能正确返回产品数据和图片
+2. ✅ **确认部署成功** - Vercel 部署完成，线上 JS 已更新（删除了本地 fallback 代码）
+3. ✅ **排除缓存问题** - 无痕模式测试仍然失败
+4. 🔍 **发现关键线索** - 控制台日志显示 `Handle: beachbag`（短别名）而不是完整 handle
+
+**根本原因：**
+
+`URL_TO_SHOPIFY_HANDLE` 映射表有**重复的 key**：
+
+```typescript
+// ❌ 错误代码（重复映射）
+const URL_TO_SHOPIFY_HANDLE = {
+  // 短别名 → 完整 handle（正确）
+  'beachbag': 'handwoven-papua-new-guinea-beach-bag',
+  
+  // 完整 handle → 短别名（❌ 重复！覆盖了上面的映射）
+  'handwoven-papua-new-guinea-beach-bag': 'beachbag',
+}
+```
+
+JavaScript 对象有重复 key 时，**最后一个值生效**：
+- `URL_TO_SHOPIFY_HANDLE['handwoven-papua-new-guinea-beach-bag']` → 返回 `'beachbag'` ❌
+- Shopify API 查询 `beachbag` → 找不到产品（Shopify 里的 handle 是完整的）❌
+
+**修复方案：**
+
+删除重复的完整 handle 映射行：
+
+```typescript
+// ✅ 正确代码（删除重复映射）
+const URL_TO_SHOPIFY_HANDLE = {
+  // 短别名 → 完整 handle
+  'beachbag': 'handwoven-papua-new-guinea-beach-bag',
+  'beach-bag': 'handwoven-papua-new-guinea-beach-bag',
+  'handwoven-beach-bag': 'handwoven-papua-new-guinea-beach-bag',
+  // ❌ 删除：'handwoven-papua-new-guinea-beach-bag': 'handwoven-papua-new-guinea-beach-bag',
+  
+  // 门垫同理
+  'doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+  'coir-doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+  'natural-coir-doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+  // ❌ 删除：'natural-coir-handwoven-coconut-palm-doormat': 'natural-coir-handwoven-coconut-palm-doormat',
+}
+```
+
+**验证步骤：**
+
+```bash
+# 1. 修改代码后重新构建
+npm run build
+
+# 2. 部署到 Vercel
+vercel --prod
+
+# 3. 测试新产品页面
+https://ecomafola.com/product/handwoven-papua-new-guinea-beach-bag
+https://ecomafola.com/product/natural-coir-handwoven-coconut-palm-doormat
+```
+
+**教训：**
+- ⚠️ **不要在对象字面量中定义重复的 key** - JavaScript 会静默覆盖，TypeScript 只警告
+- ⚠️ **映射表要单向** - URL 别名 → Shopify handle，不要反向映射
+- ⚠️ **调试时看控制台日志** - `console.log('[ProductDetailPage] URL param id:', id)` 帮助定位问题
+- ⚠️ **API 测试要完整** - 用 curl/Postman 直接测试 GraphQL 查询，确认是代码问题还是 API 问题
+
+**相关文件：**
+- `src/pages/ProductDetailPage.tsx` - URL 映射表、产品数据获取
+- `src/lib/shopify.ts` - Shopify Storefront API 客户端
+
+---
+
+**最后更新：** 2026-04-02 22:00  
 **记录人：** 多多哥哥
 
 ---

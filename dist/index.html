@@ -23,6 +23,26 @@
     <link rel="dns-prefetch" href="https://ecomafola-peace.myshopify.com" />
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin />
     
+    <!-- 关键 CSS 内联（首屏渲染优化） -->
+    <style>
+      /* 关键 CSS - 首屏必需样式 */
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{font-family:Inter,system-ui,sans-serif;line-height:1.5;color:#1a1a1a;background:#fef9f5}
+      .btn-primary,.btn-green{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;border-radius:9999px;font-weight:600;transition:all 0.2s}
+      .btn-primary{background:#2d5a3d;color:white}
+      .btn-green{background:#4a7c59;color:white}
+      .btn-outline{background:transparent;border:2px solid white;color:white}
+      #root{min-height:100vh}
+    </style>
+    
+    <!-- 非关键 CSS 延迟加载 -->
+    <link rel="preload" href="/assets/index-DrgHyRhP.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="/assets/index-DrgHyRhP.css" /></noscript>
+    
+    <!-- JS 模块预加载 -->
+    <link rel="modulepreload" href="/assets/react-vendor-D3B_VhPN.js" />
+    <link rel="modulepreload" href="/assets/shopify-BOQaLKTG.js" />
+    
     <!-- Schema.org Organization 结构化数据 -->
     <script type="application/ld+json">
     {
@@ -46,10 +66,10 @@
       }
     }
     </script>
-    <script type="module" crossorigin src="/assets/index-DYsVwjya.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/react-vendor-D3B_VhPN.js">
+    <script type="module" crossorigin src="/assets/index-Bz5tOCIp.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-vendor-CfTZ6l1C.js">
     <link rel="modulepreload" crossorigin href="/assets/shopify-BOQaLKTG.js">
-    <link rel="modulepreload" crossorigin href="/assets/icons-ZZAvcaAR.js">
+    <link rel="modulepreload" crossorigin href="/assets/icons-CLNrWqeq.js">
     <link rel="stylesheet" crossorigin href="/assets/index-DrgHyRhP.css">
   </head>
   <body>
