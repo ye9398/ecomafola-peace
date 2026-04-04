@@ -17,13 +17,13 @@ const navLinks: Record<string, NavLinkItem[]> = {
   Company: [
     { label: 'Our Story', href: '/our-story' },
     { label: 'Impact', href: '/impact' },
-    { label: 'Artisan Partners', href: '/partners' },
-    { label: 'Blog', href: '/blog' },
+    { label: 'Artisan Partners', href: '/our-story' },
+    { label: 'Blog', href: '/impact' },
   ],
   Support: [
     { label: 'Contact Us', href: '/contact' },
-    { label: 'Shipping & Returns', href: '/shipping' },
-    { label: 'FAQ', href: '/faq' },
+    { label: 'Shipping & Returns', href: '/contact' },
+    { label: 'FAQ', href: '/contact' },
     { label: 'Track Order', href: '/track' },
   ],
 }
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-sans text-xs text-white/40">
-            © 2024 EcoMafola Peace. All rights reserved. Made for the Pacific.
+            © 2026 EcoMafola Peace. All rights reserved. Made for the Pacific.
           </p>
 
           {/* Payment Icons */}
