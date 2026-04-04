@@ -21,6 +21,8 @@ const URL_TO_SHOPIFY_HANDLE: Record<string, string> = {
   'naturalsoap': 'natural-coconut-soap',
   'natural-soap': 'natural-coconut-soap',
   'tapa-cloth': 'tapa-cloth-wall-art',
+  'shell-coasters': 'samoan-handcrafted-natural-shell-coasters',
+  'samoan-handcrafted-natural-shell-coasters': 'samoan-handcrafted-natural-shell-coasters',
   // 沙滩包 - Shopify handle: handwoven-papua-new-guinea-beach-bag
   'beachbag': 'handwoven-papua-new-guinea-beach-bag',
   'beach-bag': 'handwoven-papua-new-guinea-beach-bag',
