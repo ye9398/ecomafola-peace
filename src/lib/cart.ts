@@ -98,10 +98,10 @@ interface CartGetResponse {
 }
 
 // 创建购物车
-export const createCart = async (): Promise<Cart | null> => {
+export const createCart = async (lines: CartLineInput[] = []): Promise<Cart | null> => {
   const { data, errors } = await shopifyClient.request<CartCreateResponse>(`
-    mutation {
-      cartCreate {
+    mutation CartCreate($lines: [CartLineInput!]!) {
+      cartCreate(input: { lines: $lines }) {
         cart {
           id
           checkoutUrl
@@ -142,7 +142,9 @@ export const createCart = async (): Promise<Cart | null> => {
         }
       }
     }
-  `);
+  `, {
+    variables: { lines }
+  });
 
   if (errors) {
     console.error('创建购物车失败:', errors);

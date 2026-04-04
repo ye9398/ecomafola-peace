@@ -75,7 +75,6 @@ export function clearShopifyCache() {
 }
 
 export const shopifyClient = createStorefrontApiClient({
-  url: API_URL,
   storeDomain: STORE_DOMAIN,
   apiVersion: '2026-01',
   publicAccessToken: STOREFRONT_TOKEN,

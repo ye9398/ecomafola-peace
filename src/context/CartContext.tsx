@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { createCart, addToCart, removeFromCart, updateCartLines, getCart as fetchCart } from '../lib/cart';
 import { useGeoLocation, useShipping } from '../hooks/useShipping';
 
@@ -72,16 +72,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // 获取地理位置和运费信息
   const { geo } = useGeoLocation();
+
+  // 稳定计算运费所需的 items 数组
+  const shippingItems = cart ? cart.lines.edges.map(e => ({
+    product_id: parseInt(e.node.merchandise.id.split('/').pop() || '0'),
+    quantity: e.node.quantity
+  })) : null;
+
   const { shipping, loading: shippingLoading } = useShipping(
     geo?.country_code || null,
-    cart?.lines.edges.map(e => ({
-      product_id: parseInt(e.node.merchandise.id.split('/').pop() || '0'),
-      quantity: e.node.quantity
-    })) || []
+    shippingItems
   );
 
-  // 初始化时从 localStorage 恢复购物车
+  // 初始化时从 localStorage 恢复购物车（防止重复恢复）
+  const restoreAttempted = useRef(false);
   useEffect(() => {
+    if (restoreAttempted.current) return;
+    restoreAttempted.current = true;
+
     const restoreCart = async () => {
       const savedCartId = localStorage.getItem(CART_STORAGE_KEY);
       if (savedCartId) {
@@ -93,7 +101,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           console.error('Failed to restore cart:', error);
+          // 可能是无效 cart ID，清理
           localStorage.removeItem(CART_STORAGE_KEY);
+          setCart(null);
         }
       }
       setIsInitialized(true);

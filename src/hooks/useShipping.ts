@@ -47,18 +47,26 @@ export function useGeoLocation() {
   return { geo, loading, error }
 }
 
-export function useShipping(country_code: string | null, items: { product_id: number; quantity: number }[]) {
+export function useShipping(country_code: string | null, items: { product_id: number; quantity: number }[] | null) {
   const [shipping, setShipping] = useState<ShippingResult | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!country_code) return
+    if (!items || items.length === 0) {
+      setShipping(null)
+      return
+    }
     setLoading(true)
     api.calcShipping(country_code, items)
-      .then(setShipping)
+      .then(result => {
+        if (result && typeof result === 'object') {
+          setShipping(result as ShippingResult)
+        }
+      })
       .catch(() => setShipping({ supported: false, country_code: country_code, message: 'Could not calculate shipping. Please try again.' }))
       .finally(() => setLoading(false))
-  }, [country_code, JSON.stringify(items)])
+  }, [country_code, items?.length])
 
   return { shipping, loading }
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { ShoppingCart, Star, Truck, MapPin, Package, AlertTriangle, ChevronRight, Minus, Plus, Info, Zap, Leaf, Users, Ruler, ShieldCheck, BookOpen, HelpCircle, Heart, Globe, Award } from 'lucide-react'
@@ -176,8 +176,20 @@ export default function ProductDetailPage() {
         "availability": product.stock > 0
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "US",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 30,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
+        },
         "shippingDetails": {
           "@type": "OfferShippingDetails",
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "Worldwide"
+          },
           "shippingRate": {
             "@type": "MonetaryAmount",
             "value": "0",
