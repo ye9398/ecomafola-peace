@@ -13,6 +13,7 @@ import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { AuthProvider } from './context/AuthContext'
+import AnnouncementBar from './components/AnnouncementBar'
 // 管理后台页面（独立布局，无 Navbar/Footer）
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminPage from './pages/admin/AdminPage'
@@ -32,6 +33,7 @@ import {
 function App() {
   return (
    <AuthProvider>
+     <AnnouncementBar />
      <Routes>
        {/* 管理后台路由 - 独立布局，无 Navbar/Footer */}
        <Route path="/dashboard/login" element={<AdminLogin />} />
@@ -54,14 +56,19 @@ function App() {
            <Footer />
          </div>
        } />
-       <Route path="/products/:category" element={
+       {/* 产品详情 - 支持 /product/:id 和 /products/:id 双路径 */}
+       <Route path="/product/:id" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
-           <main><ProductListPage /></main>
+           <main>
+             <ProductDetailSuspense>
+               <LazyProductDetailPage />
+             </ProductDetailSuspense>
+           </main>
            <Footer />
          </div>
        } />
-       <Route path="/product/:id" element={
+       <Route path="/products/:id" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
            <main>
