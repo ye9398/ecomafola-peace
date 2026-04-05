@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Save, Download, LogOut, ChevronLeft, Upload, X, Image as ImageIcon, Plus, Trash2 } from 'lucide-react'
 

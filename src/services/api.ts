@@ -167,7 +167,19 @@ function mockCalculateShipping(countryCode: string, items: any[]) {
     })
   }
   const weightFee = parseFloat((totalWeight * zone.perKg).toFixed(2))
-  const total = parseFloat((zone.base + weightFee).toFixed(2))
+  const baseTotal = parseFloat((zone.base + weightFee).toFixed(2))
+
+  // Calculate items total for free shipping threshold
+  let itemsTotal = 0
+  items.forEach((item: any) => {
+    const product = mockProducts[item.product_id]
+    if (product) itemsTotal += product.price_usd * item.quantity
+  })
+
+  // Apply $35 Free Shipping threshold
+  const isFree = itemsTotal >= 35
+  const total = isFree ? 0 : baseTotal
+
   return {
     supported: true, country_code: cc, zone: zone.zone, carrier: zone.carrier,
     base_fee_usd: zone.base, weight_fee_usd: weightFee, total_shipping_usd: total,

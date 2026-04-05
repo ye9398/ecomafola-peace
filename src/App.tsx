@@ -49,6 +49,8 @@ function App() {
            <Footer />
          </div>
        } />
+       
+       {/* 产品列表 & 分类列表 */}
        <Route path="/products" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
@@ -56,6 +58,14 @@ function App() {
            <Footer />
          </div>
        } />
+       <Route path="/products/category/:category" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ProductListPage /></main>
+           <Footer />
+         </div>
+       } />
+
        {/* 产品详情 - 支持 /product/:id 和 /products/:id 双路径 */}
        <Route path="/product/:id" element={
          <div className="min-h-screen bg-coral-white">
@@ -79,6 +89,7 @@ function App() {
            <Footer />
          </div>
        } />
+
        <Route path="/checkout" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />

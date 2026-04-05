@@ -5,10 +5,10 @@ import { Save, Download, LogOut, ChevronLeft, Package, Image as ImageIcon, Messa
 
 /**
  * 产品完整内容管理页面 v2
- * 编辑所有非 Shopify 内容�?
- * - 每个板块都有：主标题、副标题、内容（多段落）、配�?
+ * 编辑所有非 Shopify 内容
+ * - 每个板块都有：主标题、副标题、内容（多段落）、配图
  * - 评价卡片内容（独立配置）
- * - 规格、保证、FAQs �?
+ * - 规格、保证、FAQs 等
  */
 
 const PRODUCTS = [
@@ -33,7 +33,7 @@ interface Review {
 interface SectionBlock {
   title: string
   subtitle: string
-  content: string  // 支持多段落，�?\n\n 分隔
+  content: string  // 支持多段落，用 \n\n 分隔
   image?: string
 }
 
@@ -42,7 +42,8 @@ interface Specifications {
   weight: string
   material: string
   origin: string
-  care: string, image?: string
+  care: string
+  image?: string
 }
 
 interface FAQ {
@@ -71,8 +72,7 @@ export default function ProductContentAdmin() {
   const [saved, setSaved] = useState(false)
   const [activeSection, setActiveSection] = useState<'story' | 'environmental' | 'partnership' | 'specifications' | 'guarantee' | 'faqs' | 'reviews' | 'gallery'>('story')
   
-  // 图片编辑状�?
-  // 模板标准尺寸 (宽x�?
+  // 模板标准尺寸 (宽x高)
   const TEMPLATE_SIZE = { width: 1200, height: 900, aspect: 4 / 3 }
 
   const [currentImage, setCurrentImage] = useState<string>('')
@@ -115,17 +115,6 @@ export default function ProductContentAdmin() {
     navigate('/')
   }
 
-  const handleTextChange = (field: keyof ProductContent, value: string) => {
-    if (!selectedProduct) return
-    setContent({
-      ...content,
-      [selectedProduct]: {
-        ...content[selectedProduct],
-        [field]: value,
-      },
-    })
-  }
-
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !selectedProduct) return
@@ -139,7 +128,7 @@ export default function ProductContentAdmin() {
       const zoom = await calculateAutoZoom(result)
       setAutoZoom(zoom)
 
-      // 进入内嵌裁剪模式（所有上传图片都经过裁剪�?
+      // 进入内嵌裁剪模式
       if (editingSectionImage) {
         setInlineCropSection(editingSectionImage)
       } else {
@@ -148,6 +137,8 @@ export default function ProductContentAdmin() {
       }
     }
     reader.readAsDataURL(file)
+    // 重置 input 以便同一个文件可以再次选择
+    e.target.value = ''
   }
 
   // 自动计算缩放比例，让图片刚好覆盖目标尺寸
@@ -155,7 +146,7 @@ export default function ProductContentAdmin() {
     return new Promise((resolve) => {
       const img = new Image()
       img.onload = () => {
-        const targetAspect = TEMPLATE_SIZE.height > 0 ? TEMPLATE_SIZE.width / TEMPLATE_SIZE.height : 2
+        const targetAspect = TEMPLATE_SIZE.aspect
         const imageAspect = img.width / img.height
         const zoom = Math.max(
           targetAspect > imageAspect ? targetAspect / imageAspect : imageAspect / targetAspect,
@@ -171,13 +162,12 @@ export default function ProductContentAdmin() {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
-  /** 将裁剪后的图片保存到数据�?�?带自动压�?*/
+  /** 将裁剪后的图片保存到数据 */
   const saveCroppedImage = useCallback(async (imageSrc: string, pixels: any, size: { width: number, height: number }, targetSizeKB = 150): Promise<{ dataUrl: string, compressedSizeKB: number }> => {
     const image = new Image()
     image.src = imageSrc
     await new Promise((resolve) => { image.onload = resolve })
 
-    // 迭代压缩，直到小于目标大�?
     let quality = 0.9
     let dataUrl: string
     
@@ -192,7 +182,6 @@ export default function ProductContentAdmin() {
       ctx.drawImage(image, x, y, width, height, 0, 0, size.width, size.height)
       dataUrl = canvas.toDataURL('image/jpeg', quality)
       
-      // 估算 base64 大小 (KB)
       const base64Length = dataUrl.length - dataUrl.indexOf(',') - 1
       const sizeKB = Math.round((base64Length * 0.75) / 1024)
       
@@ -203,36 +192,42 @@ export default function ProductContentAdmin() {
       quality -= 0.1
     } while (quality >= 0.3)
 
-    // 最终保底：即使最低质量也记录实际大小
     const base64Length = dataUrl.length - dataUrl.indexOf(',') - 1
     const sizeKB = Math.round((base64Length * 0.75) / 1024)
     return { dataUrl, compressedSizeKB: sizeKB }
   }, [])
 
-  /** 确认裁剪并保�?*/
+  /** 确认裁剪并保存 */
   const handleCropConfirm = async () => {
     if (!croppedAreaPixels || !currentImage) return
     try {
-      // 板块模板图：固定尺寸
       const isSection = inlineCropSection && inlineCropSection !== 'gallery'
-      const targetSize = isSection ? TEMPLATE_SIZE : { width: 1200, height: 900 }
+      const targetSize = isSection ? { width: TEMPLATE_SIZE.width, height: TEMPLATE_SIZE.height } : { width: 1200, height: 900 }
 
       const { dataUrl: croppedImage, compressedSizeKB: sizeKB } = await saveCroppedImage(currentImage, croppedAreaPixels, targetSize)
 
       if (isSection) {
-        // 保存到板块配�?
+        const section = inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>
+        const productContent = content[selectedProduct] || {}
+        const updatedProductContent = { ...productContent }
+
+        if (section === 'specifications') {
+          updatedProductContent.specifications = {
+            ...(productContent.specifications || { size: '', weight: '', material: '', origin: '', care: '' }),
+            image: croppedImage
+          }
+        } else {
+          updatedProductContent[section] = {
+            ...(productContent[section] || { title: '', subtitle: '', content: '' }),
+            image: croppedImage
+          }
+        }
+
         setContent({
           ...content,
-          [selectedProduct]: {
-            ...content[selectedProduct],
-            [inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>]: {
-              ...content[selectedProduct]?.[inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>],
-              image: croppedImage,
-            } as SectionBlock,
-          },
+          [selectedProduct]: updatedProductContent
         })
       } else if (editingGalleryIndex !== null) {
-        // 替换图片库图�?
         const updatedGallery = [...(content[selectedProduct]?.gallery || [])]
         updatedGallery[editingGalleryIndex] = croppedImage
         setContent({
@@ -240,7 +235,6 @@ export default function ProductContentAdmin() {
           [selectedProduct]: { ...content[selectedProduct], gallery: updatedGallery },
         })
       } else {
-        // 添加到图片库
         setContent({
           ...content,
           [selectedProduct]: {
@@ -250,7 +244,7 @@ export default function ProductContentAdmin() {
         })
       }
 
-      // 重置状�?
+      // 重置状态
       setCurrentImage('')
       setInlineCropSection(null)
       setShowCropModal(false)
@@ -260,17 +254,12 @@ export default function ProductContentAdmin() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
       
-      // 显示压缩信息
-      alert(`�?图片已保存！
-裁剪尺寸�?{targetSize.width}×${targetSize.height}
-压缩后大小：${sizeKB}KB
-自动压缩�?{sizeKB <= 150 ? '�? : '否（图片过大，建议换更小的原图）'}`)
+      alert(`图片已保存！\n裁剪尺寸：${targetSize.width}×${targetSize.height}\n压缩后大小：${sizeKB}KB`)
     } catch (error) {
       console.error('Error cropping image:', error)
     }
   }
 
-  /** 取消裁剪 */
   const handleCropCancel = () => {
     setCurrentImage('')
     setInlineCropSection(null)
@@ -298,15 +287,13 @@ export default function ProductContentAdmin() {
     const file = e.target.files?.[0]
     if (!file || !selectedProduct) return
 
-    // 验证文件大小
-    const MAX_SIZE = 2 * 1024 * 1024 // 2MB
+    const MAX_SIZE = 2 * 1024 * 1024
     if (file.size > MAX_SIZE) {
       alert('图片大小不能超过 2MB')
       e.target.value = ''
       return
     }
 
-    // 验证文件类型
     if (!file.type.startsWith('image/')) {
       alert('只能上传图片文件')
       e.target.value = ''
@@ -324,8 +311,6 @@ export default function ProductContentAdmin() {
       setTimeout(() => setSaved(false), 3000)
     }
     reader.readAsDataURL(file)
-
-    // Reset input so same file can be selected again
     e.target.value = ''
   }, [content, selectedProduct])
 
@@ -357,14 +342,13 @@ export default function ProductContentAdmin() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">加载�?..</div>
+        <div className="text-xl text-gray-600">加载中...</div>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 顶部导航�?*/}
       <header className="bg-white shadow sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -386,14 +370,13 @@ export default function ProductContentAdmin() {
               className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
             >
               <LogOut size={20} />
-              <span>退出登�?/span>
+              <span>退出登录</span>
             </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* 产品选择 */}
         <div className="mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">选择产品</label>
           <select
@@ -411,900 +394,657 @@ export default function ProductContentAdmin() {
         </div>
 
         {selectedProduct && (
-          <>
-            {/* 板块选择�?- 左侧固定导航 */}
-            <div className="flex gap-6 mb-8">
-              <div className="w-56 flex-shrink-0">
-                <nav className="space-y-1">
-                  {[
-                    { id: 'story', label: '📖 品牌故事', icon: '📖' },
-                    { id: 'environmental', label: '🌱 环保影响', icon: '🌱' },
-                    { id: 'partnership', label: '🤝 合作模式', icon: '🤝' },
-                    { id: 'specifications', label: '📏 产品规格', icon: '📏' },
-                    { id: 'guarantee', label: '�?质量保证', icon: '�? },
-                    { id: 'faqs', label: '�?常见问题', icon: '�? },
-                    { id: 'reviews', label: '�?用户评价', icon: '�? },
-                    { id: 'gallery', label: '🖼�?补充图片', icon: '🖼�? },
-                  ].map((item) => (
+          <div className="flex gap-6 mb-8">
+            <div className="w-56 flex-shrink-0">
+              <nav className="space-y-1">
+                {[
+                  { id: 'story', label: '📖 品牌故事' },
+                  { id: 'environmental', label: '🌱 环保影响' },
+                  { id: 'partnership', label: '🤝 合作模式' },
+                  { id: 'specifications', label: '📏 产品规格' },
+                  { id: 'guarantee', label: '🛡️ 质量保证' },
+                  { id: 'faqs', label: '❓ 常见问题' },
+                  { id: 'reviews', label: '⭐ 用户评价' },
+                  { id: 'gallery', label: '🖼️ 补充图片' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id as any)}
+                    className={`w-full text-left px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                      activeSection === item.id
+                        ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              
+              {activeSection === 'story' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">品牌故事</h2>
                     <button
-                      key={item.id}
-                      onClick={() => setActiveSection(item.id as any)}
-                      className={`w-full text-left px-4 py-3 rounded-lg font-medium text-sm transition-all ${
-                        activeSection === item.id
-                          ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600'
-                          : 'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent'
-                      }`}
+                      onClick={() => {
+                        setEditingSectionImage('story')
+                        fileInputRef.current?.click()
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                     >
-                      {item.label}
+                      <ImageIcon size={18} />
+                      <span>{content[selectedProduct]?.story?.image ? '更换配图' : '添加配图'}</span>
                     </button>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
+                    {content[selectedProduct]?.story?.image ? (
+                      <div className="relative">
+                        <img
+                          src={content[selectedProduct].story.image}
+                          alt="Story preview"
+                          className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            setContent({
+                              ...content,
+                              [selectedProduct]: {
+                                ...content[selectedProduct],
+                                story: { ...content[selectedProduct]?.story, image: undefined } as SectionBlock,
+                              },
+                            })
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+                        <ImageIcon size={48} className="mb-2 opacity-50" />
+                        <p className="text-sm">暂无配图</p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">主标题</label>
+                    <input
+                      type="text"
+                      value={content[selectedProduct]?.story?.title || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          story: { ...content[selectedProduct]?.story, title: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
+                    <textarea
+                      value={content[selectedProduct]?.story?.content || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          story: { ...content[selectedProduct]?.story, content: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      rows={10}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeSection === 'environmental' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">环保影响</h2>
+                    <button
+                      onClick={() => {
+                        setEditingSectionImage('environmental')
+                        fileInputRef.current?.click()
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    >
+                      <ImageIcon size={18} />
+                      <span>{content[selectedProduct]?.environmental?.image ? '更换配图' : '添加配图'}</span>
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
+                    {content[selectedProduct]?.environmental?.image ? (
+                      <div className="relative">
+                        <img
+                          src={content[selectedProduct].environmental.image}
+                          alt="Environmental preview"
+                          className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            setContent({
+                              ...content,
+                              [selectedProduct]: {
+                                ...content[selectedProduct],
+                                environmental: { ...content[selectedProduct]?.environmental, image: undefined } as SectionBlock,
+                              },
+                            })
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+                        <ImageIcon size={48} className="mb-2 opacity-50" />
+                        <p className="text-sm">暂无配图</p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">主标题</label>
+                    <input
+                      type="text"
+                      value={content[selectedProduct]?.environmental?.title || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          environmental: { ...content[selectedProduct]?.environmental, title: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
+                    <textarea
+                      value={content[selectedProduct]?.environmental?.content || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          environmental: { ...content[selectedProduct]?.environmental, content: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      rows={10}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeSection === 'partnership' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">合作模式</h2>
+                    <button
+                      onClick={() => {
+                        setEditingSectionImage('partnership')
+                        fileInputRef.current?.click()
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    >
+                      <ImageIcon size={18} />
+                      <span>{content[selectedProduct]?.partnership?.image ? '更换配图' : '添加配图'}</span>
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
+                    {content[selectedProduct]?.partnership?.image ? (
+                      <div className="relative">
+                        <img
+                          src={content[selectedProduct].partnership.image}
+                          alt="Partnership preview"
+                          className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            setContent({
+                              ...content,
+                              [selectedProduct]: {
+                                ...content[selectedProduct],
+                                partnership: { ...content[selectedProduct]?.partnership, image: undefined } as SectionBlock,
+                              },
+                            })
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+                        <ImageIcon size={48} className="mb-2 opacity-50" />
+                        <p className="text-sm">暂无配图</p>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">主标题</label>
+                    <input
+                      type="text"
+                      value={content[selectedProduct]?.partnership?.title || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          partnership: { ...content[selectedProduct]?.partnership, title: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
+                    <textarea
+                      value={content[selectedProduct]?.partnership?.content || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          partnership: { ...content[selectedProduct]?.partnership, content: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      rows={10}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeSection === 'specifications' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">产品规格</h2>
+                    <button
+                      onClick={() => {
+                        setEditingSectionImage('specifications')
+                        fileInputRef.current?.click()
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      <ImageIcon size={18} />
+                      <span>{content[selectedProduct]?.specifications?.image ? '更换配图' : '添加配图'}</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">规格图预览 (4:3)</label>
+                    {content[selectedProduct]?.specifications?.image ? (
+                      <div className="relative">
+                        <img
+                          src={content[selectedProduct].specifications.image}
+                          alt="Specifications preview"
+                          className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            const updated = { ...content }
+                            if (updated[selectedProduct].specifications) {
+                              updated[selectedProduct].specifications.image = undefined
+                              setContent(updated)
+                            }
+                          }}
+                          className="absolute -top-2 -left-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full max-w-md h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400">
+                        <ImageIcon size={48} className="mb-2" />
+                        <p className="text-sm">暂无配图</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {[
+                    { key: 'size', label: '尺寸' },
+                    { key: 'weight', label: '重量' },
+                    { key: 'material', label: '材质' },
+                    { key: 'origin', label: '产地' },
+                    { key: 'care', label: '保养说明' },
+                  ].map((field) => (
+                    <div key={field.key}>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{field.label}</label>
+                      <input
+                        type="text"
+                        value={(content[selectedProduct]?.specifications as any)?.[field.key] || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          [selectedProduct]: {
+                            ...content[selectedProduct],
+                            specifications: { 
+                              ...(content[selectedProduct]?.specifications || {}),
+                              [field.key]: e.target.value 
+                            } as Specifications,
+                          },
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
                   ))}
-                </nav>
-              </div>
+                </div>
+              )}
 
-              {/* 编辑区域 */}
-              <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                
-                {/* 品牌故事编辑 */}
-                {activeSection === 'story' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">品牌故事</h2>
-                      <button
-                        onClick={() => {
-                          setEditingSectionImage('story')
-                          fileInputRef.current?.click()
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <ImageIcon size={18} />
-                        <span>{content[selectedProduct]?.story?.image ? '更换配图' : '添加配图'}</span>
-                      </button>
-                    </div>
-
-                    {/* 图片预览区域 */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
-                      {content[selectedProduct]?.story?.image ? (
-                        <div className="relative">
-                          <img
-                            src={content[selectedProduct].story.image}
-                            alt="Story preview"
-                            className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
-                          />
-                          <button
-                            onClick={() => {
-                              setContent({
-                                ...content,
-                                [selectedProduct]: {
-                                  ...content[selectedProduct],
-                                  story: { ...content[selectedProduct]?.story, image: undefined } as SectionBlock,
-                                },
-                              })
-                            }}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                            type="button"
-                            title="删除图片"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                          <div className="text-center text-gray-400">
-                            <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">暂无配图，请点击上方按钮上传</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        主标�?<span className="text-gray-400">(必填)</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.story?.title || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            story: { ...content[selectedProduct]?.story, title: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-serif"
-                        placeholder="例如：Handcrafted Coconut Bowl"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        副标�?<span className="text-gray-400">(可�?</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.story?.subtitle || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            story: { ...content[selectedProduct]?.story, subtitle: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="例如：Nature's Perfect Vessel, Crafted by Samoan Artisans"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        内容 <span className="text-gray-400">(支持多段落，用空行分�?</span>
-                      </label>
-                      <textarea
-                        value={content[selectedProduct]?.story?.content || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            story: { ...content[selectedProduct]?.story, content: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        rows={10}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif leading-relaxed"
-                        placeholder="输入品牌故事内容...&#10;&#10;用空行分隔不同段�?
-                      />
-                    </div>
+              {activeSection === 'guarantee' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">质量保证</h2>
+                    <button
+                      onClick={() => {
+                        setEditingSectionImage('guarantee')
+                        fileInputRef.current?.click()
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                    >
+                      <ImageIcon size={18} />
+                      <span>{content[selectedProduct]?.guarantee?.image ? '更换配图' : '添加配图'}</span>
+                    </button>
                   </div>
-                )}
-
-                {/* 环保影响编辑 */}
-                {activeSection === 'environmental' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">环保影响</h2>
-                      <button
-                        onClick={() => {
-                          setEditingSectionImage('environmental')
-                          fileInputRef.current?.click()
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                      >
-                        <ImageIcon size={18} />
-                        <span>{content[selectedProduct]?.environmental?.image ? '更换配图' : '添加配图'}</span>
-                      </button>
-                    </div>
-
-                    {/* 图片预览区域 */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
-                      {content[selectedProduct]?.environmental?.image ? (
-                        <div className="relative">
-                          <img
-                            src={content[selectedProduct].environmental.image}
-                            alt="Environmental preview"
-                            className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
-                          />
-                          <button
-                            onClick={() => {
-                              setContent({
-                                ...content,
-                                [selectedProduct]: {
-                                  ...content[selectedProduct],
-                                  environmental: { ...content[selectedProduct]?.environmental, image: undefined } as SectionBlock,
-                                },
-                              })
-                            }}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                            type="button"
-                            title="删除图片"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                          <div className="text-center text-gray-400">
-                            <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">暂无配图，请点击上方按钮上传</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">主标�?/label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.environmental?.title || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            environmental: { ...content[selectedProduct]?.environmental, title: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
-                        placeholder="例如：Environmental Impact"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">副标�?/label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.environmental?.subtitle || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            environmental: { ...content[selectedProduct]?.environmental, subtitle: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="例如：How our products benefit the planet"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
-                      <textarea
-                        value={content[selectedProduct]?.environmental?.content || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            environmental: { ...content[selectedProduct]?.environmental, content: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        rows={10}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="描述环保影响..."
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
+                    {content[selectedProduct]?.guarantee?.image ? (
+                      <div className="relative">
+                        <img
+                          src={content[selectedProduct].guarantee.image}
+                          alt="Guarantee preview"
+                          className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            setContent({
+                              ...content,
+                              [selectedProduct]: {
+                                ...content[selectedProduct],
+                                guarantee: { ...content[selectedProduct]?.guarantee, image: undefined } as SectionBlock,
+                              },
+                            })
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400">
+                        <ImageIcon size={48} className="mb-2 opacity-50" />
+                        <p className="text-sm">暂无配图</p>
+                      </div>
+                    )}
                   </div>
-                )}
-
-                {/* 合作模式编辑 */}
-                {activeSection === 'partnership' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">合作模式</h2>
-                      <button
-                        onClick={() => {
-                          setEditingSectionImage('partnership')
-                          fileInputRef.current?.click()
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                      >
-                        <ImageIcon size={18} />
-                        <span>{content[selectedProduct]?.partnership?.image ? '更换配图' : '添加配图'}</span>
-                      </button>
-                    </div>
-
-                    {/* 图片预览区域 */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
-                      {content[selectedProduct]?.partnership?.image ? (
-                        <div className="relative">
-                          <img
-                            src={content[selectedProduct].partnership.image}
-                            alt="Partnership preview"
-                            className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
-                          />
-                          <button
-                            onClick={() => {
-                              setContent({
-                                ...content,
-                                [selectedProduct]: {
-                                  ...content[selectedProduct],
-                                  partnership: { ...content[selectedProduct]?.partnership, image: undefined } as SectionBlock,
-                                },
-                              })
-                            }}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                            type="button"
-                            title="删除图片"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                          <div className="text-center text-gray-400">
-                            <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">暂无配图，请点击上方按钮上传</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">主标�?/label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.partnership?.title || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            partnership: { ...content[selectedProduct]?.partnership, title: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-lg"
-                        placeholder="例如：Our Partnership Model"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">副标�?/label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.partnership?.subtitle || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            partnership: { ...content[selectedProduct]?.partnership, subtitle: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        placeholder="例如：Fair trade that empowers communities"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
-                      <textarea
-                        value={content[selectedProduct]?.partnership?.content || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            partnership: { ...content[selectedProduct]?.partnership, content: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        rows={10}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        placeholder="描述合作模式..."
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">主标题</label>
+                    <input
+                      type="text"
+                      value={content[selectedProduct]?.guarantee?.title || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          guarantee: { ...content[selectedProduct]?.guarantee, title: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                    />
                   </div>
-                )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
+                    <textarea
+                      value={content[selectedProduct]?.guarantee?.content || ''}
+                      onChange={(e) => setContent({
+                        ...content,
+                        [selectedProduct]: {
+                          ...content[selectedProduct],
+                          guarantee: { ...content[selectedProduct]?.guarantee, content: e.target.value } as SectionBlock,
+                        },
+                      })}
+                      rows={10}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+              )}
 
-                {/* 产品规格编辑 */}
-                {activeSection === 'specifications' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">产品规格</h2>
-                      <button
-                        onClick={() => {
-                          setEditingSectionImage('specifications')
-                          setCurrentImage(content[selectedProduct]?.specifications?.image || '')
-                          fileInputRef.current?.click()
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <ImageIcon size={18} />
-                        <span>添加配图</span>
-                      </button>
-                    </div>
-
-                    {/* 图片预览区域 */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">规格图预�?(建议 4:3 比例)</label>
-                      {content[selectedProduct]?.specifications?.image ? (
-                        <div className="relative">
-                          <img
-                            src={content[selectedProduct].specifications.image}
-                            alt="Specifications preview"
-                            className="w-full max-w-md h-64 object-cover rounded-lg shadow-sm border border-gray-200"
-                          />
+              {activeSection === 'faqs' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">常见问题</h2>
+                    <button
+                      onClick={() => {
+                        const newFaq: FAQ = { question: '', answer: '' }
+                        setContent({
+                          ...content,
+                          [selectedProduct]: {
+                            ...content[selectedProduct],
+                            faqs: [...(content[selectedProduct]?.faqs || []), newFaq],
+                          },
+                        })
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      <Plus size={18} />
+                      <span>添加问题</span>
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    {content[selectedProduct]?.faqs?.map((faq, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <div className="flex justify-between items-start mb-3">
+                          <span className="text-sm font-medium text-gray-500">问题 {index + 1}</span>
                           <button
                             onClick={() => {
-                              const updated = { ...content }
-                              if (updated[selectedProduct].specifications) {
-                                updated[selectedProduct].specifications.image = ''
-                                setContent(updated)
-                              }
+                              const updated = content[selectedProduct]?.faqs?.filter((_, i) => i !== index) || []
+                              setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], faqs: updated } })
                             }}
-                            className="absolute -top-2 -left-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-md transition-colors"
-                            title="删除图片"
+                            className="text-red-500 hover:text-red-700"
                           >
-                            <X size={16} />
+                            <Trash2 size={16} />
                           </button>
                         </div>
-                      ) : (
-                        <div className="w-full max-w-md h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center text-gray-400">
-                          <ImageIcon size={48} strokeWidth={1} className="mb-2" />
-                          <p className="text-sm">暂无配图</p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {[
-                      { key: 'size', label: '尺寸', placeholder: '例如：Approximately 5 inches (13cm) diameter' },
-                      { key: 'weight', label: '重量', placeholder: '例如：Approximately 0.3 lbs (140g)' },
-                      { key: 'material', label: '材质', placeholder: '例如�?00% natural coconut shell' },
-                      { key: 'origin', label: '产地', placeholder: '例如：Handcrafted in Apia, Samoa' },
-                      { key: 'care', label: '保养说明', placeholder: '例如：Hand wash only with mild soap' },
-                    ].map((field) => (
-                      <div key={field.key}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{field.label}</label>
                         <input
                           type="text"
-                          value={(content[selectedProduct]?.specifications as any)?.[field.key] || ''}
-                          onChange={(e) => setContent({
-                            ...content,
-                            [selectedProduct]: {
-                              ...content[selectedProduct],
-                              specifications: { 
-                                ...(content[selectedProduct]?.specifications || {}),
-                                [field.key]: e.target.value 
-                              } as Specifications,
-                            },
-                          })}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder={field.placeholder}
+                          value={faq.question}
+                          onChange={(e) => {
+                            const updated = [...(content[selectedProduct]?.faqs || [])]
+                            updated[index].question = e.target.value
+                            setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], faqs: updated } })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2"
+                        />
+                        <textarea
+                          value={faq.answer}
+                          onChange={(e) => {
+                            const updated = [...(content[selectedProduct]?.faqs || [])]
+                            updated[index].answer = e.target.value
+                            setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], faqs: updated } })
+                          }}
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                         />
                       </div>
                     ))}
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* 质量保证编辑 */}
-                {activeSection === 'guarantee' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">质量保证</h2>
-                      <button
-                        onClick={() => {
-                          setEditingSectionImage('guarantee')
-                          fileInputRef.current?.click()
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                      >
-                        <ImageIcon size={18} />
-                        <span>{content[selectedProduct]?.guarantee?.image ? '更换配图' : '添加配图'}</span>
-                      </button>
-                    </div>
-
-                    {/* 图片预览区域 */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
-                      {content[selectedProduct]?.guarantee?.image ? (
-                        <div className="relative">
-                          <img
-                            src={content[selectedProduct].guarantee.image}
-                            alt="Guarantee preview"
-                            className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
-                          />
-                          <button
-                            onClick={() => {
-                              setContent({
-                                ...content,
-                                [selectedProduct]: {
-                                  ...content[selectedProduct],
-                                  guarantee: { ...content[selectedProduct]?.guarantee, image: undefined } as SectionBlock,
-                                },
-                              })
-                            }}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                            type="button"
-                            title="删除图片"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                          <div className="text-center text-gray-400">
-                            <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">暂无配图，请点击上方按钮上传</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">主标�?/label>
-                      <input
-                        type="text"
-                        value={content[selectedProduct]?.guarantee?.title || ''}
-                        onChange={(e) => setContent({
+              {activeSection === 'reviews' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">用户评价</h2>
+                    <button
+                      onClick={() => {
+                        const newReview: Review = {
+                          id: Date.now().toString(),
+                          author: '',
+                          rating: 5,
+                          content: '',
+                          date: new Date().toISOString().split('T')[0],
+                        }
+                        setContent({
                           ...content,
                           [selectedProduct]: {
                             ...content[selectedProduct],
-                            guarantee: { ...content[selectedProduct]?.guarantee, title: e.target.value } as SectionBlock,
+                            reviews: [...(content[selectedProduct]?.reviews || []), newReview],
                           },
-                        })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent text-lg"
-                        placeholder="例如：Quality Guarantee"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">内容</label>
-                      <textarea
-                        value={content[selectedProduct]?.guarantee?.content || ''}
-                        onChange={(e) => setContent({
-                          ...content,
-                          [selectedProduct]: {
-                            ...content[selectedProduct],
-                            guarantee: { ...content[selectedProduct]?.guarantee, content: e.target.value } as SectionBlock,
-                          },
-                        })}
-                        rows={10}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                        placeholder="描述质量保证政策..."
-                      />
-                    </div>
+                        })
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      <Plus size={18} />
+                      <span>添加评价</span>
+                    </button>
                   </div>
-                )}
-
-                {/* 常见问题编辑 */}
-                {activeSection === 'faqs' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">常见问题</h2>
-                      <button
-                        onClick={() => {
-                          const newFaq: FAQ = { question: '', answer: '' }
-                          setContent({
-                            ...content,
-                            [selectedProduct]: {
-                              ...content[selectedProduct],
-                              faqs: [...(content[selectedProduct]?.faqs || []), newFaq],
-                            },
-                          })
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Plus size={18} />
-                        <span>添加问题</span>
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      {content[selectedProduct]?.faqs?.map((faq, index) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                          <div className="flex justify-between items-start mb-3">
-                            <span className="text-sm font-medium text-gray-500">问题 {index + 1}</span>
-                            <button
-                              onClick={() => {
-                                const updated = content[selectedProduct]?.faqs?.filter((_, i) => i !== index) || []
-                                setContent({
-                                  ...content,
-                                  [selectedProduct]: { ...content[selectedProduct], faqs: updated },
-                                })
-                              }}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                          <div className="space-y-3">
+                  <div className="space-y-4">
+                    {content[selectedProduct]?.reviews?.map((review, index) => (
+                      <div key={review.id} className="border border-gray-200 rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-4">
+                            {review.avatar ? (
+                              <div className="relative">
+                                <img src={review.avatar} alt="Avatar" className="w-16 h-16 rounded-full object-cover" />
+                                <button onClick={() => handleRemoveAvatar(review.id)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"><X size={12} /></button>
+                              </div>
+                            ) : (
+                              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-400">👤</div>
+                            )}
+                            <button onClick={() => avatarInputRef.current?.click()} className="text-sm text-blue-600 hover:underline">上传头像</button>
+                            <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleAvatarSelect(e, review.id)} />
                             <input
                               type="text"
-                              value={faq.question}
+                              value={review.author}
                               onChange={(e) => {
-                                const updated = [...(content[selectedProduct]?.faqs || [])]
-                                updated[index].question = e.target.value
-                                setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], faqs: updated } })
-                              }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="问题内容..."
-                            />
-                            <textarea
-                              value={faq.answer}
-                              onChange={(e) => {
-                                const updated = [...(content[selectedProduct]?.faqs || [])]
-                                updated[index].answer = e.target.value
-                                setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], faqs: updated } })
-                              }}
-                              rows={3}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="回答内容..."
-                            />
-                          </div>
-                        </div>
-                      )) || (
-                        <div className="text-center py-8 text-gray-500">暂无问题，点击上方按钮添�?/div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* 用户评价编辑 */}
-                {activeSection === 'reviews' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">用户评价</h2>
-                      <button
-                        onClick={() => {
-                          const newReview: Review = {
-                            id: Date.now().toString(),
-                            author: '',
-                            rating: 5,
-                            content: '',
-                            date: new Date().toISOString().split('T')[0],
-                          }
-                          setContent({
-                            ...content,
-                            [selectedProduct]: {
-                              ...content[selectedProduct],
-                              reviews: [...(content[selectedProduct]?.reviews || []), newReview],
-                            },
-                          })
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Plus size={18} />
-                        <span>添加评价</span>
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      {content[selectedProduct]?.reviews?.map((review, index) => (
-                        <div key={review.id} className="border border-gray-200 rounded-lg p-4">
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="flex items-center gap-4 flex-1">
-                              {/* 头像上传 */}
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">头像</label>
-                                <div className="flex items-center gap-3">
-                                  {review.avatar ? (
-                                    <div className="relative">
-                                      <img
-                                        src={review.avatar}
-                                        alt="Avatar"
-                                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                                      />
-                                      <button
-                                        onClick={() => handleRemoveAvatar(review.id)}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                                        type="button"
-                                      >
-                                        <X size={12} />
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    <div className="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-                                      <span className="text-2xl text-gray-400">👤</span>
-                                    </div>
-                                  )}
-                                  <button
-                                    onClick={() => avatarInputRef.current?.click()}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                    type="button"
-                                  >
-                                    <Upload size={16} />
-                                    <span>{review.avatar ? '更换' : '上传'}头像</span>
-                                  </button>
-                                </div>
-                                <input
-                                  ref={avatarInputRef}
-                                  type="file"
-                                  accept="image/*"
-                                  className="hidden"
-                                  onChange={(e) => handleAvatarSelect(e, review.id)}
-                                />
-                              </div>
-
-                              <input
-                                type="text"
-                                value={review.author}
-                                onChange={(e) => {
-                                  const updated = [...(content[selectedProduct]?.reviews || [])]
-                                  updated[index].author = e.target.value
-                                  setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
-                                }}
-                                placeholder="评价者姓�?
-                                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              />
-                              <div className="flex items-center gap-1">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <button
-                                    key={star}
-                                    onClick={() => {
-                                      const updated = [...(content[selectedProduct]?.reviews || [])]
-                                      updated[index].rating = star
-                                      setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
-                                    }}
-                                    className="focus:outline-none"
-                                  >
-                                    <Star
-                                      size={20}
-                                      className={star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                                    />
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => {
-                                const updated = content[selectedProduct]?.reviews?.filter((_, i) => i !== index) || []
+                                const updated = [...(content[selectedProduct]?.reviews || [])]
+                                updated[index].author = e.target.value
                                 setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
                               }}
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                          <textarea
-                            value={review.content}
-                            onChange={(e) => {
-                              const updated = [...(content[selectedProduct]?.reviews || [])]
-                              updated[index].content = e.target.value
-                              setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
-                            }}
-                            placeholder="评价内容..."
-                            rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-3"
-                          />
-                          <div className="flex items-center gap-4">
-                            <div>
-                              <label className="text-sm text-gray-600">日期�?/label>
-                              <input
-                                type="date"
-                                value={review.date}
-                                onChange={(e) => {
+                              className="px-3 py-2 border border-gray-300 rounded-lg"
+                              placeholder="评价者姓名"
+                            />
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star key={star} size={20} className={star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} onClick={() => {
                                   const updated = [...(content[selectedProduct]?.reviews || [])]
-                                  updated[index].date = e.target.value
+                                  updated[index].rating = star
                                   setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
-                                }}
-                                className="ml-2 px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                              />
+                                }} />
+                              ))}
                             </div>
                           </div>
+                          <button onClick={() => {
+                            const updated = content[selectedProduct]?.reviews?.filter((_, i) => i !== index) || []
+                            setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
+                          }} className="text-red-500"><Trash2 size={18} /></button>
                         </div>
-                      )) || (
-                        <div className="text-center py-8 text-gray-500">暂无评价，点击上方按钮添�?/div>
-                      )}
-                    </div>
+                        <textarea
+                          value={review.content}
+                          onChange={(e) => {
+                            const updated = [...(content[selectedProduct]?.reviews || [])]
+                            updated[index].content = e.target.value
+                            setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                          rows={3}
+                        />
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* 补充图片�?*/}
-                {activeSection === 'gallery' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b">
-                      <h2 className="text-xl font-bold text-gray-900">补充图片�?/h2>
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Upload size={18} />
-                        <span>上传图片</span>
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {content[selectedProduct]?.gallery?.map((img, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={img}
-                            alt={`Gallery ${index}`}
-                            className="w-full h-48 object-cover rounded-lg"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity rounded-lg flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                            <button
-                              onClick={() => handleRemoveImage(index)}
-                              className="p-2 bg-red-500 rounded-full hover:bg-red-600"
-                            >
-                              <X size={16} className="text-white" />
-                            </button>
-                          </div>
-                        </div>
-                      )) || (
-                        <div className="col-span-full bg-gray-100 rounded-lg h-48 flex items-center justify-center">
-                          <p className="text-gray-500">暂无图片，点击上方按钮上�?/p>
-                        </div>
-                      )}
-                    </div>
+              {activeSection === 'gallery' && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b">
+                    <h2 className="text-xl font-bold text-gray-900">补充图片库</h2>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      <Upload size={18} />
+                      <span>上传图片</span>
+                    </button>
                   </div>
-                )}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {content[selectedProduct]?.gallery?.map((img, index) => (
+                      <div key={index} className="relative group">
+                        <img src={img} alt={`Gallery ${index}`} className="w-full h-48 object-cover rounded-lg" />
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <button onClick={() => handleRemoveImage(index)} className="p-2 bg-red-500 rounded-full"><X size={16} className="text-white" /></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-              </div>
             </div>
-          </>
+          </div>
         )}
 
-        {/* 使用说明 */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
           <h3 className="text-lg font-bold text-blue-900 mb-2">📋 使用说明</h3>
-          <ul className="space-y-2 text-blue-800">
-            <li>�?<strong>板块化编辑：</strong>每个板块（品牌故事、环保影响等）都有独立的主标题、副标题、内容、配�?/li>
-            <li>�?<strong>用户评价�?/strong>管理详情页顶部展示的用户评价卡片（姓名、评分、内容、日期）</li>
-            <li>�?<strong>产品规格�?/strong>编辑尺寸、重量、材质、产地、保养说�?/li>
-            <li>�?<strong>常见问题�?/strong>添加/编辑 FAQs 问答�?/li>
-            <li>�?<strong>补充图片�?/strong>上传额外的产品场景图、细节图到图片库</li>
-            <li>�?<strong>下载配置�?/strong>完成后下�?JSON 文件，用于更新网站内�?/li>
-            <li>⚠️ <strong>数据隔离�?/strong>所有内容存储在独立 JSON 文件，不影响 Shopify 核心数据</li>
+          <ul className="space-y-2 text-blue-800 text-sm">
+            <li>✅ <strong>板块化编辑</strong>：品牌故事、环保影响等均支持独立配图。</li>
+            <li>✅ <strong>图片标准</strong>：建议使用 4:3 比例的图片以获得最佳显示效果。</li>
+            <li>✅ <strong>数据同步</strong>：编辑完成后请务必点击顶部“下载 JSON”保存配置。</li>
           </ul>
         </div>
       </main>
 
-      {/* 隐藏的文件选择输入 */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileSelect}
-      />
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
 
-      {/* 内嵌裁剪工具 �?板块配图 & 图片�?*/}
       {currentImage && (inlineCropSection || showCropModal) && (
-        <div className="mt-6 bg-white rounded-xl shadow-sm border-2 border-blue-200 p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-gray-900">
-              ✂️ 裁剪图片
-            </h3>
-            <button onClick={handleCropCancel} className="text-gray-400 hover:text-gray-600 text-2xl">�?/button>
-          </div>
-          
-          {/* 提示 */}
-          <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-            {inlineCropSection && inlineCropSection !== 'gallery' 
-              ? `📐 模板尺寸�?{TEMPLATE_SIZE.width}×${TEMPLATE_SIZE.height} �?拖动调整位置，滚轮缩放` 
-              : '📐 图片库尺寸：1200×900 �?拖动调整位置，滚轮缩�?}
-          </div>
-
-          {/* 图片比例显示 */}
-          <p className="text-xs text-gray-400 mb-2">蓝色框内为最终显示区�?/p>
-
-          {/* 裁剪区域 */}
-          <div className="relative rounded-lg overflow-hidden bg-gray-900" style={{ width: '100%', maxWidth: 800, maxHeight: 600, aspectRatio: `${TEMPLATE_SIZE.aspect}/1`, margin: '0 auto' }}>
-            <Cropper
-              image={currentImage}
-              crop={crop}
-              zoom={autoZoom}
-              aspect={TEMPLATE_SIZE.aspect}
-              onCropChange={setCrop}
-              onZoomChange={(z) => setAutoZoom(z)}
-              onCropComplete={onCropComplete}
-            />
-          </div>
-
-          {/* 控制�?*/}
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">🔍 缩放�?/span>
-              <input
-                type="range"
-                min="1"
-                max={Math.ceil(autoZoom * 3 * 10) / 10}
-                step="0.1"
-                defaultValue={autoZoom}
-                onChange={(e) => setAutoZoom(Number(e.target.value))}
-                className="w-48 accent-blue-600"
-              />
-              <span className="text-sm text-gray-500">{autoZoom.toFixed(1)}x</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4">
+          <div className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-bold">✂️ 裁剪图片</h3>
+              <button onClick={handleCropCancel} className="text-gray-400 hover:text-gray-600 text-2xl">×</button>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleCropCancel}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-600"
-              >
-                取消
-              </button>
-              <button
-                onClick={handleCropConfirm}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-              >
-                <Save size={18} />
-                保存裁剪
-              </button>
+            <div className="flex-1 relative bg-gray-900 min-h-[400px]">
+              <Cropper
+                image={currentImage}
+                crop={crop}
+                zoom={autoZoom}
+                aspect={TEMPLATE_SIZE.aspect}
+                onCropChange={setCrop}
+                onZoomChange={setAutoZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
+            <div className="p-6 border-t bg-gray-50 flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">🔍 缩放</span>
+                <input
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.1"
+                  value={autoZoom}
+                  onChange={(e) => setAutoZoom(Number(e.target.value))}
+                  className="flex-1"
+                />
+              </div>
+              <div className="flex justify-end gap-3">
+                <button onClick={handleCropCancel} className="px-6 py-2 border rounded-lg">取消</button>
+                <button onClick={handleCropConfirm} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold">确认裁剪并保存</button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 保存提示 */}
       {saved && (
-        <div className="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
-          <Save size={20} />
-          <span>已保存！</span>
+        <div className="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg animate-bounce">
+          已更新配置！
         </div>
       )}
     </div>
