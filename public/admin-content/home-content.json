@@ -1,0 +1,59 @@
+{
+  "hero": {
+    "title": "Ocean Wisdom, Handcrafted Heart",
+    "subtitle": "Authentic Samoan Treasures",
+    "description": "Discover the soul of the South Pacific through our curated collection of artisan-made eco-friendly goods. Every piece supports a family and preserves a heritage.",
+    "ctaText": "Shop Collection",
+    "ctaLink": "/products"
+  },
+  "features": {
+    "title": "The Journey of Soul",
+    "subtitle": "From Samoa with Love",
+    "items": [
+      {
+        "id": "ocean",
+        "title": "Ocean Whisper",
+        "description": "Naturally fallen shells collected at dawn."
+      },
+      {
+        "id": "artisan",
+        "title": "Ana's Craft",
+        "description": "15 years of traditional hand-drilling."
+      },
+      {
+        "id": "alofa",
+        "title": "Alofa Atasi",
+        "description": "Every piece carries the spirit of 'One Love'."
+      }
+    ]
+  },
+  "brandStory": {
+    "title": "Partnership Rooted in the Pacific",
+    "description": "<p>Our journey began with a simple belief: that true beauty is born from the harmony between nature and the human hand. In the heart of the South Pacific, we've partnered with artisan cooperatives to bring you treasures that aren't just objects, but <strong>narratives of heritage</strong>.</p><p>Every coconut bowl is polished with local organic oil; every bag is woven with grass that has felt the tropical rain. By choosing EcoMafola, you are directly supporting village economies and ensuring that ancient skills thrive in a modern world.</p>",
+    "buttonText": "Read Our Story",
+    "buttonLink": "/our-story",
+    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLUhQICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFjcHJ0AAABUAAAADNkZXNjAAABhAAAAGx3dHB0AAAB8AAAABRia3B0AAACBAAAABRyWFlaAAACGAAAABRnWFlaAAACLAAAABRiWFlaAAACQAAAABRkbW5kAAACVAAAAHBkbWRkAAACxAAAAIh2dWVkAAADTAAAAIZ2aWV3AAAD1AAAACRsdW1pAAAD+AAAABRtZWFzAAAEDAAAACR0ZWNoAAAEMAAAAAxyVFJDAAAEPAAACAxnVFJDAAAEPAAACAxiVFJDAAAEPAAACAx0ZXh0AAAAAENvcHlyaWdodCAoYykgMTk5OCBIZXdsZXR0LVBhY2thcmQgQ29tcGFueQAAZGVzYwAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAPNRAAEAAAABFsxYWVogAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z2Rlc2MAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHZpZXcAAAAAABOk/gAUXy4AEM8UAAPtzAAEEwsAA1yeAAAAAVhZWiAAAAAAAEwJVgBQAAAAVx/nbWVhcwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAo8AAAACc2lnIAAAAABDUlQgY3VydgAAAAAAAAQAAAAABQAKAA8AFAAZAB4AIwAoAC0AMgA3ADsAQABFAEoATwBUAFkAXgBjAGgAbQByAHcAfACBAIYAiwCQAJUAmgCfAKQAqQCuALIAtwC8AMEAxgDLANAA1QDbAOAA5QDrAPAA9gD7AQEBBwENARMBGQEfASUBKwEyATgBPgFFAUwBUgFZAWABZwFuAXUBfAGDAYsBkgGaAaEBqQGxAbkBwQHJAdEB2QHhAekB8gH6AgMCDAIUAh0CJgIvAjgCQQJLAlQCXQJnAnECegKEAo4CmAKiAqwCtgLBAssC1QLgAusC9QMAAwsDFgMhAy0DOANDA08DWgNmA3IDfgOKA5YDogOuA7oDxwPTA+AD7AP5BAYEEwQgBC0EOwRIBFUEYwRxBH4EjASaBKgEtgTEBNME4QTwBP4FDQUcBSsFOgVJBVgFZwV3BYYFlgWmBbUFxQXVBeU..."
+  },
+  "impact": {
+    "title": "Our Collective Impact",
+    "subtitle": "Growing Together",
+    "description": "Beyond beautiful products, we are building a sustainable future for Pacific communities.",
+    "stats": [
+      {
+        "id": "1",
+        "value": "240+",
+        "label": "Artisans Supported"
+      },
+      {
+        "id": "2",
+        "value": "100%",
+        "label": "Eco-Friendly Materials"
+      },
+      {
+        "id": "3",
+        "value": "15+",
+        "label": "Villages Impacted"
+      }
+    ]
+  }
+}

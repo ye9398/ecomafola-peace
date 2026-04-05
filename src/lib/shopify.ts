@@ -375,7 +375,7 @@ export async function getProductsByCollection(handle: string) {
 export async function getFeaturedProducts() {
   const { data } = await shopifyClient.request(`
     query {
-      products(first: 6, sortKey: CREATED_AT, reverse: true) {
+      products(first: 8, query: "tag:featured", sortKey: CREATED_AT, reverse: true) {
         edges {
           node {
             id

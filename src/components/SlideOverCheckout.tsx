@@ -1,4 +1,4 @@
-import { ShoppingCart, X, Minus, Plus, Trash2, Truck } from 'lucide-react'
+import { ShoppingCart, X, Minus, Plus, Trash2, Truck, ArrowRight } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
 export default function SlideOverCheckout() {
@@ -6,7 +6,7 @@ export default function SlideOverCheckout() {
 
   const lines = cart?.lines.edges.map(e => e.node) || []
   const subtotal = parseFloat(cart?.cost?.subtotalAmount?.amount || cart?.cost?.totalAmount?.amount || '0')
-  const FREE_SHIPPING_THRESHOLD = 35
+  const FREE_SHIPPING_THRESHOLD = 45
   const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
   const remaining = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0)
 

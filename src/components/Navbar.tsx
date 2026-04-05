@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* Announcement Bar */}
       <div className="bg-ocean-blue text-white text-[10px] md:text-xs font-sans font-bold py-2 text-center tracking-widest uppercase px-4 flex items-center justify-center gap-2">
         <span className="hidden sm:inline">✨</span> 
-        Free worldwide shipping on all orders over $35 
+        Free worldwide shipping on all orders over $45 
         <span className="hidden sm:inline">✨</span>
       </div>
       
@@ -82,13 +82,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-sm overflow-hidden">
+            <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 overflow-hidden">
                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <span className={`font-serif font-bold text-base md:text-xl tracking-tight transition-colors duration-300 ${
               isScrolled ? 'text-ocean-blue' : 'text-white'
             }`}>
-              EcoMafola
+              EcoMafola Peace
             </span>
           </Link>
 
@@ -140,6 +140,11 @@ export default function Navbar() {
               isScrolled ? 'text-ocean-blue/70' : 'text-white/80'
             }`}>
               Impact
+            </Link>
+            <Link to="/contact" className={`font-sans text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-tropical-green ${
+              isScrolled ? 'text-ocean-blue/70' : 'text-white/80'
+            }`}>
+              Contact
             </Link>
           </div>
 
@@ -261,7 +266,7 @@ export default function Navbar() {
           </form>
 
           <div className="space-y-4">
-            {['Home', 'Products', 'Our Story', 'Impact'].map((item) => (
+            {['Home', 'Products', 'Our Story', 'Impact', 'Contact'].map((item) => (
               <Link
                 key={item}
                 to={`/${item.toLowerCase().replace(' ', '-') === 'home' ? '' : item.toLowerCase().replace(' ', '-')}`}

@@ -70,6 +70,13 @@ interface TestimonialsSection {
 interface HomeContent {
   hero?: HeroBanner
   features?: FeaturesSection
+  brandStory?: {
+    title: string
+    description: string
+    image?: string
+    buttonText: string
+    buttonLink: string
+  }
   impact?: ImpactSection
   testimonials?: TestimonialsSection
   newsletter?: NewsletterSection
@@ -91,6 +98,12 @@ export default function HomeContentAdmin() {
       subtitle: '',
       items: [],
     },
+    brandStory: {
+      title: '',
+      description: '',
+      buttonText: '',
+      buttonLink: '',
+    },
     impact: {
       title: '',
       subtitle: '',
@@ -111,11 +124,11 @@ export default function HomeContentAdmin() {
   })
   const [loading, setLoading] = useState(true)
   const [saved, setSaved] = useState(false)
-  const [activeSection, setActiveSection] = useState<'hero' | 'features' | 'impact' | 'testimonials' | 'newsletter'>('hero')
+  const [activeSection, setActiveSection] = useState<'hero' | 'features' | 'brandStory' | 'impact' | 'testimonials' | 'newsletter'>('hero')
 
   // 图片编辑状态
   const [currentImage, setCurrentImage] = useState<string>('')
-  const [editingImage, setEditingImage] = useState<'hero' | 'impact' | null>(null)
+  const [editingImage, setEditingImage] = useState<'hero' | 'impact' | 'brandStory' | null>(null)
 
   useEffect(() => {
     const authenticated = localStorage.getItem('admin_authenticated')
@@ -140,834 +153,677 @@ export default function HomeContentAdmin() {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_authenticated')
-    navigate('/')
-  }
-
-  // 智能压缩：自动降至目标大小以下
-  const compressImage = useCallback(async (dataUrl: string, targetSizeKB = 150): Promise<{ dataUrl: string, sizeKB: number }> => {
-    const img = new Image()
-    img.src = dataUrl
-    await new Promise((resolve) => { img.onload = resolve })
-
-    let quality = 0.9
-    let result: string
-    
-    do {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      if (!ctx) break
-
-      canvas.width = img.width
-      canvas.height = img.height
-      ctx.drawImage(img, 0, 0)
-      result = canvas.toDataURL('image/jpeg', quality)
+  const saveContent = async () => {
+    try {
+      // 在实际应用中，这里应该发送到 API
+      // 这里我们模拟保存到 localStorage 并导出
+      localStorage.setItem('home_content_draft', JSON.stringify(content))
       
-      const base64Length = result.length - result.indexOf(',') - 1
-      const sizeKB = Math.round((base64Length * 0.75) / 1024)
+      const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'home-content.json'
+      a.click()
       
-      if (sizeKB <= targetSizeKB) {
-        return { dataUrl: result, sizeKB }
-      }
-      
-      quality -= 0.1
-    } while (quality >= 0.3)
-
-    const base64Length = result.length - result.indexOf(',') - 1
-    const sizeKB = Math.round((base64Length * 0.75) / 1024)
-    return { dataUrl: result, sizeKB }
-  }, [])
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = async (e) => {
-      const result = e.target?.result as string
-      setCurrentImage(result)
-
-      // 自动压缩
-      const { dataUrl: compressedImage, sizeKB } = await compressImage(result)
-      
-      if (editingImage) {
-        if (editingImage === 'hero') {
-          setContent({
-            ...content,
-            hero: { ...content.hero, backgroundImage: compressedImage } as HeroBanner,
-          })
-        } else if (editingImage === 'impact') {
-          setContent({
-            ...content,
-            impact: { ...content.impact, image: compressedImage } as ImpactSection,
-          })
-        }
-        setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
-        setEditingImage(null)
-        
-        // 显示压缩信息
-        alert(`✅ 图片已保存！
-压缩后大小：${sizeKB}KB
-自动压缩：${sizeKB <= 150 ? '是' : '否（图片过大，建议换更小的原图）'}`)
-      }
-    }
-    reader.readAsDataURL(file)
-    e.target.value = ''
-  }
-
-  const handleDownload = () => {
-    const dataStr = JSON.stringify(content, null, 2)
-    const blob = new Blob([dataStr], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'home-content-config.json'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
-  }
-
-  const addFeatureItem = () => {
-    const newItem: FeatureItem = {
-      id: Date.now().toString(),
-      icon: '✨',
-      title: '',
-      description: '',
-    }
-    setContent({
-      ...content,
-      features: {
-        ...content.features,
-        items: [...(content.features?.items || []), newItem],
-      } as FeaturesSection,
-    })
-  }
-
-  const removeFeatureItem = (id: string) => {
-    setContent({
-      ...content,
-      features: {
-        ...content.features,
-        items: content.features?.items.filter(item => item.id !== id),
-      } as FeaturesSection,
-    })
-  }
-
-  const updateFeatureItem = (id: string, field: keyof FeatureItem, value: string) => {
-    setContent({
-      ...content,
-      features: {
-        ...content.features,
-        items: content.features?.items.map(item =>
-          item.id === id ? { ...item, [field]: value } : item
-        ) || [],
-      } as FeaturesSection,
-    })
-  }
-
-  const addImpactStat = () => {
-    const newStat: ImpactStat = {
-      id: Date.now().toString(),
-      value: '',
-      label: '',
-    }
-    setContent({
-      ...content,
-      impact: {
-        ...content.impact,
-        stats: [...(content.impact?.stats || []), newStat],
-      } as ImpactSection,
-    })
-  }
-
-  const removeImpactStat = (id: string) => {
-    setContent({
-      ...content,
-      impact: {
-        ...content.impact,
-        stats: content.impact?.stats.filter(stat => stat.id !== id),
-      } as ImpactSection,
-    })
-  }
-
-  const updateImpactStat = (id: string, field: keyof ImpactStat, value: string) => {
-    setContent({
-      ...content,
-      impact: {
-        ...content.impact,
-        stats: content.impact?.stats.map(stat =>
-          stat.id === id ? { ...stat, [field]: value } : stat
-        ) || [],
-      } as ImpactSection,
-    })
-  }
-
-  const addTestimonial = () => {
-    const newTestimonial: Testimonial = {
-      id: Date.now().toString(),
-      author: '',
-      role: '',
-      content: '',
-      avatar: '',
-      rating: 5,
-    }
-    setContent({
-      ...content,
-      testimonials: {
-        ...content.testimonials,
-        testimonials: [...(content.testimonials?.testimonials || []), newTestimonial],
-      } as TestimonialsSection,
-    })
-  }
-
-  const removeTestimonial = (id: string) => {
-    setContent({
-      ...content,
-      testimonials: {
-        ...content.testimonials,
-        testimonials: content.testimonials?.testimonials.filter(t => t.id !== id),
-      } as TestimonialsSection,
-    })
-  }
-
-  const updateTestimonial = (id: string, field: keyof Testimonial, value: string | number) => {
-    setContent({
-      ...content,
-      testimonials: {
-        ...content.testimonials,
-        testimonials: content.testimonials?.testimonials.map(t =>
-          t.id === id ? { ...t, [field]: value } : t
-        ) || [],
-      } as TestimonialsSection,
-    })
-  }
-
-  const handleTestimonialAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>, testimonialId: string) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const result = e.target?.result as string
-      setContent({
-        ...content,
-        testimonials: {
-          ...content.testimonials,
-          testimonials: content.testimonials?.testimonials.map(t =>
-            t.id === testimonialId ? { ...t, avatar: result } : t
-          ) || [],
-        } as TestimonialsSection,
-      })
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
+    } catch (error) {
+      console.error('Error saving home content:', error)
+      alert('保存失败，请重试')
     }
-    reader.readAsDataURL(file)
-    e.target.value = ''
   }
 
-  const removeTestimonialAvatar = (id: string) => {
-    setContent({
-      ...content,
-      testimonials: {
-        ...content.testimonials,
-        testimonials: content.testimonials?.testimonials.map(t =>
-          t.id === id ? { ...t, avatar: '' } : t
-        ) || [],
-      } as TestimonialsSection,
-    })
+  const handleImageUpload = (section: 'hero' | 'impact' | 'brandStory') => {
+    setEditingImage(section)
+    fileInputRef.current?.click()
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && editingImage) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const url = event.target?.result as string
+        if (editingImage === 'hero') {
+          setContent({ ...content, hero: { ...content.hero, backgroundImage: url } as HeroBanner })
+        } else if (editingImage === 'impact') {
+          setContent({ ...content, impact: { ...content.impact, image: url } as ImpactSection })
+        } else if (editingImage === 'brandStory') {
+          setContent({ ...content, brandStory: { ...content.brandStory, image: url } as any })
+        }
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">加载中...</div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* 顶部导航栏 */}
-      <header className="bg-white shadow sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* 顶部导航 */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard')} className="text-gray-600 hover:text-gray-900">
-              <ChevronLeft size={24} />
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500"
+            >
+              <ChevronLeft size={20} />
             </button>
-            <h1 className="text-2xl font-bold text-gray-900">主页内容管理</h1>
+            <h1 className="text-xl font-bold text-gray-900">主页内容管理</h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 transition-colors"
+              onClick={saveContent}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 shadow-sm transition-all active:scale-95"
             >
-              <Download size={20} />
-              <span>下载 JSON</span>
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
-            >
-              <LogOut size={20} />
-              <span>退出登录</span>
+              <Download size={18} />
+              导出并部署 (JSON)
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* 板块选择器 - 左侧固定导航 */}
-        <div className="flex gap-6 mb-8">
-          <div className="w-56 flex-shrink-0">
-            <nav className="space-y-1">
-              {[
-                { id: 'hero', label: '🎯 Hero Banner', icon: '🎯' },
-                { id: 'features', label: '⭐ 核心特性', icon: '⭐' },
-                { id: 'impact', label: '🌱 环保影响', icon: '🌱' },
-                { id: 'testimonials', label: '💬 用户评价', icon: '💬' },
-                { id: 'newsletter', label: '📧 订阅通讯', icon: '📧' },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id as any)}
-                  className={`w-full text-left px-4 py-3 rounded-lg font-medium text-sm transition-all ${
-                    activeSection === item.id
-                      ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600'
-                      : 'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 flex gap-8">
+        {/* 左侧侧边栏 - 板块选择 */}
+        <div className="w-64 shrink-0 space-y-2">
+          {[
+            { id: 'hero', label: 'Hero Banner', icon: <ImageIcon size={18} /> },
+            { id: 'features', label: 'Features (Journey)', icon: <ImageIcon size={18} /> },
+            { id: 'brandStory', label: 'Brand Story', icon: <ImageIcon size={18} /> },
+            { id: 'impact', label: 'Impact Section', icon: <ImageIcon size={18} /> },
+            { id: 'testimonials', label: 'Testimonials', icon: <ImageIcon size={18} /> },
+            { id: 'newsletter', label: 'Newsletter', icon: <ImageIcon size={18} /> },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveSection(item.id as any)}
+              className={`w-full text-left px-4 py-3 rounded-xl font-medium flex items-center gap-3 transition-all ${
+                activeSection === item.id 
+                  ? 'bg-blue-600 text-white shadow-md' 
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </div>
 
-          {/* 编辑区域 */}
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-
-            {/* Hero Banner 编辑 */}
+        {/* 右侧编辑区 */}
+        <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-8">
+            {/* Hero Section */}
             {activeSection === 'hero' && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <h2 className="text-xl font-bold text-gray-900">Hero Banner</h2>
-                  <button
-                    onClick={() => {
-                      setEditingImage('hero')
-                      setCurrentImage(content.hero?.backgroundImage || '')
-                      fileInputRef.current?.click()
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  >
-                    <ImageIcon size={18} />
-                    <span>{content.hero?.backgroundImage ? '更换背景图' : '添加背景图'}</span>
-                  </button>
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Hero Banner 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">设置网站首屏的主标题、描述及背景图。</p>
                 </div>
 
-                {/* 图片预览区域 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">背景图预览</label>
-                  {content.hero?.backgroundImage ? (
-                    <div className="relative">
-                      <img
-                        src={content.hero.backgroundImage}
-                        alt="Hero background preview"
-                        className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">主标题</label>
+                      <input
+                        type="text"
+                        value={content.hero?.title || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          hero: { ...content.hero, title: e.target.value } as HeroBanner,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-bold"
+                        placeholder="例如：Ocean Wisdom, Handcrafted Heart"
                       />
-                      <button
-                        onClick={() => {
-                          setContent({
-                            ...content,
-                            hero: { ...content.hero, backgroundImage: '' } as HeroBanner,
-                          })
-                        }}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                        type="button"
-                        title="删除图片"
-                      >
-                        <X size={16} />
-                      </button>
                     </div>
-                  ) : (
-                    <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                      <div className="text-center text-gray-400">
-                        <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                        <p className="text-sm">暂无背景图，请点击上方按钮上传</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    主标题 <span className="text-gray-400">(必填)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={content.hero?.title || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      hero: { ...content.hero, title: e.target.value } as HeroBanner,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-serif"
-                    placeholder="例如：Handcrafted with Love, Rooted in Samoan Culture"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    副标题 <span className="text-gray-400">(可选)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={content.hero?.subtitle || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      hero: { ...content.hero, subtitle: e.target.value } as HeroBanner,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="例如：Authentic Pacific Crafts"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    描述 <span className="text-gray-400">(可选)</span>
-                  </label>
-                  <textarea
-                    value={content.hero?.description || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      hero: { ...content.hero, description: e.target.value } as HeroBanner,
-                    })}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="简短描述..."
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CTA 按钮文字 <span className="text-gray-400">(可选)</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={content.hero?.ctaText || ''}
-                      onChange={(e) => setContent({
-                        ...content,
-                        hero: { ...content.hero, ctaText: e.target.value } as HeroBanner,
-                      })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="例如：Shop Now"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CTA 链接 <span className="text-gray-400">(可选)</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={content.hero?.ctaLink || ''}
-                      onChange={(e) => setContent({
-                        ...content,
-                        hero: { ...content.hero, ctaLink: e.target.value } as HeroBanner,
-                      })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="例如：/collections/all"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 核心特性编辑 */}
-            {activeSection === 'features' && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <h2 className="text-xl font-bold text-gray-900">核心特性</h2>
-                  <button
-                    onClick={addFeatureItem}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus size={18} />
-                    <span>添加特性</span>
-                  </button>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块标题</label>
-                  <input
-                    type="text"
-                    value={content.features?.title || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      features: { ...content.features, title: e.target.value } as FeaturesSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                    placeholder="例如：Why Choose EcoMafola"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块副标题</label>
-                  <input
-                    type="text"
-                    value={content.features?.subtitle || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      features: { ...content.features, subtitle: e.target.value } as FeaturesSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="例如：Crafted with purpose"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">特性列表</label>
-                  {content.features?.items?.map((item, index) => (
-                    <div key={item.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="text-sm font-medium text-gray-500">特性 {index + 1}</span>
-                        <button
-                          onClick={() => removeFeatureItem(item.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-2">
-                          <label className="block text-xs text-gray-500 mb-1">图标</label>
-                          <input
-                            type="text"
-                            value={item.icon}
-                            onChange={(e) => updateFeatureItem(item.id, 'icon', e.target.value)}
-                            className="w-full px-2 py-2 border border-gray-300 rounded-lg text-center text-lg"
-                            placeholder="✨"
-                          />
-                        </div>
-                        <div className="col-span-10 space-y-3">
-                          <input
-                            type="text"
-                            value={item.title}
-                            onChange={(e) => updateFeatureItem(item.id, 'title', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="特性标题..."
-                          />
-                          <textarea
-                            value={item.description}
-                            onChange={(e) => updateFeatureItem(item.id, 'description', e.target.value)}
-                            rows={2}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="特性描述..."
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )) || (
-                    <div className="text-center py-8 text-gray-500">暂无特性，点击上方按钮添加</div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* 环保影响编辑 */}
-            {activeSection === 'impact' && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <h2 className="text-xl font-bold text-gray-900">环保影响</h2>
-                  <button
-                    onClick={() => {
-                      setEditingImage('impact')
-                      setCurrentImage(content.impact?.image || '')
-                      fileInputRef.current?.click()
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  >
-                    <ImageIcon size={18} />
-                    <span>{content.impact?.image ? '更换配图' : '添加配图'}</span>
-                  </button>
-                </div>
-
-                {/* 图片预览区域 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">配图预览</label>
-                  {content.impact?.image ? (
-                    <div className="relative">
-                      <img
-                        src={content.impact.image}
-                        alt="Impact preview"
-                        className="w-full max-w-md h-48 object-cover rounded-lg shadow-sm border border-gray-200"
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">副标题</label>
+                      <input
+                        type="text"
+                        value={content.hero?.subtitle || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          hero: { ...content.hero, subtitle: e.target.value } as HeroBanner,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="例如：Authentic Samoan Treasures"
                       />
-                      <button
-                        onClick={() => {
-                          setContent({
-                            ...content,
-                            impact: { ...content.impact, image: '' } as ImpactSection,
-                          })
-                        }}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors"
-                        type="button"
-                        title="删除图片"
-                      >
-                        <X size={16} />
-                      </button>
                     </div>
-                  ) : (
-                    <div className="w-full max-w-md h-48 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                      <div className="text-center text-gray-400">
-                        <ImageIcon size={48} className="mx-auto mb-2 opacity-50" />
-                        <p className="text-sm">暂无配图，请点击上方按钮上传</p>
-                      </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">描述内容</label>
+                      <textarea
+                        rows={4}
+                        value={content.hero?.description || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          hero: { ...content.hero, description: e.target.value } as HeroBanner,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        placeholder="介绍品牌的核心价值..."
+                      />
                     </div>
-                  )}
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块标题</label>
-                  <input
-                    type="text"
-                    value={content.impact?.title || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      impact: { ...content.impact, title: e.target.value } as ImpactSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
-                    placeholder="例如：Our Environmental Impact"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块副标题</label>
-                  <input
-                    type="text"
-                    value={content.impact?.subtitle || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      impact: { ...content.impact, subtitle: e.target.value } as ImpactSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="例如：Making a difference, one product at a time"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">描述</label>
-                  <textarea
-                    value={content.impact?.description || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      impact: { ...content.impact, description: e.target.value } as ImpactSection,
-                    })}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="描述环保影响..."
-                  />
-                </div>
-
-                {/* 数据统计 */}
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-gray-900">数据统计</h3>
-                    <button
-                      onClick={addImpactStat}
-                      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                    >
-                      <Plus size={18} />
-                      <span>添加数据</span>
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {content.impact?.stats?.map((stat, index) => (
-                      <div key={stat.id} className="flex items-center gap-3 border border-gray-200 rounded-lg p-3 bg-gray-50">
-                        <span className="text-sm text-gray-500 w-8">{index + 1}.</span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">按钮文字</label>
                         <input
                           type="text"
-                          value={stat.value}
-                          onChange={(e) => updateImpactStat(stat.id, 'value', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                          placeholder="数值，如：1000+"
+                          value={content.hero?.ctaText || ''}
+                          onChange={(e) => setContent({
+                            ...content,
+                            hero: { ...content.hero, ctaText: e.target.value } as HeroBanner,
+                          })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="例如：Shop Collection"
                         />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">按钮链接</label>
                         <input
                           type="text"
-                          value={stat.label}
-                          onChange={(e) => updateImpactStat(stat.id, 'label', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                          placeholder="标签，如：Trees Planted"
+                          value={content.hero?.ctaLink || ''}
+                          onChange={(e) => setContent({
+                            ...content,
+                            hero: { ...content.hero, ctaLink: e.target.value } as HeroBanner,
+                          })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="/products"
                         />
-                        <button
-                          onClick={() => removeImpactStat(stat.id)}
-                          className="text-red-500 hover:text-red-700 p-2"
-                        >
-                          <Trash2 size={16} />
-                        </button>
                       </div>
-                    )) || (
-                      <div className="text-center py-4 text-gray-500">暂无数据，点击上方按钮添加</div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
 
-            {/* 用户评价编辑 */}
-            {activeSection === 'testimonials' && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <h2 className="text-xl font-bold text-gray-900">用户评价</h2>
-                  <button
-                    onClick={addTestimonial}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus size={18} />
-                    <span>添加评价</span>
-                  </button>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块标题</label>
-                  <input
-                    type="text"
-                    value={content.testimonials?.title || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      testimonials: { ...content.testimonials, title: e.target.value } as TestimonialsSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                    placeholder="例如：What Our Customers Say"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块副标题</label>
-                  <input
-                    type="text"
-                    value={content.testimonials?.subtitle || ''}
-                    onChange={(e) => setContent({
-                      ...content,
-                      testimonials: { ...content.testimonials, subtitle: e.target.value } as TestimonialsSection,
-                    })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="例如：Real stories from real customers"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">评价列表</label>
-                  {content.testimonials?.testimonials?.map((testimonial, index) => (
-                    <div key={testimonial.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div className="flex justify-between items-start mb-4">
-                        <span className="text-sm font-medium text-gray-500">评价 {index + 1}</span>
-                        <button
-                          onClick={() => removeTestimonial(testimonial.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-
-                      {/* 头像 */}
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">头像</label>
-                        <div className="flex items-center gap-3">
-                          {testimonial.avatar ? (
-                            <div className="relative">
-                              <img
-                                src={testimonial.avatar}
-                                alt="Avatar"
-                                className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                              />
-                              <button
-                                onClick={() => removeTestimonialAvatar(testimonial.id)}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                                type="button"
-                              >
-                                <X size={12} />
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center">
-                              <span className="text-2xl text-gray-400">👤</span>
-                            </div>
-                          )}
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleTestimonialAvatarSelect(e, testimonial.id)}
-                            className="hidden"
-                            id={`avatar-${testimonial.id}`}
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">背景图</label>
+                    <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 relative group">
+                      {content.hero?.backgroundImage ? (
+                        <>
+                          <img 
+                            src={content.hero.backgroundImage} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover"
                           />
-                          <label
-                            htmlFor={`avatar-${testimonial.id}`}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Upload size={16} />
-                            <span>{testimonial.avatar ? '更换' : '上传'}头像</span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                          <input
-                            type="text"
-                            value={testimonial.author}
-                            onChange={(e) => updateTestimonial(testimonial.id, 'author', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="评价者姓名"
-                          />
-                          <input
-                            type="text"
-                            value={testimonial.role}
-                            onChange={(e) => updateTestimonial(testimonial.id, 'role', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="角色/身份"
-                          />
-                        </div>
-                        <textarea
-                          value={testimonial.content}
-                          onChange={(e) => updateTestimonial(testimonial.id, 'content', e.target.value)}
-                          rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                          placeholder="评价内容..."
-                        />
-                        <div className="flex items-center gap-2">
-                          <label className="text-sm text-gray-600">评分：</label>
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              onClick={() => updateTestimonial(testimonial.id, 'rating', star)}
-                              className="focus:outline-none"
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button 
+                              onClick={() => handleImageUpload('hero')}
+                              className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100"
                             >
-                              <span className={`text-xl ${star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}`}>
-                                ★
-                              </span>
+                              <Upload size={18} />
                             </button>
-                          ))}
-                        </div>
-                      </div>
+                            <button 
+                              onClick={() => setContent({ ...content, hero: { ...content.hero, backgroundImage: '' } as HeroBanner })}
+                              className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700"
+                            >
+                              <X size={18} />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <button 
+                          onClick={() => handleImageUpload('hero')}
+                          className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 hover:text-blue-600 transition-colors"
+                        >
+                          <Plus size={32} className="mb-2" />
+                          <span className="text-sm">上传背景图</span>
+                        </button>
+                      )}
                     </div>
-                  )) || (
-                    <div className="text-center py-8 text-gray-500">暂无评价，点击上方按钮添加</div>
-                  )}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* 订阅通讯编辑 */}
+            {/* Features Section */}
+            {activeSection === 'features' && (
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Features (Journey) 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">管理首页的“工艺旅程”展示项。</p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">板块主标题</label>
+                      <input
+                        type="text"
+                        value={content.features?.title || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          features: { ...content.features, title: e.target.value } as FeaturesSection,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">板块副标题</label>
+                      <input
+                        type="text"
+                        value={content.features?.subtitle || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          features: { ...content.features, subtitle: e.target.value } as FeaturesSection,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-gray-800">特性列表</h3>
+                      <button 
+                        onClick={() => {
+                          const items = content.features?.items || []
+                          setContent({
+                            ...content,
+                            features: { 
+                              ...content.features, 
+                              items: [...items, { id: Date.now().toString(), title: '新特性', description: '', icon: 'Waves' }] 
+                            } as FeaturesSection
+                          })
+                        }}
+                        className="text-blue-600 hover:text-blue-700 text-sm font-bold flex items-center gap-1"
+                      >
+                        <Plus size={16} /> 添加项
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      {(content.features?.items || []).map((item, idx) => (
+                        <div key={item.id} className="p-6 bg-gray-50 rounded-xl border border-gray-200 relative group">
+                          <button 
+                            onClick={() => {
+                              const items = [...(content.features?.items || [])]
+                              items.splice(idx, 1)
+                              setContent({ ...content, features: { ...content.features, items } as FeaturesSection })
+                            }}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">特性标题</label>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => {
+                                  const items = [...(content.features?.items || [])]
+                                  items[idx] = { ...item, title: e.target.value }
+                                  setContent({ ...content, features: { ...content.features, items } as FeaturesSection })
+                                }}
+                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm"
+                              />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">描述内容</label>
+                              <input
+                                type="text"
+                                value={item.description}
+                                onChange={(e) => {
+                                  const items = [...(content.features?.items || [])]
+                                  items[idx] = { ...item, description: e.target.value }
+                                  setContent({ ...content, features: { ...content.features, items } as FeaturesSection })
+                                }}
+                                className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Brand Story Section */}
+            {activeSection === 'brandStory' && (
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Brand Story 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">管理首页的品牌故事文字、图片和按钮。</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">板块主标题</label>
+                      <input
+                        type="text"
+                        value={content.brandStory?.title || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          brandStory: { ...content.brandStory, title: e.target.value } as any,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">故事描述 (支持 HTML)</label>
+                      <textarea
+                        rows={10}
+                        value={content.brandStory?.description || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          brandStory: { ...content.brandStory, description: e.target.value } as any,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
+                        placeholder="使用 <p>, <strong> 等标签完善故事..."
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">按钮文字</label>
+                        <input
+                          type="text"
+                          value={content.brandStory?.buttonText || ''}
+                          onChange={(e) => setContent({
+                            ...content,
+                            brandStory: { ...content.brandStory, buttonText: e.target.value } as any,
+                          })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">按钮链接</label>
+                        <input
+                          type="text"
+                          value={content.brandStory?.buttonLink || ''}
+                          onChange={(e) => setContent({
+                            ...content,
+                            brandStory: { ...content.brandStory, buttonLink: e.target.value } as any,
+                          })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">故事图片</label>
+                    <div className="aspect-[4/5] bg-gray-100 rounded-3xl overflow-hidden border-2 border-dashed border-gray-300 relative group max-w-sm mx-auto">
+                      {content.brandStory?.image ? (
+                        <>
+                          <img 
+                            src={content.brandStory.image} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button 
+                              onClick={() => handleImageUpload('brandStory')}
+                              className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100"
+                            >
+                              <Upload size={18} />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <button 
+                          onClick={() => handleImageUpload('brandStory')}
+                          className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 hover:text-blue-600 transition-colors"
+                        >
+                          <Plus size={32} className="mb-2" />
+                          <span className="text-sm">上传图片</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Impact Section */}
+            {activeSection === 'impact' && (
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Impact Section 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">管理首页的影响力统计数据和品牌使命。</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">板块主标题</label>
+                      <input
+                        type="text"
+                        value={content.impact?.title || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          impact: { ...content.impact, title: e.target.value } as ImpactSection,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">使命描述</label>
+                      <textarea
+                        rows={4}
+                        value={content.impact?.description || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          impact: { ...content.impact, description: e.target.value } as ImpactSection,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-sm font-medium text-gray-700">影响力数据项</label>
+                        <button 
+                          onClick={() => {
+                            const stats = content.impact?.stats || []
+                            setContent({
+                              ...content,
+                              impact: { 
+                                ...content.impact, 
+                                stats: [...stats, { id: Date.now().toString(), value: '0', label: 'New Metric' }] 
+                              } as ImpactSection
+                            })
+                          }}
+                          className="text-blue-600 hover:text-blue-700 text-xs font-bold"
+                        >
+                          + 添加数据
+                        </button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {(content.impact?.stats || []).map((stat, idx) => (
+                          <div key={stat.id} className="p-4 bg-gray-50 border border-gray-200 rounded-xl relative group">
+                            <button 
+                              onClick={() => {
+                                const stats = [...(content.impact?.stats || [])]
+                                stats.splice(idx, 1)
+                                setContent({ ...content, impact: { ...content.impact, stats } as ImpactSection })
+                              }}
+                              className="absolute top-2 right-2 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X size={14} />
+                            </button>
+                            <input
+                              type="text"
+                              value={stat.value}
+                              onChange={(e) => {
+                                const stats = [...(content.impact?.stats || [])]
+                                stats[idx] = { ...stat, value: e.target.value }
+                                setContent({ ...content, impact: { ...content.impact, stats } as ImpactSection })
+                              }}
+                              className="w-full bg-transparent border-0 text-xl font-bold text-blue-600 p-0 focus:ring-0"
+                              placeholder="240+"
+                            />
+                            <input
+                              type="text"
+                              value={stat.label}
+                              onChange={(e) => {
+                                const stats = [...(content.impact?.stats || [])]
+                                stats[idx] = { ...stat, label: e.target.value }
+                                setContent({ ...content, impact: { ...content.impact, stats } as ImpactSection })
+                              }}
+                              className="w-full bg-transparent border-0 text-xs text-gray-500 p-0 focus:ring-0"
+                              placeholder="Artisans"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">背景图/形象图</label>
+                    <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 relative group">
+                      {content.impact?.image ? (
+                        <>
+                          <img 
+                            src={content.impact.image} 
+                            alt="Preview" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button 
+                              onClick={() => handleImageUpload('impact')}
+                              className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100"
+                            >
+                              <Upload size={18} />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <button 
+                          onClick={() => handleImageUpload('impact')}
+                          className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 hover:text-blue-600 transition-colors"
+                        >
+                          <Plus size={32} className="mb-2" />
+                          <span className="text-sm">上传图片</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Testimonials Section */}
+            {activeSection === 'testimonials' && (
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Testimonials 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">管理客户评价及反馈展示。</p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">板块主标题</label>
+                      <input
+                        type="text"
+                        value={content.testimonials?.title || ''}
+                        onChange={(e) => setContent({
+                          ...content,
+                          testimonials: { ...content.testimonials, title: e.target.value } as TestimonialsSection,
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-gray-800">评价列表</h3>
+                      <button 
+                        onClick={() => {
+                          const items = content.testimonials?.testimonials || []
+                          setContent({
+                            ...content,
+                            testimonials: { 
+                              ...content.testimonials, 
+                              testimonials: [...items, { id: Date.now().toString(), author: 'New Customer', role: 'Verified Buyer', content: '', rating: 5 }] 
+                            } as TestimonialsSection
+                          })
+                        }}
+                        className="text-blue-600 hover:text-blue-700 text-sm font-bold flex items-center gap-1"
+                      >
+                        <Plus size={16} /> 添加评价
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      {(content.testimonials?.testimonials || []).map((t, idx) => (
+                        <div key={t.id} className="p-6 bg-gray-50 rounded-xl border border-gray-200 relative group">
+                          <button 
+                            onClick={() => {
+                              const items = [...(content.testimonials?.testimonials || [])]
+                              items.splice(idx, 1)
+                              setContent({ ...content, testimonials: { ...content.testimonials, testimonials: items } as TestimonialsSection })
+                            }}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-4">
+                              <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">姓名</label>
+                                <input
+                                  type="text"
+                                  value={t.author}
+                                  onChange={(e) => {
+                                    const items = [...(content.testimonials?.testimonials || [])]
+                                    items[idx] = { ...t, author: e.target.value }
+                                    setContent({ ...content, testimonials: { ...content.testimonials, testimonials: items } as TestimonialsSection })
+                                  }}
+                                  className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">评价内容</label>
+                                <textarea
+                                  rows={3}
+                                  value={t.content}
+                                  onChange={(e) => {
+                                    const items = [...(content.testimonials?.testimonials || [])]
+                                    items[idx] = { ...t, content: e.target.value }
+                                    setContent({ ...content, testimonials: { ...content.testimonials, testimonials: items } as TestimonialsSection })
+                                  }}
+                                  className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm resize-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Newsletter Section */}
             {activeSection === 'newsletter' && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <h2 className="text-xl font-bold text-gray-900">订阅通讯</h2>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Newsletter 板块</h2>
+                  <p className="text-gray-500 text-sm mb-6">管理首页的订阅邮件区域。</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">板块标题</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">板块主标题</label>
                   <input
                     type="text"
                     value={content.newsletter?.title || ''}

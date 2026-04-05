@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowRight, Waves, PenTool as Tool, Heart } from 'lucide-react'
 
 const heritageSteps = [
@@ -7,7 +8,7 @@ const heritageSteps = [
     title: 'The Ocean Whisper',
     subtitle: 'Nature\'s Gift',
     description: 'Our journey begins at dawn on Samoa\'s southern coastline. We collect only naturally fallen shells — never harvested, never exploited. Every piece carries the actual texture of a Samoan morning: salt-kissed and timeless.',
-    image: 'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://sc02.alicdn.com/kf/A21fee7c2f37e41828c1e50b124b3fe041.png',
     icon: <Waves className="w-6 h-6" />,
     detail: 'Naturally Fallen Shells'
   },
@@ -16,7 +17,7 @@ const heritageSteps = [
     title: 'Ana\'s 15-Year Craft',
     subtitle: 'The Human Touch',
     description: 'Meet Ana, who has been hand-polishing treasures in her seaside village for over 15 years. Every hole is hand-drilled, and every surface is finished with organic coconut oil — a traditional method that honors the material without chemicals.',
-    image: 'https://images.unsplash.com/photo-1590736962382-72161b55979d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://sc02.alicdn.com/kf/A8e4e1093b33640ce93656d48c5b6eaa3d.png',
     icon: <Tool className="w-6 h-6" />,
     detail: '100% Hand-Drilled'
   },
@@ -25,7 +26,7 @@ const heritageSteps = [
     title: 'Alofa Atasi',
     subtitle: 'From Samoa with Love',
     description: 'Your piece isn\'t finished until Ana includes a hand-written card. "Alofa Atasi" means One Love. You aren\'t just buying a necklace; you are supporting a family and preserving a Pacific heritage that spans generations.',
-    image: 'https://images.unsplash.com/photo-1512418490979-92798ccc13a0?auto=format&fit=crop&w=800&q=80',
+    image: 'https://sc02.alicdn.com/kf/Acb7c584bfed94dc59d4e56613a1c5f952.png',
     icon: <Heart className="w-6 h-6" />,
     detail: 'Hand-Signed Cards'
   }
@@ -35,7 +36,7 @@ export default function Features() {
   const [activeStep, setActiveStep] = useState(0)
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 bg-[#F0E8DC] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-24">
@@ -117,9 +118,9 @@ export default function Features() {
                       <p className="font-sans text-ocean-blue/60 text-sm md:text-base leading-relaxed mb-6">
                         {step.description}
                       </p>
-                      <div className="inline-flex items-center gap-3 text-tropical-green font-sans text-xs font-black uppercase tracking-widest group-hover:gap-5 transition-all">
+                      <Link to="/our-story" className="inline-flex items-center gap-3 text-tropical-green font-sans text-xs font-black uppercase tracking-widest group-hover:gap-5 transition-all">
                         Learn more about Ana <ArrowRight size={14} />
-                      </div>
+                      </Link>
                     </div>
                   )}
                 </button>

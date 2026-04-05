@@ -46,10 +46,18 @@ export default function Footer() {
             {/* Social */}
             <div className="flex gap-3">
               {[
-                { icon: Instagram, href: '#', name: 'Instagram' },
+                { icon: Instagram, href: 'https://www.instagram.com/ecomafola_official/', name: 'Instagram' },
+                { icon: Twitter, href: 'https://x.com/MeijiaXue62817', name: 'Twitter' },
+                { 
+                  icon: (props: any) => (
+                    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+                      <path d="M12.525.02c1.31-.032 2.61.02 3.91-.013.11 1.58.64 3.09 1.63 4.34.88.94 2 1.65 3.23 2.08v3.69c-1.4-.23-2.69-.87-3.71-1.84-.1-.1-.19-.2-.28-.31-.03 2.67.01 5.34-.02 8a7.7 7.7 0 01-2.47 5.6c-1.52 1.34-3.5 2.1-5.54 2.15-2.04.05-4.04-.61-5.63-1.9a7.65 7.65 0 01-2.91-5.91c-.05-2.04.62-4.04 1.9-5.63a7.65 7.65 0 015.91-2.91c.08-.002.16-.002.24 0V7.12a4.1 4.1 0 00-3.1 1.52 4.1 4.1 0 00-.99 3.1 4.1 4.1 0 001.52 3.1 4.1 4.1 0 003.1.99c1.13-.03 2.18-.54 2.91-1.4a4.1 4.1 0 00.19-4.7V.02z"/>
+                    </svg>
+                  ), 
+                  href: 'https://www.tiktok.com/@ecomafola', 
+                  name: 'TikTok' 
+                },
                 { icon: Facebook, href: '#', name: 'Facebook' },
-                { icon: Twitter, href: '#', name: 'Twitter' },
-                { icon: Youtube, href: '#', name: 'YouTube' },
               ].map(({ icon: Icon, href, name }) => (
                 <a 
                   key={name} 

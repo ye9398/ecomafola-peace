@@ -177,7 +177,7 @@ function mockCalculateShipping(countryCode: string, items: any[]) {
   })
 
   // Apply $35 Free Shipping threshold
-  const isFree = itemsTotal >= 35
+  const isFree = itemsTotal >= 45
   const total = isFree ? 0 : baseTotal
 
   return {

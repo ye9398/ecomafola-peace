@@ -1,16 +1,17 @@
+import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 
 export default function BrandStory() {
   return (
-    <section className="py-20 bg-sand-beige">
+    <section className="py-20 bg-[#F0E8DC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image with Hand-drawn Frame */}
           <div className="relative">
-            <div className="aspect-[4/5] overflow-hidden shadow-xl">
+            <div className="aspect-[4/5] overflow-hidden shadow-xl rounded-[2.5rem]">
               <img
-                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80"
-                alt="Samoan artisan women weaving"
+                src="/images/brand-story-custom.jpg"
+                alt="Children in the South Pacific"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -51,10 +52,10 @@ export default function BrandStory() {
               ))}
             </div>
 
-            <a href="/our-story" className="btn-primary inline-flex items-center gap-2 group shadow-md">
+            <Link to="/our-story" className="btn-primary inline-flex items-center gap-2 group shadow-md">
               Read Our Story
               <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

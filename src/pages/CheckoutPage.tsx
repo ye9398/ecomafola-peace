@@ -91,7 +91,7 @@ export default function CheckoutPage() {
   // 适配新的购物车数据结构
   const items = cart?.lines?.edges?.map(edge => ({
     lineId: edge.node.id,  // 购物车行 ID（用于更新/删除）
-    id: edge.node.merchandise.product.id || edge.node.id,
+    id: (edge.node.merchandise.product.id || edge.node.id).split('/').pop() || '0',
     title: edge.node.merchandise.product.title,
     price: parseFloat(edge.node.merchandise.price.amount),
     quantity: edge.node.quantity,
@@ -113,7 +113,10 @@ export default function CheckoutPage() {
     }
   }, [payMethod])
 
-  const grandTotal = total + (shipping?.total_shipping_usd ?? 0)
+  const subtotal = total;
+  const FREE_SHIPPING_THRESHOLD = 45;
+  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const grandTotal = total + (isFreeShipping ? 0 : (shipping?.total_shipping_usd ?? 0))
 
   const handleQuantityChange = (lineId: string, delta: number) => {
     const item = items.find(i => i.id === lineId)
@@ -143,7 +146,7 @@ export default function CheckoutPage() {
     setPlacing(true)
     try {
       const result = await api.createOrder({
-        items: items.map(i => ({ product_id: i.id, quantity: i.quantity, price_usd: i.price_usd })),
+        items: items.map(i => ({ product_id: i.id, quantity: i.quantity, price_usd: i.price })),
         shipping_addr: { ...address, country_code: countryCode, email: contactEmail },
         payment_method: payMethod,
         subtotal_usd: total,
@@ -280,7 +283,7 @@ export default function CheckoutPage() {
                             <Truck size={14} />
                             <span>{shipping.carrier} · {shipping.estimated_days}</span>
                           </div>
-                          <span className="font-semibold text-green-700">${(shipping.total_shipping_usd ?? 0).toFixed(2)}</span>
+                          <span className="font-semibold text-green-700">{isFreeShipping ? 'FREE' : `$${(shipping.total_shipping_usd ?? 0).toFixed(2)}`}</span>
                         </div>
                       </div>
                     ) : (
@@ -579,7 +582,7 @@ export default function CheckoutPage() {
                   {shipLoading ? (
                     <span className="text-gray-400 animate-pulse">Calculating…</span>
                   ) : shipping?.supported ? (
-                    <span className="text-green-600 font-medium">${(shipping.total_shipping_usd ?? 0).toFixed(2)}</span>
+                    <span className="text-green-600 font-medium">{isFreeShipping ? 'FREE' : `$${(shipping.total_shipping_usd ?? 0).toFixed(2)}`}</span>
                   ) : (
                     <span className="text-amber-600 font-medium">Calculated at next step</span>
                   )}

@@ -8,7 +8,7 @@ export default function AnnouncementBar() {
   return (
     <div className="bg-tropical-green text-white text-center py-2 px-4 relative z-[60]">
       <p className="font-sans text-sm font-medium tracking-wide">
-        🌊 Grand Opening Sale — Free Shipping on Orders Over $50! Use Code: <span className="font-bold underline">ALOHA15</span> for 15% Off
+        🌊 Grand Opening Sale — Free Shipping on Orders Over $45! Use Code: <span className="font-bold underline">ALOHA15</span> for 15% Off
       </p>
       <button
         onClick={() => setVisible(false)}

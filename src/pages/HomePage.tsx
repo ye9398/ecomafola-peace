@@ -5,6 +5,7 @@ import Products from '../components/Products'
 import BrandStory from '../components/BrandStory'
 import Impact from '../components/Impact'
 import Newsletter from '../components/Newsletter'
+import Contact from '../components/Contact'
 
 export default function HomePage() {
   return (
