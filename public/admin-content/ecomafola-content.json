@@ -1,1 +1,38 @@
-﻿{"products":{}}
+{
+  "products": {
+    "samoan-handcrafted-coconut-bowl": {
+      "story": {
+        "title": "",
+        "subtitle": "",
+        "content": "",
+        "image": "/images/products/samoan-handcrafted-coconut-bowl/story.jpeg"
+      },
+      "environmental": {
+        "title": "",
+        "subtitle": "",
+        "content": "",
+        "image": "/images/products/samoan-handcrafted-coconut-bowl/environmental.jpeg"
+      },
+      "partnership": {
+        "title": "",
+        "subtitle": "",
+        "content": "",
+        "image": "/images/products/samoan-handcrafted-coconut-bowl/partnership.jpeg"
+      },
+      "specifications": {
+        "size": "",
+        "weight": "",
+        "material": "",
+        "origin": "",
+        "care": "",
+        "image": "/images/products/samoan-handcrafted-coconut-bowl/specifications.jpeg"
+      },
+      "guarantee": {
+        "title": "",
+        "subtitle": "",
+        "content": "",
+        "image": "/images/products/samoan-handcrafted-coconut-bowl/guarantee.jpeg"
+      }
+    }
+  }
+}
