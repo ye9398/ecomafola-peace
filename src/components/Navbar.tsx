@@ -146,6 +146,11 @@ export default function Navbar() {
             }`}>
               Contact
             </Link>
+            <Link to="/blog" className={`font-sans text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-tropical-green ${
+              isScrolled ? 'text-ocean-blue/70' : 'text-white/80'
+            }`}>
+              Journal
+            </Link>
           </div>
 
           {/* Right Actions */}
@@ -266,10 +271,10 @@ export default function Navbar() {
           </form>
 
           <div className="space-y-4">
-            {['Home', 'Products', 'Our Story', 'Impact', 'Contact'].map((item) => (
+            {['Home', 'Products', 'Our Story', 'Impact', 'Contact', 'Journal'].map((item) => (
               <Link
                 key={item}
-                to={`/${item.toLowerCase().replace(' ', '-') === 'home' ? '' : item.toLowerCase().replace(' ', '-')}`}
+                to={`/${item.toLowerCase().replace(' ', '-') === 'home' ? '' : item.toLowerCase().replace(' ', '-') === 'journal' ? 'blog' : item.toLowerCase().replace(' ', '-')}`}
                 className="block py-4 text-ocean-blue font-serif text-xl font-bold border-b border-gray-50 last:border-0 hover:text-tropical-green transition-colors"
                 onClick={() => setMobileOpen(false)}
               >

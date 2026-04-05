@@ -11,6 +11,7 @@ import AccountPage from './pages/AccountPage'
 import ProductListPage from './pages/ProductListPage'
 import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
+import { BlogListPage, BlogPostPage } from './pages/BlogPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { AuthProvider } from './context/AuthContext'
 import AnnouncementBar from './components/AnnouncementBar'
@@ -158,6 +159,20 @@ function App() {
          <div className="min-h-screen bg-coral-white">
            <Navbar />
            <main><ContactPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/blog" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><BlogListPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/blog/:id" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><BlogPostPage /></main>
            <Footer />
          </div>
        } />

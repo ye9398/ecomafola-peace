@@ -18,7 +18,7 @@ const navLinks: Record<string, NavLinkItem[]> = {
     { label: 'Our Story', href: '/our-story' },
     { label: 'Impact', href: '/impact' },
     { label: 'Artisan Partners', href: '/our-story' },
-    { label: 'Blog', href: '/impact' },
+    { label: 'Blog', href: '/blog' },
   ],
   Support: [
     { label: 'Contact Us', href: '/contact' },

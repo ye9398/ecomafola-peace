@@ -91,6 +91,12 @@ export const SHOPIFY_QUERIES = {
       productType
       vendor
       tags
+      metafields(identifiers: [{namespace: "custom", key: "volume_discount"}, {namespace: "custom", key: "frequently_bought_together"}]) {
+        id
+        namespace
+        key
+        value
+      }
       priceRange {
         minVariantPrice {
           amount
@@ -320,6 +326,49 @@ export async function getAllProducts() {
   `);
 
   return data?.products?.edges?.map((e: any) => e.node) || [];
+}
+
+// Get product recommendations
+export async function getProductRecommendations(productId: string) {
+  const { data, errors } = await shopifyClient.request(`
+    query getProductRecommendations($productId: ID!) {
+      productRecommendations(productId: $productId) {
+        id
+        title
+        handle
+        productType
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        images(first: 1) {
+          edges {
+            node {
+              url
+              altText
+            }
+          }
+        }
+        variants(first: 1) {
+          edges {
+            node {
+              id
+              availableForSale
+            }
+          }
+        }
+      }
+    }
+  `, { variables: { productId } });
+
+  if (errors) {
+    console.error('Shopify recommendations errors:', errors);
+    return [];
+  }
+
+  return data?.productRecommendations || [];
 }
 
 // Get products by collection
