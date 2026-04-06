@@ -82,7 +82,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 overflow-hidden">
+            <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 overflow-hidden">
                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <span className={`font-serif font-bold text-base md:text-xl tracking-tight transition-colors duration-300 ${

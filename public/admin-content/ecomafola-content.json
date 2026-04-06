@@ -33,6 +33,129 @@
         "content": "",
         "image": "/images/products/samoan-handcrafted-coconut-bowl/guarantee.jpeg"
       }
+    },
+    "samoan-woven-basket": {
+      "story": {
+        "image": "/images/products/samoan-woven-basket/story.jpeg"
+      },
+      "environmental": {
+        "image": "/images/products/samoan-woven-basket/environmental.jpeg"
+      },
+      "partnership": {
+        "image": "/images/products/samoan-woven-basket/partnership.jpeg"
+      },
+      "guarantee": {
+        "image": "/images/products/samoan-woven-basket/guarantee.jpeg"
+      },
+      "specifications": {
+        "image": "/images/products/samoan-woven-basket/specifications.jpeg"
+      }
+    },
+    "samoan-handwoven-grass-tote-bag": {
+      "story": {
+        "image": "/images/products/samoan-handwoven-grass-tote-bag/story.jpeg",
+        "content": "The pandanus tote bag evolves traditional Samoan weaving into modern functional art. Originally market bags for village produce, they’re refined by our artisan collective to meet contemporary needs while preserving cultural authenticity. Premium coastal pandanus leaves are sun-dried 5-7 days for optimal flexibility. Master weaver Malia leads the process, creating a tight, durable weave engineered to support heavy loads without stretching. Reinforced handles use a triple-layer technique for extra strength—a signature collective innovation. Each tote requires 3-4 days of dedicated weaving."
+      },
+      "environmental": {
+        "image": "/images/products/samoan-handwoven-grass-tote-bag/environmental.jpeg"
+      },
+      "partnership": {
+        "image": "/images/products/samoan-handwoven-grass-tote-bag/partnership.jpeg"
+      },
+      "specifications": {
+        "image": "/images/products/samoan-handwoven-grass-tote-bag/specifications.jpeg"
+      },
+      "guarantee": {
+        "image": "/images/products/samoan-handwoven-grass-tote-bag/guarantee.jpeg"
+      }
+    },
+    "samoan-handcrafted-shell-necklace": {
+      "guarantee": {
+        "image": "/images/products/samoan-handcrafted-shell-necklace/guarantee.jpeg"
+      },
+      "story": {
+        "image": "/images/products/samoan-handcrafted-shell-necklace/story.jpeg",
+        "content": "For generations, Samoan artisans have transformed shells from pristine beaches into wearable art carrying the Pacific’s spirit. Following ancestral matrilineal techniques, the process begins at dawn as artisans select shells sustainably harvested from shallow reefs. Each piece is cleaned, sorted, and hand-drilled with traditional stone tools. Master craftswoman Aisha, with over 40 years of experience, produces fewer than 20 necklaces weekly in her Fagali'i workshop, ensuring every strand meets her exacting standards."
+      },
+      "environmental": {
+        "image": "/images/products/samoan-handcrafted-shell-necklace/environmental.jpeg"
+      },
+      "partnership": {
+        "image": "/images/products/samoan-handcrafted-shell-necklace/partnership.jpeg"
+      },
+      "specifications": {
+        "image": "/images/products/samoan-handcrafted-shell-necklace/specifications.jpeg"
+      }
+    },
+    "handwoven-papua-new-guinea-beach-bag": {
+      "guarantee": {
+        "image": "/images/products/handwoven-papua-new-guinea-beach-bag/guarantee.jpeg"
+      },
+      "story": {
+        "image": "/images/products/handwoven-papua-new-guinea-beach-bag/story.jpeg",
+        "content": "Designed for coastal living, our handwoven beach bag blends traditional Samoan weaving with modern functionality. Crafted by master weavers, its extra-large design holds towels, sunscreen, and seaside essentials. The open-weave pattern lets sand fall through, while reinforced handles support heavy loads without stretching. Master weaver Sina, leading the Falease'ela collective, developed the signature diamond weave—tight enough for small items yet breathable for quick drying after ocean dips."
+      },
+      "environmental": {
+        "image": "/images/products/handwoven-papua-new-guinea-beach-bag/environmental.jpeg"
+      },
+      "partnership": {
+        "image": "/images/products/handwoven-papua-new-guinea-beach-bag/partnership.jpeg"
+      },
+      "specifications": {
+        "image": "/images/products/handwoven-papua-new-guinea-beach-bag/specifications.jpeg"
+      }
+    },
+    "natural-coir-handwoven-coconut-palm-doormat": {
+      "story": {
+        "image": "/images/products/natural-coir-handwoven-coconut-palm-doormat/story.jpeg",
+        "content": "Our natural coir doormats transform coconut husk fibers into durable welcome mats honoring function and heritage. Used throughout the Pacific for centuries, coir offers remarkable durability and resistance to moisture and pests. Artisans collect husks from local groves, extract fibers via traditional retting, and hand-spin them into resilient strands. The resulting tight weave effectively scrapes dirt while ensuring years of daily use. Master weaver Paulo, with over 30 years of experience, perfects this signature pattern that defines our quality."
+      },
+      "environmental": {
+        "image": "/images/products/natural-coir-handwoven-coconut-palm-doormat/environmental.jpeg"
+      },
+      "partnership": {
+        "image": "/images/products/natural-coir-handwoven-coconut-palm-doormat/partnership.jpeg"
+      },
+      "specifications": {
+        "image": "/images/products/natural-coir-handwoven-coconut-palm-doormat/specifications.jpeg"
+      },
+      "guarantee": {
+        "image": "/images/products/natural-coir-handwoven-coconut-palm-doormat/guarantee.jpeg"
+      }
+    },
+    "samoan-handcrafted-natural-shell-coasters": {
+      "story": {
+        "title": "A Symphony of Sea & Stone",
+        "subtitle": "Directly from the Artisan's Hands",
+        "content": "Every coaster in the Tapa Sun set is a singular work of art, reflecting the soul of the Pacific. Our artisans in Samoa hand-select and polish each shell with meticulous care, arranging them in the traditional Tapa pattern that has guided South Pacific design for centuries. This intricate process honors ancestral wisdom, transforming simple materials into enduring beauty. This isn't just home decor; it's a tangible piece of ocean history that brings the warmth and spirit of the islands to your table.",
+        "image": "/images/products/samoan-handcrafted-natural-shell-coasters/story.jpeg"
+      },
+      "environmental": {
+        "title": "Zero-Waste Ocean Harvest",
+        "subtitle": "Eco-Friendly Elegance",
+        "content": "We use sustainably harvested seashells and natural resin bases, complemented by hand-woven rattan accents sourced from regenerative coastal farms. By repurposing shells found in local artisan communities and utilizing fast-growing, biodegradable rattan, we ensure that every set of coasters supports coastal ecosystem balance. This holistic approach minimizes environmental impact while providing you with durable, heat-resistant luxury that honors both the ocean and the land.",
+        "image": "/images/products/samoan-handcrafted-natural-shell-coasters/environmental.jpeg"
+      },
+      "partnership": {
+        "title": "The Weaver's Legacy",
+        "subtitle": "Empowering Local Cooperatives",
+        "content": "This set is produced in partnership with the Alofa Artisan Cooperative, a collective dedicated to preserving Samoan cultural heritage. By purchasing these coasters, you are directly contributing to a sustainable wage for 12 families in independent Samoa, empowering them to thrive within their communities. Your support ensures that the intricate 'Tapa Sun' techniques are not only maintained but proudly passed to the next generation, keeping the spirit of Pacific craftsmanship alive.",
+        "image": "/images/products/samoan-handcrafted-natural-shell-coasters/partnership.jpeg"
+      },
+      "specifications": {
+        "size": "6.3 inches (16cm) /7.1 inches (18cm) /7.9 inches (20cm) diameter",
+        "weight": "160g per piece",
+        "material": "Natural Seashells, Eco-Resin",
+        "origin": "Apia, Samoa",
+        "care": "Wipe with a damp cloth; avoid harsh chemicals",
+        "image": "/images/products/samoan-handcrafted-natural-shell-coasters/specifications.jpeg"
+      },
+      "guarantee": {
+        "title": "The Artisan Promise",
+        "subtitle": "Lifetime Quality Guarantee",
+        "content": "We stand behind our craftsmanship. If your shell coasters crack or fail due to natural wear or artisan error, we will replace them—no questions asked. Your investment supports heritage, and we protect that investment for life with a commitment to enduring quality that honors the hands that made them.",
+        "image": "/images/products/samoan-handcrafted-natural-shell-coasters/guarantee.jpeg"
+      }
     }
   }
 }
