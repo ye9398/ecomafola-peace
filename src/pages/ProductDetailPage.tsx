@@ -61,81 +61,87 @@ const SHOPIFY_HANDLE_TO_DESCRIPTION: Record<string, string> = {
 
 // ---------- Inline Sub-components ----------
 
-// Volume Savings with tier pricing table
+// Smart Volume Savings — auto-detects Volume vs Bundle mode by category
 const VolumeSavings = ({ product, qty, setQty, recommendations, onBundleSelect }: any) => {
-  const price = product?.price_usd || 0
-  const hasVolumeTag = product?.tags?.includes('upsell:volume_discount')
-  const hasBundleTag = product?.tags?.includes('upsell:set_bundle')
+  const CATEGORIES_WITH_VOLUME_DISCOUNT = ['coconut-bowls', 'shell-coasters', 'natural-soaps', 'bowls', 'coasters', 'soaps']
+  const category = product?.category?.toLowerCase() || ''
+  const price = parseFloat(product?.price_usd || 0)
+  const variantId = product?.variants?.edges?.[0]?.node?.id
 
-  // Bundle mode (Mix & Match)
-  if (hasBundleTag && recommendations && recommendations.length >= 1) {
-    const bundleProducts = recommendations.slice(0, 2).map((r: any) => ({
-      id: r.id,
-      title: r.title || r.name,
-      price: parseFloat(r.priceRange?.minVariantPrice?.amount || r.price_usd || '0'),
-      variantId: r.variants?.edges?.[0]?.node?.id || r.id,
-      image: r.images?.edges?.[0]?.node?.url || r.image_url
-    }))
+  const hasVolumeTag = product?.tags?.includes('upsell:volume_discount') || CATEGORIES_WITH_VOLUME_DISCOUNT.some((c: string) => category.includes(c))
+  const isExcluded = ['jewelry', 'necklaces', 'earrings', 'bags', 'tote', 'decor', 'basket', 'tapa', 'accessories'].some((c: string) => category.includes(c)) || !hasVolumeTag
 
-    const mainItem = {
-      id: product.id,
-      title: product.name,
-      price: price,
-      variantId: product.variants?.edges?.[0]?.node?.id || product.id,
-      image: product.image_url
-    }
+  const hasRecommendations = recommendations && recommendations.length > 0
 
+  // ===== BUNDLE MODE (jewelry, bags, accessories — mix & match) =====
+  if ((product?.tags?.includes('upsell:set_bundle') || isExcluded) && hasRecommendations) {
+    const recs = (recommendations || []).slice(0, 2)
     const bundles = [
       {
         id: 'full-set',
-        label: `Pacific Style Set (${bundleProducts.length + 1} items)`,
-        badge: 'Biggest Savings',
+        items: [
+          { id: variantId, title: product.name, price: price },
+          ...(recs[0] ? [{
+            id: recs[0].variants?.edges?.[0]?.node?.id || recs[0].id,
+            title: recs[0].title || recs[0].name,
+            price: parseFloat(recs[0].price_usd || recs[0].priceRange?.minVariantPrice?.amount || 0)
+          }] : []),
+          ...(recs[1] ? [{
+            id: recs[1].variants?.edges?.[0]?.node?.id || recs[1].id,
+            title: recs[1].title || recs[1].name,
+            price: parseFloat(recs[1].price_usd || recs[1].priceRange?.minVariantPrice?.amount || 0)
+          }] : [])
+        ],
         discount: 0.15,
-        items: [mainItem, ...bundleProducts]
+        label: 'Pacific Style Set',
+        badge: 'Best Value'
       },
       {
-        id: 'duo',
+        id: 'duo-set',
+        items: [
+          { id: variantId, title: product.name, price: price },
+          ...(recs[0] ? [{
+            id: recs[0].variants?.edges?.[0]?.node?.id || recs[0].id,
+            title: recs[0].title || recs[0].name,
+            price: parseFloat(recs[0].price_usd || recs[0].priceRange?.minVariantPrice?.amount || 0)
+          }] : [])
+        ],
+        discount: 0.08,
         label: 'Essential Duo',
-        badge: 'Most Popular',
-        discount: 0.10,
-        items: [mainItem, bundleProducts[0]].filter(Boolean)
+        badge: 'Most Gifted'
       },
       {
-        id: 'single',
-        label: '1 Item',
-        badge: null,
+        id: 'solo',
+        items: [{ id: variantId, title: product.name, price: price }],
         discount: 0,
-        items: [mainItem]
+        label: 'Individual Item',
+        badge: null
       }
-    ]
+    ].filter(b => b.items.length > 0)
 
-    const [selectedBundle, setSelectedBundle] = useState(bundles[0].id)
-
-    const handleSelect = (bundle: any) => {
-      setSelectedBundle(bundle.id)
-      if (onBundleSelect) {
-        onBundleSelect(bundle.items.map((i: any) => ({ variantId: i.variantId, quantity: 1 })))
-      }
-    }
+    const [selectedBundle, setSelectedBundle] = useState('solo')
 
     return (
       <div className="mt-8 space-y-4 animate-fade-in">
         <div className="relative flex items-center justify-center py-2">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-amber-100"></div></div>
           <span className="relative px-4 bg-coral-white font-serif text-sm font-bold text-ocean-blue uppercase tracking-widest">
-            Exclusive Volume Savings
+            Mix & Match Bundles
           </span>
         </div>
         <div className="space-y-3">
           {bundles.map(bundle => {
             const isSelected = selectedBundle === bundle.id
-            const originalTotal = bundle.items.reduce((sum: number, i: any) => sum + i.price, 0)
+            const originalTotal = bundle.items.reduce((sum: number, item: any) => sum + item.price, 0)
             const discountedTotal = (originalTotal * (1 - bundle.discount)).toFixed(2)
-            
+
             return (
               <div
                 key={bundle.id}
-                onClick={() => handleSelect(bundle)}
+                onClick={() => {
+                  setSelectedBundle(bundle.id)
+                  onBundleSelect && onBundleSelect(bundle.items.map((item: any) => ({ variantId: item.id, quantity: 1 })))
+                }}
                 className={`relative cursor-pointer rounded-2xl p-4 border-2 transition-all duration-300 ${
                   isSelected ? 'border-amber-400 bg-white shadow-md ring-2 ring-amber-400/10' : 'border-gray-100 bg-white/50 hover:border-amber-200'
                 }`}
@@ -185,7 +191,7 @@ const VolumeSavings = ({ product, qty, setQty, recommendations, onBundleSelect }
     )
   }
 
-  // Volume mode (standard tier pricing)
+  // ===== VOLUME MODE (bowls, coasters, soaps — buy multiples of same item) =====
   if (!hasVolumeTag) return null
 
   const tiers = [
