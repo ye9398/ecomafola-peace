@@ -329,6 +329,78 @@ const CompleteTheLook = ({ recommendations }: any) => {
   )
 }
 
+// Fallback FBT pairings when Shopify recommendations API returns empty
+const FALLBACK_FBT: Record<string, { handle: string; title: string; price: string }[]> = {
+  'samoan-handcrafted-coconut-bowl': [
+    { handle: 'samoan-handwoven-grass-tote-bag', title: 'Samoan Handwoven Grass Tote Bag', price: '49.99' },
+    { handle: 'samoan-woven-basket', title: 'Samoan Woven Basket', price: '39.99' }
+  ],
+  'samoan-handwoven-grass-tote-bag': [
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' },
+    { handle: 'samoan-handwoven-half-moon-bag', title: 'Samoan Handwoven Half Moon Bag', price: '49.99' }
+  ],
+  'samoan-handcrafted-shell-necklace': [
+    { handle: 'polynesian-shell-necklace', title: 'Polynesian Shell Necklace', price: '19.99' },
+    { handle: 'artisan-alloy-shell-earrings', title: 'Artisan Alloy Shell Earrings', price: '16.99' }
+  ],
+  'samoan-woven-basket': [
+    { handle: 'handwoven-seagrass-basket', title: 'Handwoven Seagrass Basket', price: '38.99' },
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' }
+  ],
+  'samoan-handcrafted-natural-shell-coasters': [
+    { handle: 'hand-woven-husk-coasters', title: 'Hand Woven Husk Coasters', price: '17.99' },
+    { handle: 'ceramic-soul-incense-holder', title: 'Ceramic Soul Incense Holder', price: '24.99' }
+  ],
+  'polynesian-shell-necklace': [
+    { handle: 'samoan-handcrafted-shell-necklace', title: 'Samoan Handcrafted Shell Necklace', price: '24.99' },
+    { handle: 'artisan-alloy-shell-earrings', title: 'Artisan Alloy Shell Earrings', price: '16.99' }
+  ],
+  'artisan-alloy-shell-earrings': [
+    { handle: 'polynesian-shell-necklace', title: 'Polynesian Shell Necklace', price: '19.99' },
+    { handle: 'samoan-handcrafted-shell-necklace', title: 'Samoan Handcrafted Shell Necklace', price: '24.99' }
+  ],
+  'hand-woven-husk-coasters': [
+    { handle: 'samoan-handcrafted-natural-shell-coasters', title: 'Samoan Handcrafted Natural Shell Coasters', price: '15.99' },
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' }
+  ],
+  'ceramic-soul-incense-holder': [
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' },
+    { handle: 'samoan-handcrafted-natural-shell-coasters', title: 'Samoan Handcrafted Natural Shell Coasters', price: '15.99' }
+  ],
+  'polynesian-rattan-chandelier': [
+    { handle: 'artisan-rattan-coastal-mirror', title: 'Artisan Rattan Coastal Mirror', price: '98.99' },
+    { handle: 'mother-of-pearl-inlaid-tray', title: 'Mother of Pearl Inlaid Tray', price: '88.99' }
+  ],
+  'artisan-rattan-coastal-mirror': [
+    { handle: 'polynesian-rattan-chandelier', title: 'Polynesian Rattan Chandelier', price: '148.99' },
+    { handle: 'handwoven-seagrass-basket', title: 'Handwoven Seagrass Basket', price: '38.99' }
+  ],
+  'mother-of-pearl-inlaid-tray': [
+    { handle: 'artisan-rattan-coastal-mirror', title: 'Artisan Rattan Coastal Mirror', price: '98.99' },
+    { handle: 'samoan-handcrafted-natural-shell-coasters', title: 'Samoan Handcrafted Natural Shell Coasters', price: '15.99' }
+  ],
+  'handwoven-seagrass-basket': [
+    { handle: 'samoan-woven-basket', title: 'Samoan Woven Basket', price: '39.99' },
+    { handle: 'samoan-handwoven-grass-tote-bag', title: 'Samoan Handwoven Grass Tote Bag', price: '49.99' }
+  ],
+  'samoan-handwoven-half-moon-bag': [
+    { handle: 'samoan-handwoven-grass-tote-bag', title: 'Samoan Handwoven Grass Tote Bag', price: '49.99' },
+    { handle: 'samoan-woven-basket', title: 'Samoan Woven Basket', price: '39.99' }
+  ],
+  'natural-coir-handwoven-coconut-palm-doormat': [
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' },
+    { handle: 'hand-woven-husk-coasters', title: 'Hand Woven Husk Coasters', price: '17.99' }
+  ],
+  'handwoven-papua-new-guinea-beach-bag': [
+    { handle: 'samoan-handwoven-grass-tote-bag', title: 'Samoan Handwoven Grass Tote Bag', price: '49.99' },
+    { handle: 'samoan-handwoven-half-moon-bag', title: 'Samoan Handwoven Half Moon Bag', price: '49.99' }
+  ],
+  'pacific-artisan-gift-set': [
+    { handle: 'samoan-handcrafted-coconut-bowl', title: 'Samoan Handcrafted Coconut Bowl', price: '29.99' },
+    { handle: 'polynesian-shell-necklace', title: 'Polynesian Shell Necklace', price: '19.99' }
+  ]
+}
+
 // ---------- Main PDP Component ----------
 
 interface Product {
@@ -428,12 +500,38 @@ const ProductDetailPage = () => {
     ;(async () => {
       try {
         const recs = await getProductRecommendations(product.id)
-        setRecommendations(recs || [])
+        if (recs && recs.length > 0) {
+          setRecommendations(recs)
+        } else {
+          // Fallback: fetch FBT products by handle when API returns empty
+          const fallbackItems = FALLBACK_FBT[shopifyHandle]
+          if (fallbackItems && fallbackItems.length > 0) {
+            const fallbackProducts = await Promise.all(
+              fallbackItems.map(async (item) => {
+                try {
+                  const p = await getProductByHandle(item.handle)
+                  return p
+                } catch {
+                  // Return a minimal object if fetch fails
+                  return {
+                    id: item.handle,
+                    title: item.title,
+                    handle: item.handle,
+                    priceRange: { minVariantPrice: { amount: item.price, currencyCode: 'USD' } },
+                    images: { edges: [] },
+                    variants: { edges: [] }
+                  }
+                }
+              })
+            )
+            setRecommendations(fallbackProducts.filter(Boolean))
+          }
+        }
       } catch (err) {
         console.error('Failed to fetch recommendations:', err)
       }
     })()
-  }, [product?.id])
+  }, [product?.id, shopifyHandle])
 
   const handleAddToCart = async () => {
     if (!product) return
