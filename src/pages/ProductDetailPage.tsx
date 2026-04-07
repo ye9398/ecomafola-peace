@@ -192,7 +192,8 @@ const VolumeSavings = ({ product, qty, setQty, recommendations, onBundleSelect }
   }
 
   // ===== VOLUME MODE (bowls, coasters, soaps — buy multiples of same item) =====
-  if (!hasVolumeTag) return null
+  // If category is excluded (jewelry, bags, etc.), never show Volume mode — wait for recommendations to load for Bundle mode
+  if (!hasVolumeTag || isExcluded) return null
 
   const tiers = [
     { qty: 4, discount: 0.20, label: '4+ Items', badge: 'Biggest Savings' },
