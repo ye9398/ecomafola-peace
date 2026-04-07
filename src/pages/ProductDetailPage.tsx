@@ -509,33 +509,47 @@ const ProductDetailPage = () => {
         const recs = await getProductRecommendations(product.id)
         if (recs && recs.length > 0) {
           setRecommendations(recs)
-        } else {
-          // Fallback: fetch FBT products by handle when API returns empty
-          const fallbackItems = FALLBACK_FBT[shopifyHandle]
-          if (fallbackItems && fallbackItems.length > 0) {
-            const fallbackProducts = await Promise.all(
-              fallbackItems.map(async (item) => {
-                try {
-                  const p = await getProductByHandle(item.handle)
-                  return p
-                } catch {
-                  // Return a minimal object if fetch fails
-                  return {
-                    id: item.handle,
-                    title: item.title,
-                    handle: item.handle,
-                    priceRange: { minVariantPrice: { amount: item.price, currencyCode: 'USD' } },
-                    images: { edges: [] },
-                    variants: { edges: [] }
-                  }
-                }
-              })
-            )
-            setRecommendations(fallbackProducts.filter(Boolean))
-          }
+          return
         }
       } catch (err) {
         console.error('Failed to fetch recommendations:', err)
+      }
+
+      // Fallback: try fetching FBT products by handle, with static data as last resort
+      const fallbackItems = FALLBACK_FBT[shopifyHandle]
+      if (!fallbackItems || fallbackItems.length === 0) return
+
+      try {
+        const fallbackProducts = await Promise.all(
+          fallbackItems.map(async (item) => {
+            try {
+              const p = await getProductByHandle(item.handle)
+              if (p) return p
+            } catch { /* ignore */ }
+            // Static fallback if API fails
+            return {
+              id: `gid://shopify/Product/${item.handle}`,
+              title: item.title,
+              handle: item.handle,
+              productType: '',
+              priceRange: { minVariantPrice: { amount: item.price, currencyCode: 'USD' } },
+              images: { edges: [] },
+              variants: { edges: [] }
+            }
+          })
+        )
+        setRecommendations(fallbackProducts.filter(Boolean))
+      } catch (err) {
+        // Last resort: use pure static data
+        setRecommendations(fallbackItems.map(item => ({
+          id: `gid://shopify/Product/${item.handle}`,
+          title: item.title,
+          handle: item.handle,
+          productType: '',
+          priceRange: { minVariantPrice: { amount: item.price, currencyCode: 'USD' } },
+          images: { edges: [] },
+          variants: { edges: [] }
+        })))
       }
     })()
   }, [product?.id, shopifyHandle])
