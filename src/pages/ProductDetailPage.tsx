@@ -645,6 +645,20 @@ const ProductDetailPage = () => {
                     "unitCode": "d"
                   }
                 }
+              },
+              "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "Worldwide",
+                "shippingPolicyCountry": "Worldwide",
+                "returnShippingFeesAmount": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "USD"
+                },
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnDays": 30,
+                "returnMethod": "https://schema.org/ReturnByMail",
+                "returnFees": "https://schema.org/FreeReturn"
               }
             },
             "aggregateRating": {
