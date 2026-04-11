@@ -650,15 +650,9 @@ const ProductDetailPage = () => {
                 "@type": "MerchantReturnPolicy",
                 "applicableCountry": "Worldwide",
                 "shippingPolicyCountry": "Worldwide",
-                "returnShippingFeesAmount": {
-                  "@type": "MonetaryAmount",
-                  "value": "0",
-                  "currency": "USD"
-                },
-                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-                "merchantReturnDays": 30,
+                "returnPolicyCategory": "https://schema.org/MerchantReturnNoReturns",
                 "returnMethod": "https://schema.org/ReturnByMail",
-                "returnFees": "https://schema.org/FreeReturn"
+                "returnFees": "https://schema.org/NonFreeReturn"
               }
             },
             "aggregateRating": {
@@ -1042,7 +1036,7 @@ const ProductDetailPage = () => {
               {(getCustom('faqs')?.content || (description as any).faqs || [
                 { question: 'Is this product food-safe?', answer: 'Yes! Our coconut bowls are polished with 100% organic coconut oil, making them completely food-safe for hot and cold foods.' },
                 { question: 'How should I care for my coconut bowl?', answer: 'Hand wash with mild soap and air dry completely. Reapply coconut oil monthly. Avoid dishwashers and microwaves.' },
-                { question: 'What is your return policy?', answer: 'We offer a lifetime craftsmanship guarantee. If your product ever has a defect, we will replace it free of charge.' }
+                { question: 'What is your return policy?', answer: 'Due to the nature of handcrafted products and international shipping, we do not accept returns. However, if your product arrives damaged, please contact us within 7 days for a replacement or full refund.' }
               ]).map((faq: any, i: number) => (
                 <div key={i} className="border-b border-gray-200 pb-8 last:border-b-0 last:pb-0">
                   <dt className="flex items-start gap-3 mb-3">
