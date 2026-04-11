@@ -666,6 +666,28 @@ const ProductDetailPage = () => {
               "reviewBody": r.body,
               "reviewHeadline": r.isVerified ? "Verified Purchase" : "Customer Review"
             })),
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Sustainable",
+                "value": "true"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Handmade",
+                "value": "true"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Fair Trade",
+                "value": "true"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Eco-Friendly",
+                "value": "true"
+              }
+            ],
             "material": "Natural Materials (Coconut, Shell, Rattan, Seagrass)",
             "countryOfOrigin": "Samoa",
             "isAccessibleForFree": "False",

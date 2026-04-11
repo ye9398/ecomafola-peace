@@ -1,6 +1,7 @@
 // OurStoryPage.tsx
 import { Link } from 'react-router-dom'
 import PageSeo from '../components/seo/PageSeo'
+import { Helmet } from 'react-helmet-async'
 
 export function OurStoryPage() {
   return (
@@ -11,6 +12,28 @@ export function OurStoryPage() {
         canonical="/our-story"
         type="article"
       />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Polynesian Soul, Handcrafted Heritage - Our Story",
+            "description": "EcoMafola Peace was founded on the belief that the ancient artistry of the South Pacific deserves a global stage.",
+            "image": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80",
+            "author": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace",
+              "logo": "https://ecomafola.com/logo.png"
+            },
+            "datePublished": "2019-01-01",
+            "dateModified": "2026-04-11"
+          })}
+        </script>
+      </Helmet>
       <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Our Story</p>
@@ -42,6 +65,7 @@ export function OurStoryPage() {
 
 // ImpactPage.tsx
 import PageSeo from '../components/seo/PageSeo'
+import { Helmet } from 'react-helmet-async'
 
 export function ImpactPage() {
   const stats = [
@@ -58,6 +82,28 @@ export function ImpactPage() {
         canonical="/impact"
         type="article"
       />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Real Change, Real Lives - Our Impact",
+            "description": "EcoMafola Peace partners with 240+ artisan families across the Pacific, paying 40% above market rates.",
+            "image": "https://ecomafola.com/og-default.jpg",
+            "author": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace",
+              "logo": "https://ecomafola.com/logo.png"
+            },
+            "datePublished": "2019-01-01",
+            "dateModified": "2026-04-11"
+          })}
+        </script>
+      </Helmet>
       <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Our Impact</p>
