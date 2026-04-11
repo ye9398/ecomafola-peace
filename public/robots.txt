@@ -18,6 +18,16 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+# Additional AI crawlers for extended visibility
+User-agent: Google-Extended
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 # Block training crawlers (optional)
 User-agent: CCBot
 Disallow: /

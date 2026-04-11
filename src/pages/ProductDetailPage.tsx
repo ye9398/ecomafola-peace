@@ -650,6 +650,22 @@ const ProductDetailPage = () => {
                 : "5.0",
               "reviewCount": reviews.length.toString()
             },
+            "review": reviews.map(r => ({
+              "@type": "Review",
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": r.rating.toString(),
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "author": {
+                "@type": "Person",
+                "name": r.author
+              },
+              "datePublished": r.createdAt,
+              "reviewBody": r.body,
+              "reviewHeadline": r.isVerified ? "Verified Purchase" : "Customer Review"
+            })),
             "material": "Natural Materials (Coconut, Shell, Rattan, Seagrass)",
             "countryOfOrigin": "Samoa",
             "isAccessibleForFree": "False",

@@ -1,6 +1,9 @@
 # EcoMafola Peace
 > 南太平洋萨摩亚手工环保艺术品 - Sustainable Handcrafted Goods from Samoa
 
+## Full Content
+- [Complete Brand Story](/llms-full.txt): Full brand overview, statistics, and commitment
+
 ## Products
 - [Coconut Bowls](/product/samoan-handcrafted-coconut-bowl): Hand-carved coconut shell bowls - $29.99
 - [Shell Necklace](/product/samoan-handcrafted-shell-necklace): Natural shell jewelry - $24.99
