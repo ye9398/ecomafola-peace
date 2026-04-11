@@ -595,6 +595,7 @@ const ProductDetailPage = () => {
       <Helmet>
         <title>{product?.name || 'Loading...'} | EcoMafola Peace</title>
         <meta name="description" content={product?.description?.substring(0, 160) || 'Handcrafted eco-friendly products from Samoa'} />
+        <link rel="canonical" href={`https://ecomafola.com/product/${shopifyHandle}`} />
         {/* Product Schema.org JSON-LD for SEO and GEO */}
         <script type="application/ld+json">
           {JSON.stringify({

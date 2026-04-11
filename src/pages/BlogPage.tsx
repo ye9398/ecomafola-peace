@@ -28,6 +28,20 @@ export function BlogListPage() {
       <Helmet>
         <title>The Pacific Soul | EcoMafola Peace Blog</title>
         <meta name="description" content="Discover the stories behind South Pacific craftsmanship, sustainable living tips, and island heritage." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "The Pacific Soul",
+            "description": "Discover the stories behind South Pacific craftsmanship, sustainable living tips, and island heritage.",
+            "url": "https://ecomafola.com/blog",
+            "publisher": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace",
+              "logo": "https://ecomafola.com/logo.png"
+            }
+          })}
+        </script>
       </Helmet>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,6 +101,30 @@ export function BlogPostPage() {
       <Helmet>
         <title>{post.title} | EcoMafola Peace</title>
         <meta name="description" content={post.excerpt} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.title,
+            "description": post.excerpt,
+            "image": post.image,
+            "datePublished": post.date,
+            "dateModified": post.date,
+            "author": {
+              "@type": "Person",
+              "name": post.author
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "EcoMafola Peace",
+              "logo": "https://ecomafola.com/logo.png"
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://ecomafola.com/blog/${id}`
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

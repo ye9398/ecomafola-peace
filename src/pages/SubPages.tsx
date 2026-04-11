@@ -130,8 +130,52 @@ export function ImpactPage() {
 // ContactPage.tsx
 import { Mail, MapPin, Clock, Send } from 'lucide-react'
 import PageSeo from '../components/seo/PageSeo'
+import { Helmet } from 'react-helmet-async'
 
 export function ContactPage() {
+  const faqs = [
+    {
+      "@type": "Question",
+      "name": "What is your shipping time?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer free US shipping with delivery in 7-12 business days. Orders are processed within 1-3 business days."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are your products really handmade?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Every EcoMafola product is 100% handmade by skilled artisans in Samoa and the South Pacific using traditional techniques passed down through generations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What materials do you use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We use only natural, sustainable materials including coconut shell, pandanus grass, natural shells, and coconut coir. 94% of our materials are certified eco-sourced."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer returns?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we offer a 30-day return policy. If you're not completely satisfied, you can return your purchase for a full refund."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I track my order?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can track your order at any time by visiting our Track Order page at ecomafola.com/track with your order number."
+      }
+    }
+  ]
+
   return (
     <>
       <PageSeo
@@ -140,6 +184,15 @@ export function ContactPage() {
         canonical="/contact"
         type="website"
       />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqs
+          })}
+        </script>
+      </Helmet>
       <div className="min-h-screen bg-coral-white pt-24 pb-20 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
