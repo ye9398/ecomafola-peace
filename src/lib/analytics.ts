@@ -229,16 +229,12 @@ export function initVercelAnalytics() {
   document.head.appendChild(script)
 }
 
+import type { Metric } from 'web-vitals'
+
 /**
- * Report Web Vitals to Vercel Analytics
+ * Send Web Vitals to analytics endpoint
  */
-export function reportWebVitals(metric: {
-  id: string
-  name: string
-  value: number
-  label: string
-  delta: number
-}) {
+export function sendToAnalytics(metric: Metric) {
   const body = {
     dsn: ANALYTICS_CONFIG.ga4.trackingId,
     id: metric.id,
@@ -247,7 +243,7 @@ export function reportWebVitals(metric: {
     delta: metric.delta,
   }
 
-  // Send to Vercel Analytics
+  // Send to analytics endpoint
   if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
     navigator.sendBeacon('/api/analytics', JSON.stringify(body))
   }
@@ -255,6 +251,23 @@ export function reportWebVitals(metric: {
   // Log in development
   if (process.env.NODE_ENV === 'development') {
     console.log('[Web Vitals]', metric.name, metric.value)
+  }
+}
+
+/**
+ * Report Web Vitals - wraps the web-vitals library functions
+ */
+export function reportWebVitals(onPerfEntry?: (metric: Metric) => void) {
+  if (typeof window === 'undefined') return
+
+  if (onPerfEntry && typeof onPerfEntry === 'function') {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry)
+      getFID(onPerfEntry)
+      getFCP(onPerfEntry)
+      getLCP(onPerfEntry)
+      getTTFB(onPerfEntry)
+    })
   }
 }
 
