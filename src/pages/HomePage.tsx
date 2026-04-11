@@ -66,6 +66,19 @@ export default function HomePage() {
             }
           })}
         </script>
+
+        {/* ImageObject Schema for brand images */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "url": "https://ecomafola.com/logo.png",
+            "width": "400",
+            "height": "400",
+            "caption": "EcoMafola Peace Logo",
+            "representativeOfPage": "True"
+          })}
+        </script>
       </Helmet>
       <HeroBanner />
       <Features />

@@ -1,14 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { 
-  ChevronRight, Plus, Minus, ShoppingCart, Zap, Truck, 
+import {
+  ChevronRight, Plus, Minus, ShoppingCart, Zap, Truck,
   MapPin, Star, Search, Globe, Heart, Sparkles, Check
 } from 'lucide-react'
 import { getProductByHandle, getProductRecommendations } from '../lib/shopify'
 import { useCart } from '../context/CartContext'
 import { useGeoLocation, useShipping } from '../hooks/useShipping'
 import { getProductDescription } from '../data/productDescriptions'
+import { OptimizedImage } from '../components/OptimizedImage'
+import { ProductDetailContent } from '../components/ProductDetailContent'
+import { getHowToByHandle } from '../lib/howToSchema'
+import { getProductReviewSchemaByHandle } from '../lib/reviewSchema'
 
 // URL Parameter → Shopify handle mapping
 const URL_TO_SHOPIFY_HANDLE: Record<string, string> = {
@@ -282,7 +286,7 @@ const FrequentlyBoughtTogether = ({ recommendations, onAddToCart }: any) => {
           return (
             <div key={item.id} className="flex items-center gap-4 p-3 bg-white border border-gray-100 rounded-2xl hover:border-tropical-green/30 transition-all group">
               <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 shrink-0">
-                <img src={imageUrl} alt={item.title || item.name} className="w-full h-full object-cover" />
+                <OptimizedImage src={imageUrl} alt={item.title || item.name} preset="cart" className="w-full h-full" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-sans font-bold text-ocean-blue truncate">{item.title || item.name}</p>
@@ -323,7 +327,7 @@ const CompleteTheLook = ({ recommendations }: any) => {
           return (
             <Link key={p.id} to={`/product/${p.handle}`} className="group block">
               <div className="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 mb-4 relative shadow-sm group-hover:shadow-xl transition-all duration-500">
-                <img src={image} alt={p.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                <OptimizedImage src={image} alt={p.title} preset="card" loading="lazy" className="w-full h-full transition-transform duration-1000 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-ocean-blue/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <h3 className="font-serif text-sm font-bold text-ocean-blue group-hover:text-tropical-green transition-colors line-clamp-1">{p.title}</h3>
@@ -602,7 +606,6 @@ const ProductDetailPage = () => {
             "@context": "https://schema.org",
             "@type": "Product",
             "name": product?.name,
-            "image": product?.images || [],
             "description": product?.description?.replace(/<[^>]*>/g, '').substring(0, 500),
             "brand": {
               "@type": "Brand",
@@ -651,22 +654,13 @@ const ProductDetailPage = () => {
                 : "5.0",
               "reviewCount": reviews.length.toString()
             },
-            "review": reviews.map(r => ({
-              "@type": "Review",
-              "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": r.rating.toString(),
-                "bestRating": "5",
-                "worstRating": "1"
-              },
-              "author": {
-                "@type": "Person",
-                "name": r.author
-              },
-              "datePublished": r.createdAt,
-              "reviewBody": r.body,
-              "reviewHeadline": r.isVerified ? "Verified Purchase" : "Customer Review"
-            })),
+            "image": product?.images?.map((img: string, idx: number) => ({
+              "@type": "ImageObject",
+              "url": img,
+              "width": "1200",
+              "height": "1200",
+              "caption": `${product?.name} - Image ${idx + 1}`
+            })) || [],
             "additionalProperty": [
               {
                 "@type": "PropertyValue",
@@ -723,6 +717,14 @@ const ProductDetailPage = () => {
             ]
           })}
         </script>
+        {/* HowTo Schema for Care Instructions - GEO Optimization */}
+        <script type="application/ld+json">
+          {JSON.stringify(getHowToByHandle(shopifyHandle))}
+        </script>
+        {/* Review Schema for Rich Results - GEO Optimization */}
+        <script type="application/ld+json">
+          {JSON.stringify(getProductReviewSchemaByHandle(shopifyHandle, product?.name || 'Product'))}
+        </script>
       </Helmet>
 
       {/* Breadcrumbs */}
@@ -749,9 +751,11 @@ const ProductDetailPage = () => {
               onMouseLeave={() => { setIsZoomed(false); setMousePos({ x: 50, y: 50 }) }}
               onMouseMove={handleMouseMove}
             >
-              <img
+              <OptimizedImage
                 src={product.images[activeImage] || product.image_url}
                 alt={product.name}
+                preset="detailDesktop"
+                priority
                 className="w-full h-full object-cover"
                 style={{
                   transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
@@ -775,7 +779,7 @@ const ProductDetailPage = () => {
                     activeImage === idx ? 'border-ocean-blue ring-2 ring-ocean-blue/20' : 'border-gray-200 hover:border-ocean-blue'
                   }`}
                 >
-                  <img src={img} alt={`${product.name} view ${idx + 1}`} className="w-full h-full object-cover" />
+                  <OptimizedImage src={img} alt={`${product.name} view ${idx + 1}`} preset="thumbnail" loading="lazy" className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -890,7 +894,7 @@ const ProductDetailPage = () => {
             <div className="relative group lg:order-2">
               {(getCustom('story')?.image || (description as any).images?.story) && (
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <img src={getCustom('story')?.image || (description as any).images?.story} alt="Product Story" className="w-full h-full object-cover" />
+                  <OptimizedImage src={getCustom('story')?.image || (description as any).images?.story} alt="Product Story" preset="detailDesktop" loading="lazy" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -901,7 +905,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('environmental')?.image || (description as any).images?.environmental) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <img src={getCustom('environmental')?.image || (description as any).images?.environmental} alt="Environmental Impact" className="w-full h-full object-cover" />
+                  <OptimizedImage src={getCustom('environmental')?.image || (description as any).images?.environmental} alt="Environmental Impact" preset="detailDesktop" loading="lazy" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -922,7 +926,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('partnership')?.image || (description as any).images?.partnership) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <img src={getCustom('partnership')?.image || (description as any).images?.partnership} alt="Partnership Model" className="w-full h-full object-cover" />
+                  <OptimizedImage src={getCustom('partnership')?.image || (description as any).images?.partnership} alt="Partnership Model" preset="detailDesktop" loading="lazy" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -943,7 +947,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('specifications')?.image || (description as any).images?.specifications) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <img src={getCustom('specifications')?.image || (description as any).images?.specifications} alt="Specifications" className="w-full h-full object-cover" />
+                  <OptimizedImage src={getCustom('specifications')?.image || (description as any).images?.specifications} alt="Specifications" preset="detailDesktop" loading="lazy" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -994,7 +998,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('guarantee')?.image || (description as any).images?.guarantee) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <img src={getCustom('guarantee')?.image || (description as any).images?.guarantee} alt="Quality Guarantee" className="w-full h-full object-cover" />
+                  <OptimizedImage src={getCustom('guarantee')?.image || (description as any).images?.guarantee} alt="Quality Guarantee" preset="detailDesktop" loading="lazy" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -1036,6 +1040,25 @@ const ProductDetailPage = () => {
               ))}
             </div>
           </section>
+
+          {/* Extended Product Content for SEO/GEO - 350+ words */}
+          {description && (
+            <section className="mt-24 pt-16 border-t border-gray-100">
+              <ProductDetailContent
+                content={{
+                  story: description.story,
+                  environmental: description.environmental,
+                  partnership: description.partnership,
+                  features: description.features,
+                  specifications: description.specifications,
+                  guarantee: description.guarantee,
+                  shipping: description.shipping,
+                  faqs: description.faqs
+                }}
+                productName={product.name}
+              />
+            </section>
+          )}
 
           {/* Reviews Section */}
           <section className="mt-24 pt-24 border-t border-gray-100">
@@ -1091,7 +1114,7 @@ const ProductDetailPage = () => {
                   {review.image && (
                     <div className="mt-auto pt-4">
                       <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-sm">
-                        <img src={review.image} alt="Customer Preview" className="w-full h-full object-cover" />
+                        <OptimizedImage src={review.image} alt="Customer Preview" preset="card" loading="lazy" className="w-full h-full" />
                       </div>
                     </div>
                   )}

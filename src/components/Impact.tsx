@@ -57,7 +57,7 @@ export default function Impact() {
         {/* Intro Text */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <p className="font-sans text-lg text-white/90 leading-relaxed">
-            When you choose EcoMafola Peace, you're supporting jobs for local makers, 
+            When you choose EcoMafola Peace, you're supporting jobs for local makers,
             preserving traditional techniques, and protecting the islands' natural resources.
           </p>
         </div>
@@ -65,13 +65,13 @@ export default function Impact() {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16" role="list" aria-label="Impact statistics">
           {stats.map((stat) => (
-            <div 
-              key={stat.label} 
+            <div
+              key={stat.label}
               className="text-center p-6 bg-[#4A7C59]/85 border-2 border-[#7FB895] shadow-lg relative overflow-hidden rounded-lg"
               role="listitem"
             >
               {/* Background image layer - positioned absolutely behind content */}
-              <div 
+              <div
                 className="absolute inset-0 z-0"
                 style={{
                   backgroundImage: `url(${stat.bgImage})`,

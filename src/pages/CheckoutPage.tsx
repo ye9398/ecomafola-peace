@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { ShieldCheck, Truck, CreditCard, Info, AlertTriangle, CheckCircle, ExternalLink, Minus, Plus, Trash2, MapPin, ShoppingCart, Mail, User, Home, ChevronDown } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useGeoLocation, useShipping } from '../hooks/useShipping'
 import { api } from '../services/api'
+import { OptimizedImage } from '../components/OptimizedImage'
 
 const getStates = (countryCode: string): string[] => {
   const states: Record<string, string[]> = {
@@ -183,6 +185,21 @@ export default function CheckoutPage() {
   const isAddressValid = address.firstName && address.lastName && address.line1 && address.city && address.postal && address.phone && contactEmail && /\S+@\S+\.\S+/.test(contactEmail)
   return (
     <div className="min-h-screen bg-coral-white pt-24 pb-20">
+      <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/checkout" />
+        <title>Checkout | EcoMafola Peace</title>
+        <meta name="description" content="Complete your purchase securely. Free US shipping on all orders." />
+        <meta name="robots" content="noindex, nofollow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Checkout",
+            "url": "https://ecomafola.com/checkout",
+            "description": "Complete your purchase securely."
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="font-serif text-3xl font-bold text-ocean-blue mb-8">Checkout</h1>
 
@@ -216,7 +233,7 @@ export default function CheckoutPage() {
                 <div className="space-y-4 mb-6">
                   {items.map(item => (
                     <div key={item.lineId} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                      <img src={item.image} alt={item.title} className="w-16 h-16 rounded-xl object-cover" />
+                      <OptimizedImage src={item.image} alt={item.title} preset="cart" className="w-16 h-16 rounded-xl" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-sans font-medium text-gray-800 truncate">{item.title}</p>
                         <p className="text-xs font-sans text-gray-500">${item.price.toFixed(2)} each</p>

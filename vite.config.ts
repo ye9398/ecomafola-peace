@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import path from 'path'
+import { vitePluginSitemap } from './vite-plugin-sitemap'
 
 // @ts-ignore
 export default defineConfig(({ mode }) => ({
@@ -44,6 +45,8 @@ export default defineConfig(({ mode }) => ({
         ],
       },
     })] : []),
+    // Sitemap generation (production build only)
+    ...(mode === 'production' ? [vitePluginSitemap()] : []),
   ],
   server: {
     host: '0.0.0.0',
@@ -61,6 +64,11 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src')
     }
   },
+  test: {
+    environment: 'happy-dom',
+    globals: true,
+    setupFiles: ['./src/tests/setup.ts'],
+  },
   build: {
     sourcemap: false,
     minify: 'esbuild',
@@ -70,8 +78,6 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'shopify': ['@shopify/storefront-api-client'],
-          'icons': ['lucide-react']
         }
       }
     }

@@ -15,11 +15,13 @@ import { BlogListPage, BlogPostPage } from './pages/BlogPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { AuthProvider } from './context/AuthContext'
 import AnnouncementBar from './components/AnnouncementBar'
+
 // 管理后台页面（独立布局，无 Navbar/Footer）
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminPage from './pages/admin/AdminPage'
 import ProductContentAdmin from './pages/admin/ProductContentAdmin'
 import HomeContentAdmin from './pages/admin/HomeContentAdmin'
+import BlogContentAdmin from './pages/admin/BlogContentAdmin'
 
 // 懒加载页面组件
 import {
@@ -41,6 +43,7 @@ function App() {
        <Route path="/dashboard" element={<AdminPage />} />
        <Route path="/dashboard/products" element={<ProductContentAdmin />} />
        <Route path="/dashboard/home" element={<HomeContentAdmin />} />
+       <Route path="/dashboard/blog" element={<BlogContentAdmin />} />
 
        {/* 前台页面路由 - 带 Navbar/Footer */}
        <Route path="/" element={

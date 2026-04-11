@@ -1,6 +1,7 @@
 import { useCustomer } from '../hooks/useCustomer';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 export default function AccountPage() {
   const { customer, loading, logout } = useCustomer();
@@ -27,7 +28,22 @@ export default function AccountPage() {
   if (!customer) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <>
+      <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/account" />
+        <title>My Account | EcoMafola Peace</title>
+        <meta name="description" content="Manage your EcoMafola Peace account and view your orders." />
+        <meta name="robots" content="noindex, nofollow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "My Account",
+            "url": "https://ecomafola.com/account"
+          })}
+        </script>
+      </Helmet>
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold">
@@ -49,5 +65,6 @@ export default function AccountPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

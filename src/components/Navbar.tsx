@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingCart, Menu, X as XIcon, ChevronDown, User, LogOut, Search as SearchIcon } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { OptimizedImage } from './OptimizedImage'
 
 const products = [
   { name: 'Coconut Bowls', href: '/products/category/coconut-bowls' },
@@ -83,7 +84,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0 group">
             <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 overflow-hidden">
-               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+               <OptimizedImage src="/logo.png" alt="Logo" preset="avatar" priority className="w-full h-full" />
             </div>
             <span className={`font-serif font-bold text-base md:text-xl tracking-tight transition-colors duration-300 ${
               isScrolled ? 'text-ocean-blue' : 'text-white'

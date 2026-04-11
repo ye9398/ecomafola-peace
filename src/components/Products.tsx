@@ -3,6 +3,7 @@ import { ShoppingCart, Star, ArrowRight, Heart } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useState, useEffect, useRef } from 'react'
 import { getFeaturedProducts } from '../lib/shopify'
+import { OptimizedImage } from './OptimizedImage'
 
 export default function Products() {
   const { addToCart } = useCart()
@@ -101,11 +102,12 @@ export default function Products() {
                   style={{ transitionDelay: `${index * 150}ms` }}
                 >
                   <Link to={`/product/${product.handle}`} className="block relative aspect-square overflow-hidden shrink-0">
-                    <img
+                    <OptimizedImage
                       src={image?.url || 'https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=800&q=80'}
                       alt={image?.altText || product.title}
+                      preset="card"
                       loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110 ease-out"
+                      className="w-full h-full transition-transform duration-[2000ms] group-hover:scale-110 ease-out"
                     />
                     
                     {/* Dark Overlay on Hover */}

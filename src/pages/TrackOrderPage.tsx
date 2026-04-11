@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { Package, Search, ExternalLink, ChevronRight } from 'lucide-react'
 
 const STOREFRONT_ENDPOINT = 'https://ecomafola-peace.myshopify.com/api/2025-01/graphql.json'
@@ -123,6 +124,36 @@ export default function TrackOrderPage() {
 
   return (
     <div className="min-h-screen bg-coral-white pt-24 pb-20">
+      <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/track" />
+        <title>订单追踪 | EcoMafola Peace</title>
+        <meta name="description" content="查询您的订单状态和物流信息" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "订单追踪",
+            "url": "https://ecomafola.com/track",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "订单追踪",
+                  "item": "https://ecomafola.com/track"
+                }
+              ]
+            }
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">

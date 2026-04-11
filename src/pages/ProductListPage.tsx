@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { ShoppingCart, Star, Filter, Search as SearchIcon, ArrowRight, Heart } from 'lucide-react'
 import { getProductsByCollection, getAllProducts, searchProducts } from '../lib/shopify'
 import { useCart } from '../context/CartContext'
@@ -33,6 +34,18 @@ export default function ProductListPage() {
   const [loading, setLoading] = useState(true)
   const { addToCart } = useCart()
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false)
+
+  const canonicalUrl = category
+    ? `https://ecomafola.com/products/category/${category}`
+    : searchQuery
+      ? `https://ecomafola.com/products?q=${encodeURIComponent(searchQuery)}`
+      : 'https://ecomafola.com/products'
+
+  const pageTitle = searchQuery
+    ? `Search Results for "${searchQuery}" | EcoMafola Peace`
+    : category
+      ? `${CATEGORIES.find(c => c.slug === category)?.label || 'Collection'} | EcoMafola Peace`
+      : 'All Products | EcoMafola Peace'
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -84,6 +97,36 @@ export default function ProductListPage() {
 
   return (
     <div className="min-h-screen bg-coral-white pt-24 pb-20">
+      <Helmet>
+        <link rel="canonical" href={canonicalUrl} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={searchQuery ? `Search results for ${searchQuery}` : 'Browse our collection of handcrafted Pacific treasures'} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": pageTitle,
+            "url": canonicalUrl,
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Products",
+                  "item": "https://ecomafola.com/products"
+                }
+              ]
+            }
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-center md:text-left">

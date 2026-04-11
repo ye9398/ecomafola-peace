@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Clock, User, ArrowLeft, Share2, Facebook, Twitter, MessageCircle } from 'lucide-react'
+import { OptimizedImage } from '../components/OptimizedImage'
 
 interface Post {
   id: string
@@ -26,8 +27,34 @@ export function BlogListPage() {
   return (
     <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/blog" />
         <title>The Pacific Soul | EcoMafola Peace Blog</title>
         <meta name="description" content="Discover the stories behind South Pacific craftsmanship, sustainable living tips, and island heritage." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "The Pacific Soul Blog",
+            "url": "https://ecomafola.com/blog",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://ecomafola.com/blog"
+                }
+              ]
+            }
+          })}
+        </script>
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -54,7 +81,7 @@ export function BlogListPage() {
           {posts.map(post => (
             <Link key={post.id} to={`/blog/${post.id}`} className="group bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all border border-ocean-blue/5">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <OptimizedImage src={post.image} alt={post.title} preset="card" loading="lazy" className="w-full h-full group-hover:scale-110 transition-transform duration-700" />
               </div>
               <div className="p-8">
                 <div className="flex items-center gap-3 text-xs font-sans text-gray-400 mb-4">
@@ -96,9 +123,12 @@ export function BlogPostPage() {
 
   if (!post) return <div className="pt-40 text-center font-sans">Post not found</div>
 
+  const canonicalUrl = `https://ecomafola.com/blog/${id}`
+
   return (
     <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <Helmet>
+        <link rel="canonical" href={canonicalUrl} />
         <title>{post.title} | EcoMafola Peace</title>
         <meta name="description" content={post.excerpt} />
         <script type="application/ld+json">
@@ -107,7 +137,13 @@ export function BlogPostPage() {
             "@type": "BlogPosting",
             "headline": post.title,
             "description": post.excerpt,
-            "image": post.image,
+            "image": {
+              "@type": "ImageObject",
+              "url": post.image,
+              "width": "1200",
+              "height": "675",
+              "caption": post.title
+            },
             "datePublished": post.date,
             "dateModified": post.date,
             "author": {
@@ -121,7 +157,7 @@ export function BlogPostPage() {
             },
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `https://ecomafola.com/blog/${id}`
+              "@id": canonicalUrl
             }
           })}
         </script>
@@ -142,7 +178,7 @@ export function BlogPostPage() {
             {post.title}
           </h1>
           <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl">
-            <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+            <OptimizedImage src={post.image} alt={post.title} preset="hero" loading="lazy" className="w-full h-full" />
           </div>
         </header>
 

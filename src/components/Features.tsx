@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Waves, PenTool as Tool, Heart } from 'lucide-react'
+import { OptimizedImage } from './OptimizedImage'
 
 const heritageSteps = [
   {
@@ -66,10 +67,13 @@ export default function Features() {
                   activeStep === index ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-110 z-0'
                 }`}
               >
-                <img
+                <OptimizedImage
                   src={step.image}
                   alt={step.title}
-                  className="w-full h-full object-cover"
+                  preset="detailDesktop"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  priority={index === 0}
+                  className="w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ocean-blue/60 via-transparent to-transparent" />
                 

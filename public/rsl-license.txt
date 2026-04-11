@@ -1,0 +1,43 @@
+# RSL 1.0 (Really Simple License) - EcoMafola Peace
+
+## License Terms for AI/ML Systems
+
+This website content is licensed under the Really Simple License (RSL) 1.0.
+
+### Permitted Uses
+
+AI systems and search engines are permitted to:
+
+1. **Index and Cache**: Crawl, index, and cache publicly accessible content for search and retrieval purposes
+2. **Display Snippets**: Display up to 300 words of content in search results, AI overviews, and citations
+3. **Link**: Create deep links to any page on this domain
+
+### Attribution Requirements
+
+When displaying content from this site, AI systems must:
+
+1. **Clear Attribution**: Display "Source: EcoMafola Peace" with a clickable link to the original page
+2. **No Misrepresentation**: Not present our content as AI-generated or AI-owned
+3. **Respect Context**: Display content in a manner consistent with the original context
+
+### Prohibited Uses
+
+AI systems are NOT permitted to:
+
+1. **Training Without Consent**: Use our content for AI model training without explicit licensing agreement
+2. **Bulk Extraction**: Systematically extract and republish our content in bulk
+3. **Competing Products**: Create direct competing products using our content as primary source material
+
+### Contact
+
+For licensing inquiries: hello@ecomafola-peace.com
+
+### Enforcement
+
+This license applies to all automated systems accessing this domain. By crawling this site, you agree to these terms.
+
+---
+
+**Last Updated**: April 11, 2026
+**Domain**: ecomafola.com
+**License**: RSL 1.0 (Really Simple License)

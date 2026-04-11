@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Package, ChevronRight, ExternalLink, LogOut } from 'lucide-react';
 import { getCurrentCustomer, clearTokens } from '../lib/customerAccount';
 
@@ -98,7 +99,22 @@ export default function AccountOrdersPage() {
   const orders = customer.orders.nodes;
 
   return (
-    <div className="min-h-screen bg-coral-white pt-24 pb-20">
+    <>
+      <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/account/orders" />
+        <title>My Orders | EcoMafola Peace</title>
+        <meta name="description" content="View and track your EcoMafola Peace orders." />
+        <meta name="robots" content="noindex, nofollow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "My Orders",
+            "url": "https://ecomafola.com/account/orders"
+          })}
+        </script>
+      </Helmet>
+      <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -259,5 +275,6 @@ export default function AccountOrdersPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -1,9 +1,40 @@
 // PrivacyPolicyPage.tsx
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 export function PrivacyPolicyPage() {
   return (
    <div className="min-h-screen bg-coral-white pt-24 pb-20">
+      <Helmet>
+        <link rel="canonical" href="https://ecomafola.com/privacy-policy" />
+        <title>Privacy Policy | EcoMafola Peace</title>
+        <meta name="description" content="EcoMafola Peace privacy policy - how we collect, use, and protect your personal information." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Privacy Policy",
+            "url": "https://ecomafola.com/privacy-policy",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Privacy Policy",
+                  "item": "https://ecomafola.com/privacy-policy"
+                }
+              ]
+            }
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
        <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Legal</p>
        <h1 className="font-serif text-4xl font-bold text-ocean-blue mb-2">Privacy Policy</h1>

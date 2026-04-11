@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import PageSeo from '../components/seo/PageSeo'
 import { Helmet } from 'react-helmet-async'
+import { OptimizedImage } from '../components/OptimizedImage'
 
 export function OurStoryPage() {
   return (
@@ -16,10 +17,42 @@ export function OurStoryPage() {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Our Story | EcoMafola Peace",
+            "url": "https://ecomafola.com/our-story",
+            "description": "EcoMafola Peace was founded on the belief that the ancient artistry of the South Pacific deserves a global stage.",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Our Story",
+                  "item": "https://ecomafola.com/our-story"
+                }
+              ]
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "Article",
             "headline": "Polynesian Soul, Handcrafted Heritage - Our Story",
             "description": "EcoMafola Peace was founded on the belief that the ancient artistry of the South Pacific deserves a global stage.",
-            "image": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80",
+            "image": {
+              "@type": "ImageObject",
+              "url": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80",
+              "width": "1200",
+              "height": "675",
+              "caption": "Samoan Artisan Crafting"
+            },
             "author": {
               "@type": "Organization",
               "name": "EcoMafola Peace"
@@ -39,7 +72,7 @@ export function OurStoryPage() {
         <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Our Story</p>
         <h1 className="font-serif text-4xl font-bold text-ocean-blue mb-6">Polynesian Soul, Handcrafted Heritage</h1>
         <div className="aspect-video rounded-3xl overflow-hidden mb-10 shadow-lg">
-          <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80" alt="Samoan Artisan Crafting" className="w-full h-full object-cover" />
+          <OptimizedImage src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80" alt="Samoan Artisan Crafting" preset="hero" priority className="w-full h-full" />
         </div>
         <div className="prose prose-lg max-w-none font-sans text-gray-700 space-y-6 leading-relaxed">
           <p className="text-xl font-medium text-ocean-blue/80 italic">"Not just decor, but a piece of the Pacific Soul."</p>
@@ -86,10 +119,42 @@ export function ImpactPage() {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Our Impact | EcoMafola Peace",
+            "url": "https://ecomafola.com/impact",
+            "description": "EcoMafola Peace partners with 240+ artisan families across the Pacific.",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Our Impact",
+                  "item": "https://ecomafola.com/impact"
+                }
+              ]
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "Article",
             "headline": "Real Change, Real Lives - Our Impact",
             "description": "EcoMafola Peace partners with 240+ artisan families across the Pacific, paying 40% above market rates.",
-            "image": "https://ecomafola.com/og-default.jpg",
+            "image": {
+              "@type": "ImageObject",
+              "url": "https://ecomafola.com/og-default.jpg",
+              "width": "1200",
+              "height": "630",
+              "caption": "EcoMafola Peace Impact Statistics"
+            },
             "author": {
               "@type": "Organization",
               "name": "EcoMafola Peace"
@@ -185,6 +250,32 @@ export function ContactPage() {
         type="website"
       />
       <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Contact Us | EcoMafola Peace",
+            "url": "https://ecomafola.com/contact",
+            "description": "Get in touch with EcoMafola Peace. Questions about artisans, wholesale, or orders?",
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://ecomafola.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Contact Us",
+                  "item": "https://ecomafola.com/contact"
+                }
+              ]
+            }
+          })}
+        </script>
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

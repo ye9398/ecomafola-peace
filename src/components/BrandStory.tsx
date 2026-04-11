@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
+import { OptimizedImage } from './OptimizedImage'
 
 export default function BrandStory() {
   return (
@@ -9,10 +10,12 @@ export default function BrandStory() {
           {/* Image with Hand-drawn Frame */}
           <div className="relative">
             <div className="aspect-[4/5] overflow-hidden shadow-xl rounded-[2.5rem]">
-              <img
+              <OptimizedImage
                 src="/images/brand-story-custom.jpg"
                 alt="Children in the South Pacific"
-                className="w-full h-full object-cover"
+                preset="detailDesktop"
+                priority
+                className="w-full h-full"
               />
             </div>
             {/* Floating Card with Rough Border */}

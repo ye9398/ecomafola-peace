@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Facebook, Twitter, Youtube } from 'lucide-react'
+import { OptimizedImage } from './OptimizedImage'
 
 interface NavLinkItem {
   label: string
@@ -36,7 +37,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-5">
-              <img src="/logo.png" alt="EcoMafola Peace" className="w-40 h-40 object-contain" />
+              <OptimizedImage src="/logo.png" alt="EcoMafola Peace" preset="avatar" priority className="w-20 h-20" />
               <span className="font-serif font-semibold text-lg text-white">EcoMafola Peace</span>
             </div>
             <p className="font-sans text-sm text-white/60 leading-relaxed mb-6 max-w-xs">
