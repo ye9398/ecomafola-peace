@@ -18,8 +18,8 @@ declare global {
  */
 export const ANALYTICS_CONFIG = {
   ga4: {
-    measurementId: 'G-XXXXXXXXXX', // TODO: Replace with actual GA4 Measurement ID
-    trackingId: 'GA_MEASUREMENT_ID',
+    measurementId: import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-48S7HL321X',
+    trackingId: import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-48S7HL321X',
   },
   googleAds: {
     conversionId: 'AW-XXXXXXXXXXX', // TODO: Replace with actual Google Ads Conversion ID
