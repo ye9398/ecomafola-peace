@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import path from 'path'
-import { vitePluginSitemap } from './vite-plugin-sitemap'
+import sitemap from 'vite-plugin-sitemap'
 
 // @ts-ignore
 export default defineConfig(({ mode }) => ({
@@ -46,7 +46,10 @@ export default defineConfig(({ mode }) => ({
       },
     })] : []),
     // Sitemap generation (production build only)
-    ...(mode === 'production' ? [vitePluginSitemap()] : []),
+    ...(mode === 'production' ? [sitemap({
+      hostname: 'https://ecomafola.com',
+      routes: ['/', '/products', '/blog', '/our-story', '/impact', '/contact', '/track', '/privacy-policy'],
+    })] : []),
   ],
   server: {
     host: '0.0.0.0',
