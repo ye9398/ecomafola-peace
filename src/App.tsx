@@ -15,6 +15,7 @@ import { BlogListPage, BlogPostPage } from './pages/BlogPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { AuthProvider } from './context/AuthContext'
 import AnnouncementBar from './components/AnnouncementBar'
+import { AnalyticsProvider } from './components/AnalyticsProvider'
 
 // 管理后台页面（独立布局，无 Navbar/Footer）
 import AdminLogin from './pages/admin/AdminLogin'
@@ -34,8 +35,11 @@ import {
 } from './components/LazyLoading'
 
 function App() {
+  const ga4MeasurementId = import.meta.env.VITE_GA4_MEASUREMENT_ID
+
   return (
-   <AuthProvider>
+   <AnalyticsProvider ga4MeasurementId={ga4MeasurementId}>
+    <AuthProvider>
      <AnnouncementBar />
      <Routes>
        {/* 管理后台路由 - 独立布局，无 Navbar/Footer */}
@@ -198,6 +202,7 @@ function App() {
      {/* 全局购物车抽屉 */}
      <SlideOverCheckout />
    </AuthProvider>
+   </AnalyticsProvider>
   )
 }
 
