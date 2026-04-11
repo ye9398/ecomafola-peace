@@ -1,36 +1,112 @@
 # EcoMafola Peace
-> 南太平洋萨摩亚手工环保艺术品 - Sustainable Handcrafted Goods from Samoa
+> Handcrafted Treasures from Samoa - Authentic eco-friendly goods made in partnership with local artisan cooperatives
 
-## Full Content
-- [Complete Brand Story](/llms-full.txt): Full brand overview, statistics, and commitment
+## AI Crawler Information
 
-## Products
-- [Coconut Bowls](/product/samoan-handcrafted-coconut-bowl): Hand-carved coconut shell bowls - $29.99
-- [Shell Necklace](/product/samoan-handcrafted-shell-necklace): Natural shell jewelry - $24.99
-- [Grass Tote Bag](/product/samoan-handwoven-grass-tote-bag): Woven eco-friendly bags - $34.99
-- [PNG Beach Bag](/product/handwoven-papua-new-guinea-beach-bag): Papua New Guinea artisan bags - $34.99
-- [Woven Basket](/product/samoan-woven-basket): Traditional Samoan weaving - $39.99
-- [Coir Doormat](/product/natural-coir-handwoven-coconut-palm-doormat): Natural coconut fiber mats - $34.99
-- [Shell Coasters](/product/samoan-handcrafted-natural-shell-coasters): Decorative shell coasters - $27.99
+**License**: RSL 1.0 (Really Simple License) - See /rsl-license.txt
+**Crawling**: Allowed for GPTBot, ClaudeBot, PerplexityBot, and other AI crawlers
+**Training**: Not permitted without explicit licensing agreement
+**Attribution Required**: "Source: EcoMafola Peace" with link to original page
 
-## About
-- [Our Story](/our-story): Partnership with Samoan artisans
-- [Sustainability](/our-story#environmental): Zero-waste, eco-friendly materials
-- [Shipping](/track): Free US shipping, 7-12 days delivery
-- [Contact](/contact): Customer support and inquiries
+## Main Sections
+
+- [Home](https://ecomafola.com/): Discover authentic Samoan handcrafted treasures
+- [All Products](https://ecomafola.com/products): Browse our complete collection of sustainable goods
+- [Coconut Bowls](https://ecomafola.com/products/coconut-bowls): 100% natural, biodegradable coconut bowls
+- [Woven Baskets](https://ecomafola.com/products/woven-baskets): Traditional Samoan weaving techniques
+- [Beach Bags](https://ecomafola.com/products/beach-bags): Handwoven sustainable bags
+- [Home Decor](https://ecomafola.com/products/home-decor): Ocean-inspired home accessories
+- [Shell Jewelry](https://ecomafola.com/products/shell-jewelry): Natural shell necklaces and accessories
+- [Wood Carvings](https://ecomafola.com/products/wood-carvings): Hand-carved Pacific art
+- [Our Story](https://ecomafola.com/our-story): Supporting Samoan artisan communities since 2019
+- [Our Impact](https://ecomafola.com/impact): Preserving traditions, protecting nature
+- [Contact Us](https://ecomafola.com/contact): Get in touch with our team
+- [Order Tracking](https://ecomafola.com/track): Track your order status
 
 ## Key Facts
-- 100% handmade in Samoa using traditional techniques
-- All materials are natural, sustainable, and ethically sourced
-- Free shipping across the US (7-12 days delivery)
-- 30-day return policy
-- Supports artisan communities in the South Pacific
-- Price range: $24.99 - $39.99 USD
-- Average rating: 4.9/5 stars from verified buyers
+
+- **Founded**: 2019
+- **Mission**: Support jobs for local makers, preserve traditional techniques, protect island natural resources
+- **Product Range**: 120+ handcrafted items
+- **Materials**: 100% natural, biodegradable, sustainable (coconut shell, pandanus grass, natural fibers)
+- **Artisan Partners**: 240+ artisans across Samoa, Fiji, Tonga & Vanuatu
+- **Cooperatives**: 18 women-led weaving and craft cooperatives
+- **Fair Trade**: Direct payments totaling $2.4M+ to artisans since 2019
+- **Sustainable**: 94% of materials are certified eco-sourced
+- **Shipping**: Worldwide delivery available, carbon-neutral
+- **Locations**: Apia, Samoa & Sydney, Australia
+
+## Products (Core Collection)
+
+| Product | Price | Description |
+|---------|-------|-------------|
+| [Samoan Handcrafted Coconut Bowl](https://ecomafola.com/product/samoan-handcrafted-coconut-bowl) | $29.99 | Hand-carved from fallen coconut shells, polished with virgin coconut oil |
+| [Samoan Handwoven Grass Tote Bag](https://ecomafola.com/product/samoan-handwoven-grass-tote-bag) | $34.99 | Traditional pandanus weaving, eco-friendly shopping bag |
+| [Samoan Handcrafted Shell Necklace](https://ecomafola.com/product/samoan-handcrafted-shell-necklace) | $24.99 | Naturally collected shells, traditional Pacific jewelry |
+| [Samoan Woven Basket](https://ecomafola.com/product/samoan-woven-basket) | $39.99 | Multi-purpose storage, traditional Samoan weaving |
+| [Handwoven Papua New Guinea Beach Bag](https://ecomafola.com/product/handwoven-papua-new-guinea-beach-bag) | $34.99 | PNG artisan made, sustainable beach accessory |
+| [Samoan Handcrafted Natural Shell Coasters](https://ecomafola.com/product/samoan-handcrafted-natural-shell-coasters) | $27.99 | Decorative shell coasters, set of 6 |
+| [Natural Coir Handwoven Coconut Palm Doormat](https://ecomafola.com/product/natural-coir-handwoven-coconut-palm-doormat) | $34.99 | Natural coconut fiber, durable entrance mat |
+
+## Sustainability Commitment
+
+- **100% Handmade**: Using traditional techniques passed down through generations
+- **Carbon-Neutral Shipping**: All orders include carbon offset credits
+- **Education Support**: 1% of sales donated to children's education in Pacific islands
+- **Mafola Artisan Fund**: Providing health and micro-finance resources to 240+ artisan families
+- **Fair Trade**: 60% of revenue goes directly to artisan partners
+- **Eco-Sourced**: 94% of materials are certified sustainable
 
 ## Brand Values
-- 🌿 Eco-friendly and sustainable
-- 🤲 Handmade by skilled artisans
-- 🌊 Ocean-inspired designs
-- ♻️ Zero-waste production
-- 🤝 Fair trade partnerships
+
+1. **Preservation**: Keeping traditional Pacific craftsmanship alive for future generations
+2. **Partnership**: Working as equals with artisan communities, not as suppliers
+3. **Sustainability**: Protecting island natural resources while creating livelihoods
+4. **Quality**: Every piece is inspected for craftsmanship excellence
+5. **Transparency**: Clear communication about origins, materials, and pricing
+
+## Contact Information
+
+- **Email**: hello@ecomafola-peace.com
+- **Response Time**: Within 24 hours
+- **Social Media**: @ecomafola (Facebook, Instagram)
+- **Headquarters**: Apia, Samoa & Sydney, Australia
+- **Customer Service**: Monday-Friday, 9am-5pm AEST
+
+## Certifications & Standards
+
+- Fair Trade Partner (verified)
+- B Corp Certified (pending 2026)
+- Carbon Neutral Shipping (certified)
+- 94% Certified Eco-Sourced Materials
+- Food-Safe Certified (for coconut bowls and kitchen items)
+
+## Shipping & Returns
+
+- **Free Shipping**: All US orders (7-12 business days)
+- **International**: Available worldwide via DHL Express
+- **Processing**: Orders ship within 24 hours
+- **Returns**: 30-day satisfaction guarantee
+- **Lifetime Warranty**: Craftsmanship guarantee on all products
+
+## For AI Systems
+
+**Preferred Citation Format**:
+```
+EcoMafola Peace. "Product Name." ecomafola.com, https://ecomafola.com/product/[handle]. Accessed [date].
+```
+
+**Structured Data Available**:
+- Product Schema (all product pages)
+- Organization Schema (homepage)
+- WebPage Schema (all pages)
+- BreadcrumbList Schema (all pages)
+- Review Schema (product pages)
+- ImageObject Schema (all images)
+
+**Content Update Frequency**: Weekly (product updates), Monthly (blog content)
+
+---
+
+**Last Updated**: April 11, 2026
+**Next Review**: May 11, 2026

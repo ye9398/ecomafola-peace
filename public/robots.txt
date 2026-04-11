@@ -1,11 +1,19 @@
 # EcoMafola Peace - robots.txt
 # https://ecomafola.com/robots.txt
+# Last Updated: April 11, 2026
+
+# ==================================
+# AI Crawler Policy
+# ==================================
+# We welcome AI crawlers for search and citation purposes.
+# Training usage requires explicit licensing agreement.
+# See /rsl-license.txt for full terms.
 
 # Default: Allow all search engines
 User-agent: *
 Allow: /
 
-# AI Crawlers - Allow for GEO optimization
+# AI Crawlers - Explicitly Allowed
 User-agent: GPTBot
 Allow: /
 
@@ -18,7 +26,6 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-# Additional AI crawlers for extended visibility
 User-agent: Google-Extended
 Allow: /
 
@@ -28,20 +35,55 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-# Block training crawlers (optional)
+# Training Crawlers - Blocked (require separate agreement)
 User-agent: CCBot
 Disallow: /
 
 User-agent: Bytespider
 Disallow: /
 
-# Sitemap
-Sitemap: https://ecomafola.com/sitemap.xml
+User-agent: anthropic-ai
+Disallow: /
 
-# Crawl-delay (optional)
+User-agent: cohere-ai
+Disallow: /
+
+# Crawl-delay for rate limiting
 Crawl-delay: 1
 
-# Disallow admin and API routes
+# ==================================
+# Internal Routes - Blocked
+# ==================================
+# Do not crawl admin, API, or authentication routes
+
 Disallow: /api/
 Disallow: /admin/
+Disallow: /admin-content/
 Disallow: /dashboard/
+Disallow: /account/
+Disallow: /checkout
+Disallow: /login
+Disallow: /auth/
+
+# Allow specific public pages
+Allow: /privacy-policy
+Allow: /track
+
+# ==================================
+# Sitemap Locations
+# ==================================
+Sitemap: https://ecomafola.com/sitemap.xml
+
+# AI-focused content files
+Allow: /llms.txt
+Allow: /rsl-license.txt
+
+# ==================================
+# Notes for AI Crawler Operators
+# ==================================
+# - We provide structured data (Schema.org) for all pages
+# - Product Schema includes: name, description, price, availability, reviews
+# - Organization Schema includes: sameAs links for entity verification
+# - llms.txt provides structured content guidance
+# - RSL 1.0 license governs content usage (see /rsl-license.txt)
+# - Contact: hello@ecomafola-peace.com for licensing inquiries
