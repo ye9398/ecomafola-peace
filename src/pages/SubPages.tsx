@@ -1,9 +1,17 @@
 // OurStoryPage.tsx
 import { Link } from 'react-router-dom'
+import PageSeo from '../components/seo/PageSeo'
 
 export function OurStoryPage() {
   return (
-    <div className="min-h-screen bg-coral-white pt-24 pb-20">
+    <>
+      <PageSeo
+        title="Our Story"
+        description="EcoMafola Peace was founded on the belief that the ancient artistry of the South Pacific deserves a global stage. We partner directly with family cooperatives across Samoa, Fiji, and the wider Polynesian triangle."
+        canonical="/our-story"
+        type="article"
+      />
+      <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Our Story</p>
         <h1 className="font-serif text-4xl font-bold text-ocean-blue mb-6">Polynesian Soul, Handcrafted Heritage</h1>
@@ -28,10 +36,13 @@ export function OurStoryPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
 // ImpactPage.tsx
+import PageSeo from '../components/seo/PageSeo'
+
 export function ImpactPage() {
   const stats = [
     { value: '240+', label: 'Artisan Partners', desc: 'Across Samoa, Fiji, Tonga & Vanuatu' },
@@ -40,7 +51,14 @@ export function ImpactPage() {
     { value: '94%', label: 'Sustainable Materials', desc: 'Certified eco-sourced raw materials' },
   ]
   return (
-    <div className="min-h-screen bg-coral-white pt-24 pb-20">
+    <>
+      <PageSeo
+        title="Our Impact"
+        description="Real change, real lives. EcoMafola Peace partners with 240+ artisan families across the Pacific, paying 40% above market rates and providing healthcare contributions."
+        canonical="/impact"
+        type="article"
+      />
+      <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-sans font-medium text-tropical-green tracking-widest uppercase mb-3">Our Impact</p>
         <h1 className="font-serif text-4xl font-bold text-ocean-blue mb-10">Real Change, Real Lives</h1>
@@ -59,15 +77,24 @@ export function ImpactPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
 // ContactPage.tsx
 import { Mail, MapPin, Clock, Send } from 'lucide-react'
+import PageSeo from '../components/seo/PageSeo'
 
 export function ContactPage() {
   return (
-    <div className="min-h-screen bg-coral-white pt-24 pb-20 overflow-hidden relative">
+    <>
+      <PageSeo
+        title="Contact Us"
+        description="Have questions about our artisans, wholesale opportunities, or your order? Our team is here to share the spirit of Samoa with you. Email: hello@ecomafola.com"
+        canonical="/contact"
+        type="website"
+      />
+      <div className="min-h-screen bg-coral-white pt-24 pb-20 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left: Info */}
@@ -148,5 +175,6 @@ export function ContactPage() {
         Contact Us
       </div>
     </div>
+    </>
   )
 }

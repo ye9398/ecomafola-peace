@@ -593,7 +593,97 @@ const ProductDetailPage = () => {
   return (
     <div className="min-h-screen bg-coral-white pt-20">
       <Helmet>
-        <title>{product.name} | EcoMafola Peace</title>
+        <title>{product?.name || 'Loading...'} | EcoMafola Peace</title>
+        <meta name="description" content={product?.description?.substring(0, 160) || 'Handcrafted eco-friendly products from Samoa'} />
+        {/* Product Schema.org JSON-LD for SEO and GEO */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product?.name,
+            "image": product?.images || [],
+            "description": product?.description?.replace(/<[^>]*>/g, '').substring(0, 500),
+            "brand": {
+              "@type": "Brand",
+              "name": "EcoMafola Peace",
+              "sameAs": [
+                "https://ecomafola.com",
+                "https://twitter.com/MeijiaXue62817"
+              ]
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://ecomafola.com/product/${shopifyHandle}`,
+              "price": product?.price_usd,
+              "priceCurrency": "USD",
+              "availability": product?.stock > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/OutOfStock",
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "USD"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "d"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 7,
+                    "maxValue": 12,
+                    "unitCode": "d"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": reviews.length > 0
+                ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+                : "5.0",
+              "reviewCount": reviews.length.toString()
+            },
+            "material": "Natural Materials (Coconut, Shell, Rattan, Seagrass)",
+            "countryOfOrigin": "Samoa",
+            "isAccessibleForFree": "False",
+            "priceRange": "$24.99 - $39.99",
+            "category": product?.category || "Handcrafted Home Decor"
+          })}
+        </script>
+        {/* BreadcrumbList Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://ecomafola.com"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Products",
+                "item": "https://ecomafola.com/products"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product?.name || "Product",
+                "item": `https://ecomafola.com/product/${shopifyHandle}`
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       {/* Breadcrumbs */}

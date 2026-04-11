@@ -23,6 +23,49 @@ export default function HomePage() {
         <meta name="twitter:description" content="Handcrafted treasures from Samoa, made with love by local artisans. Every piece tells a story of the South Pacific." />
         <meta name="twitter:image" content="https://sc02.alicdn.com/kf/Aa05c428c426e40afb2f4a3d8c1d247b0y.png" />
         <link rel="canonical" href="https://ecomafola.com" />
+
+        {/* Organization Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "EcoMafola Peace",
+            "url": "https://ecomafola.com",
+            "logo": "https://ecomafola.com/logo.png",
+            "description": "Handcrafted Pacific treasures from Samoa supporting traditional artisans",
+            "foundingDate": "2019",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Apia",
+              "addressCountry": "Samoa"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "email": "hello@ecomafola.com",
+              "contactType": "customer service"
+            },
+            "sameAs": [
+              "https://twitter.com/ecomafola",
+              "https://facebook.com/ecomafola",
+              "https://instagram.com/ecomafola"
+            ]
+          })}
+        </script>
+
+        {/* WebSite Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "EcoMafola Peace",
+            "url": "https://ecomafola.com",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://ecomafola.com/products/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
       </Helmet>
       <HeroBanner />
       <Features />
