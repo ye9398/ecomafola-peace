@@ -135,8 +135,6 @@ export async function saveBlogPost(post: BlogPost): Promise<boolean> {
     category: 'Island Heritage',
   }
 
-  console.log('[saveBlogPost] handle:', handle, 'image_url:', row.image_url)
-
   // 按 handle 查是否已存在
   const { data: existing, error: findErr } = await supabase
     .from('blog_posts')
@@ -145,31 +143,24 @@ export async function saveBlogPost(post: BlogPost): Promise<boolean> {
     .maybeSingle()
 
   if (findErr) {
-    console.error('[saveBlogPost] find error:', findErr)
     return false
   }
 
-  console.log('[saveBlogPost] existing row:', existing)
-
   let error
   if (existing?.id) {
-    console.log('[saveBlogPost] → UPDATE existing row, id:', existing.id)
     ;({ error } = await supabase
       .from('blog_posts')
       .update(row)
       .eq('handle', handle))
   } else {
-    console.log('[saveBlogPost] → INSERT new row')
     ;({ error } = await supabase
       .from('blog_posts')
       .insert(row))
   }
 
   if (error) {
-    console.error('[saveBlogPost] write error:', error)
     return false
   }
-  console.log('[saveBlogPost] ✅ success')
   return true
 }
 

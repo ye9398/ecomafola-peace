@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cropper from 'react-easy-crop'
 import { Save, Plus, Trash2, Image as ImageIcon, X, FileText, ChevronLeft, LogOut } from 'lucide-react'
+import type { Area } from 'react-easy-crop'
 import { getAllBlogPosts, saveBlogPost, deleteBlogPost, uploadBlogImage, BlogPost } from '../../lib/contentService'
 import { isSupabaseConfigured } from '../../lib/supabase'
 
@@ -17,7 +18,7 @@ export default function BlogContentAdmin() {
   const [image, setImage] = useState<string | null>(null)
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const [showCropper, setShowCropper] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
 
@@ -48,33 +49,50 @@ export default function BlogContentAdmin() {
   }
 
   const handleCreateNew = () => {
+    const handle = `post-${Date.now()}`
     const newPost: BlogPost = {
-      id: `post-${Date.now()}`,
+      id: handle,
       title: 'New Blog Post',
       excerpt: 'A short summary of your post...',
       date: new Date().toISOString().split('T')[0],
       author: 'EcoMafola Peace',
       image: '',
-      content: 'Start writing your story here...'
+      content: 'Start writing your story here...',
+      handle,
     }
     setSelectedPost(newPost)
   }
 
   const handleSave = async () => {
     if (!selectedPost) return
+    if (!selectedPost.title.trim()) {
+      alert('Title is required')
+      return
+    }
+    if (selectedPost.title.length > 200) {
+      alert('Title must be under 200 characters')
+      return
+    }
     setSaving(true)
     // 去掉 cache-busting 后缀，保持数据库 URL 干净
-    const savePayload = { ...selectedPost, image: selectedPost.image.split('?')[0] }
+    const savePayload = { ...selectedPost, image: selectedPost.image || '' }
     const success = await saveBlogPost(savePayload)
     if (success) {
       setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
       await loadPosts()
     } else {
       alert('Save failed. Please check Supabase connection.')
     }
     setSaving(false)
   }
+
+  // 自动清除 saved 状态
+  useEffect(() => {
+    if (saved) {
+      const timer = setTimeout(() => setSaved(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [saved])
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this post?')) return
@@ -99,7 +117,7 @@ export default function BlogContentAdmin() {
     }
   }
 
-  const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
+  const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
@@ -132,9 +150,7 @@ export default function BlogContentAdmin() {
 
       // Step 4: 上传到 Supabase Storage
       const handle = selectedPost.handle || selectedPost.id
-      console.log('[Blog] Uploading image for handle:', handle, 'file size:', file.size)
       const { publicUrl } = await uploadBlogImage(handle, file)
-      console.log('[Blog] Upload success, publicUrl:', publicUrl)
 
       // Step 5: 清理 URL，更新本地 state（加 cache-buster 让预览立即刷新）
       const cleanUrl = publicUrl.split('?')[0]
@@ -142,20 +158,17 @@ export default function BlogContentAdmin() {
       setSelectedPost({ ...updatedPost, image: `${cleanUrl}?t=${Date.now()}` })
 
       // Step 6: 立即写入数据库
-      console.log('[Blog] Saving post with image_url:', cleanUrl)
       const ok = await saveBlogPost(updatedPost)
-      console.log('[Blog] saveBlogPost result:', ok)
 
       if (!ok) {
         alert('⚠️ Image uploaded to storage but failed to save URL to database.\nPlease click "Save & Publish" manually.')
       } else {
         await loadPosts()
         setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
       }
-    } catch (err: any) {
-      console.error('[Blog] handleCropConfirm error:', err)
-      alert('Upload failed: ' + (err.message || String(err)))
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err)
+      alert('Upload failed: ' + message)
     } finally {
       setUploadingImage(false)
     }

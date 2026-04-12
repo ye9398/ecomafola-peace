@@ -51,7 +51,7 @@ export const supabase = {
       upload: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
       download: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
       remove: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
-      publicUrl: (_path: string) => ''
+      getPublicUrl: (_path: string) => ({ data: { publicUrl: '' } })
     })
   }
 }
