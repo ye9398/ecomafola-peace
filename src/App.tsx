@@ -13,6 +13,7 @@ import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
 import { BlogListPage, BlogPostPage } from './pages/BlogPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
+import NotFoundPage from './pages/NotFoundPage'
 import { AuthProvider } from './context/AuthContext'
 import AnnouncementBar from './components/AnnouncementBar'
 import { AnalyticsProvider } from './components/AnalyticsProvider'
@@ -190,13 +191,7 @@ function App() {
            <Footer />
          </div>
        } />
-       <Route path="*" element={
-         <div className="min-h-screen bg-coral-white">
-           <Navbar />
-           <main><HomePage /></main>
-           <Footer />
-         </div>
-       } />
+       <Route path="*" element={<NotFoundPage />} />
      </Routes>
 
      {/* 全局购物车抽屉 */}
