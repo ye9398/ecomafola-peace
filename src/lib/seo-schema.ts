@@ -190,9 +190,10 @@ export function generateLocalBusinessSchema() {
       timeZone: 'Pacific/Apia',
     },
     sameAs: [
-      'https://www.facebook.com/ecomafola',
-      'https://www.instagram.com/ecomafola',
-      'https://twitter.com/ecomafola',
+      'https://www.facebook.com/profile.php?id=61586686574243',
+      'https://www.instagram.com/ecomafola_official/',
+      'https://x.com/MeijiaXue62817',
+      'https://www.tiktok.com/@ecomafola',
     ],
     priceRange: '$$',
     paymentAccepted: 'Credit Card, PayPal',

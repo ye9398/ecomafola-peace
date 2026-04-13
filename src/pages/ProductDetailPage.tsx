@@ -620,7 +620,9 @@ const ProductDetailPage = () => {
               "name": "EcoMafola Peace",
               "sameAs": [
                 "https://ecomafola.com",
-                "https://twitter.com/MeijiaXue62817"
+                "https://www.facebook.com/profile.php?id=61586686574243",
+                "https://www.instagram.com/ecomafola_official/",
+                "https://www.tiktok.com/@ecomafola"
               ]
             },
             "offers": {

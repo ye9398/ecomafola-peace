@@ -45,9 +45,10 @@ export default function HomePage() {
               "contactType": "customer service"
             },
             "sameAs": [
-              "https://twitter.com/ecomafola",
-              "https://facebook.com/ecomafola",
-              "https://instagram.com/ecomafola"
+              "https://www.facebook.com/profile.php?id=61586686574243",
+              "https://www.instagram.com/ecomafola_official/",
+              "https://x.com/MeijiaXue62817",
+              "https://www.tiktok.com/@ecomafola"
             ]
           })}
         </script>
