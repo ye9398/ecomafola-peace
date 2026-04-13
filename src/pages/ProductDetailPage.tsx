@@ -700,7 +700,7 @@ const ProductDetailPage = () => {
               }
             ],
             "material": "Natural Materials (Coconut, Shell, Rattan, Seagrass)",
-            "countryOfOrigin": "Samoa",
+            "countryOfOrigin": shopifyHandle?.includes('papua-new-guinea') ? 'Papua New Guinea' : 'Samoa',
             "isAccessibleForFree": "False",
             "priceRange": "$24.99 - $39.99",
             "category": product?.category || "Handcrafted Home Decor"
