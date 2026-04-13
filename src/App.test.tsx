@@ -94,14 +94,17 @@ describe('App Lazy Loading Routes', () => {
     expect(LazyAccountOrdersPage).toBeDefined();
   });
 
-  it('should render home page at root path', () => {
+  it('should render home page at root path', async () => {
     render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
     );
 
-    expect(screen.getByTestId('home-page')).toBeInTheDocument();
+    // Wait for lazy loaded HomePage
+    await waitFor(() => {
+      expect(screen.getByTestId('home-page')).toBeInTheDocument();
+    });
   });
 
   it('should render ProductDetailPage with Suspense at /product/:id route', async () => {
@@ -129,8 +132,8 @@ describe('App Lazy Loading Routes', () => {
     expect(CheckoutSuspense).toBeDefined();
   });
 
-  it('should have SuspenseBoundary wrapper available', async () => {
-    const { SuspenseBoundary } = await import('./components/LazyLoading');
-    expect(SuspenseBoundary).toBeDefined();
+  it('should have AccountOrdersSuspense wrapper available', async () => {
+    const { AccountOrdersSuspense } = await import('./components/LazyLoading');
+    expect(AccountOrdersSuspense).toBeDefined();
   });
 });

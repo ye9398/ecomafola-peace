@@ -249,7 +249,7 @@ export function sendToAnalytics(metric: Metric) {
   }
 
   // Log in development
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.log('[Web Vitals]', metric.name, metric.value)
   }
 }
@@ -261,12 +261,12 @@ export function reportWebVitals(onPerfEntry?: (metric: Metric) => void) {
   if (typeof window === 'undefined') return
 
   if (onPerfEntry && typeof onPerfEntry === 'function') {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry)
-      getFID(onPerfEntry)
-      getFCP(onPerfEntry)
-      getLCP(onPerfEntry)
-      getTTFB(onPerfEntry)
+    import('web-vitals').then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
+      onCLS(onPerfEntry)
+      onFCP(onPerfEntry)
+      onINP(onPerfEntry)
+      onLCP(onPerfEntry)
+      onTTFB(onPerfEntry)
     })
   }
 }

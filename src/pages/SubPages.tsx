@@ -262,10 +262,37 @@ export function ImpactPage() {
 
 // ContactPage.tsx
 import { Mail, MapPin, Clock, Send } from 'lucide-react'
+import { useState } from 'react'
 import PageSeo from '../components/seo/PageSeo'
 import { Helmet } from 'react-helmet-async'
 
+interface ContactForm {
+  name: string
+  email: string
+  message: string
+}
+
 export function ContactPage() {
+  const [form, setForm] = useState<ContactForm>({ name: '', email: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // 打开用户邮件客户端发送
+    const subject = encodeURIComponent(`Message from ${form.name}`)
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
+    )
+    window.location.href = `mailto:hello@ecomafola.com?subject=${subject}&body=${body}`
+    setSubmitted(true)
+  }
+
   const faqs = [
     {
       "@type": "Question",
@@ -392,38 +419,67 @@ export function ContactPage() {
 
           {/* Right: Form */}
           <div className="bg-[#F0E8DC] p-8 md:p-12 rounded-[2.5rem] shadow-xl">
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            {submitted ? (
+              <div className="text-center py-12">
+                <Send className="mx-auto text-tropical-green mb-4" size={48} />
+                <h3 className="font-serif text-2xl font-bold text-ocean-blue mb-3">Message Sent!</h3>
+                <p className="text-gray-600 text-sm">
+                  Your email client should have opened with your message.<br/>
+                  If it didn't, please email us directly at{' '}
+                  <a href="mailto:hello@ecomafola.com" className="text-tropical-green font-semibold underline">
+                    hello@ecomafola.com
+                  </a>
+                </p>
+              </div>
+            ) : (
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Your Name</label>
-                  <input 
-                    type="text" 
+                  <label htmlFor="contact-name" className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Your Name</label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={handleChange}
                     placeholder="John Doe"
                     className="w-full bg-white border-0 rounded-2xl px-6 py-4 text-sm font-sans focus:ring-2 focus:ring-tropical-green transition-all"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Email Address</label>
-                  <input 
-                    type="email" 
+                  <label htmlFor="contact-email" className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Email Address</label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
                     placeholder="john@example.com"
                     className="w-full bg-white border-0 rounded-2xl px-6 py-4 text-sm font-sans focus:ring-2 focus:ring-tropical-green transition-all"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Message</label>
-                <textarea 
-                  rows={4} 
+                <label htmlFor="contact-message" className="font-sans text-xs font-black uppercase tracking-widest text-ocean-blue/40 ml-1">Message</label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows={4}
+                  required
+                  value={form.message}
+                  onChange={handleChange}
                   placeholder="Tell us your story..."
                   className="w-full bg-white border-0 rounded-2xl px-6 py-4 text-sm font-sans focus:ring-2 focus:ring-tropical-green transition-all resize-none"
                 />
               </div>
-              <button className="w-full bg-ocean-blue text-white py-5 rounded-2xl font-sans font-black uppercase tracking-[0.2em] text-xs hover:bg-tropical-green transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group">
+              <button type="submit" className="w-full bg-ocean-blue text-white py-5 rounded-2xl font-sans font-black uppercase tracking-[0.2em] text-xs hover:bg-tropical-green transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-3 group">
                 Send Message
                 <Send size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
               </button>
             </form>
+            )}
           </div>
         </div>
       </div>

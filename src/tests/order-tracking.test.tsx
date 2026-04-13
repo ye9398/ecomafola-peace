@@ -1,9 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import { useAuth } from '../context/AuthContext'
+
+// Set required env var before module import (must be before any import of TrackOrderPage)
+vi.stubEnv('VITE_STOREFRONT_TOKEN', 'test-token-for-testing')
+
+// Import after env stub
 import TrackOrderPage from '../pages/TrackOrderPage'
 import AccountOrdersPage from '../pages/AccountOrdersPage'
-import { useAuth } from '../context/AuthContext'
 
 // Mock fetch
 const mockFetch = vi.fn()
@@ -33,9 +39,15 @@ vi.mock('react-router-dom', async (importOriginal) => {
   }
 })
 
-// 辅助函数：渲染带路由的组件
+// 辅助函数：渲染带路由和 Helmet 的组件
 function renderWithRouter(ui: React.ReactElement) {
-  return render(<BrowserRouter>{ui}</BrowserRouter>)
+  return render(
+    <BrowserRouter>
+      <HelmetProvider>
+        {ui}
+      </HelmetProvider>
+    </BrowserRouter>
+  )
 }
 
 describe('Order Tracking System', () => {

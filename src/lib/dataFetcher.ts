@@ -6,62 +6,9 @@
  */
 
 import { shopifyClient, SHOPIFY_QUERIES, getProducts, getProductByHandle } from './shopify';
+import { getCacheKey, readFromCache, writeToCache } from './cache';
 
-/**
- * Cache configuration for data fetching.
- */
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const CACHE_PREFIX = 'fetch:';
-
-interface CachedData<T> {
-  data: T;
-  timestamp: number;
-}
-
-/**
- * Reads data from localStorage cache.
- * @param cacheKey - The cache key to look up
- * @returns Cached data or null if not found/expired
- */
-function readFromCache<T>(cacheKey: string): T | null {
-  if (typeof window === 'undefined') return null;
-
-  const cached = localStorage.getItem(cacheKey);
-  if (!cached) return null;
-
-  try {
-    const { data, timestamp }: CachedData<T> = JSON.parse(cached);
-    const isExpired = Date.now() - timestamp > CACHE_DURATION;
-
-    if (isExpired) {
-      localStorage.removeItem(cacheKey);
-      return null;
-    }
-
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Writes data to localStorage cache.
- * @param cacheKey - The cache key
- * @param data - The data to cache
- */
-function writeToCache<T>(cacheKey: string, data: T): void {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const cached: CachedData<T> = {
-      data,
-      timestamp: Date.now(),
-    };
-    localStorage.setItem(cacheKey, JSON.stringify(cached));
-  } catch {
-    // Ignore cache write errors
-  }
-}
 
 /**
  * Clears all fetch-related cache.

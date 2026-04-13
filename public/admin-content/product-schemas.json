@@ -1,0 +1,216 @@
+{
+  "samoan-handcrafted-coconut-bowl": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Samoan Handcrafted Coconut Bowl - 100% Natural Eco-Friendly Artisan Serving Bowl",
+    "description": "Tropical Authenticity for Your Kitchen Elevate your dining experience with our Samoan Handcrafted Coconut Bowl. Each bowl is repurposed from real coconut shells that would otherwise go to waste, meticulously sanded and polished to reveal their natural beauty. Why You'll Love It: 100% Natural & Sustainable: Crafted from real coconuts, these bowls are biodegradable and free from harmful chemicals or plastics. Artisan Quality: Handcrafted by local artisans in Samoa, every bowl features its own uniq",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/samoan-handcrafted-coconut-bowl",
+      "price": "29.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260327112423_4133_105.jpg?v=1774790904",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260327112424_4135_105.jpg?v=1774790904",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/max-griss-oTHqn9jEeGg-unsplash.jpg?v=1774790904",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/cocobols-ydxt6NPMs78-unsplash.jpg?v=1774790904",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/cocobols-5vu3kHFNMAg-unsplash.jpg?v=1774790904"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "samoan-handwoven-grass-tote-bag": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Samoan Handwoven Grass Tote Bag - Sustainable Eco-Friendly Beach & Summer Shoulder Bag",
+    "description": "Timeless Island Style Our Samoan Handwoven Grass Tote Bag is the perfect blend of traditional craftsmanship and modern summer style. Handcrafted by skilled artisans using locally sourced natural grasses, this bag is a testament to sustainable island living. Why You'll Love It: Ethically Handcrafted: Supporting local Samoan communities, each bag is woven with patience and expertise passed down through generations. Lightweight & Breathable: The natural grass weave allows air to circulate, making i",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/samoan-handwoven-grass-tote-bag",
+      "price": "49.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330125443_4278_105.jpg?v=1774846545",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330125443_4279_105.jpg?v=1774846545",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330125444_4280_105.jpg?v=1774846545",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330125445_4281_105.jpg?v=1774846545"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "samoan-handcrafted-shell-necklace": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Ocean Whisper Seashell Necklace",
+    "description": "Close your eyes and listen ??that's the sound of a Samoan wave breaking on coral reef at dawn. Now open them. You're holding that moment in your hands. The Ocean Whisper Seashell Necklace is handcrafted by Pacific artisan women who walk the same shores their grandmothers walked, collecting only naturally fallen shells ??never harvested, never exploited. Each shell is unique. No two necklaces are identical. When you wear this piece, you carry the actual texture of a Samoan morning ??salt-kissed, ",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/samoan-handcrafted-shell-necklace",
+      "price": "24.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330113836_4268_105.jpg?v=1774841969",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330113836_4269_105.jpg?v=1774841969",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260330113837_4270_105.jpg?v=1774841969"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "samoan-woven-basket": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Samoan Handwoven Basket - Multi-Purpose Natural Fiber Storage & Artisan Home Decor",
+    "description": "Functional Art for Your Home Bring a touch of island warmth to your interior with the Samoan Handwoven Basket. These versatile baskets combine centuries-old weaving techniques with modern functionality, making them perfect for storage or display. Why You'll Love It: Multi-Purpose Storage: Ideal for organizing your home—use it for towels, magazines, toys, or even as a unique plant pot cover. Authentic Handcrafted Appeal: Handwoven by Samoan artisans using traditional methods, each basket features",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/samoan-woven-basket",
+      "price": "39.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260327112412_4119_105.jpg?v=1774790417",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260329210713_4230_105.jpg?v=1774790490",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/zachary-staines-0kvS01RVKQI-unsplash.jpg?v=1774790593",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/daryl-han-mtxhbuf6IEo-unsplash.jpg?v=1774790593",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/eduardo-rodriguez-uRCrdEiiVPU-unsplash.jpg?v=1774790490"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "samoan-handcrafted-natural-shell-coasters": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Tapa Sun Coaster Set (3pc)",
+    "description": "In Samoan culture, the *tapa* cloth tells stories ??of families, of voyages, of the land. The Tapa Sun Coaster Set brings that storytelling to your table. Each coaster features the ancient sun motif, symbolizing warmth, connection, and the rhythm of Pacific island life. Woven from natural pandanus leaves by artisans in Savai'i ??Samoa's largest and most traditional island ??this is the kind of functional art that makes guests pick it up, turn it over, and ask: \"Where is this from?\" 100% natural ",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/samoan-handcrafted-natural-shell-coasters",
+      "price": "27.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260406182854_4665_105.jpg?v=1775472828",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260406182858_4671_105.jpg?v=1775472874",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260406182854_4666_105.jpg?v=1775472874",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260406182856_4669_105.jpg?v=1775472874",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260406182857_4670_105.jpg?v=1775472874"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "handwoven-papua-new-guinea-beach-bag": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Handwoven Papua New Guinea Beach Bag - Premium Artisan Straw Tote for Travel & Luxury Leisure",
+    "description": "A Masterpiece of Pacific Craftsmanship Discover the elegance of the Handwoven Papua New Guinea Beach Bag. This is more than just a bag; it's a piece of art created by master weavers in PNG, known for their intricate patterns and incredible durability. Why You'll Love It: Premium Artisan Quality: Featuring tight, complex weaving patterns that are characteristic of traditional PNG craftsmanship. Luxury Resort Aesthetic: Its sophisticated design makes it perfect for luxury vacations, boat trips, or",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/handwoven-papua-new-guinea-beach-bag",
+      "price": "259.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402133232_4482_105.jpg?v=1775108652",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402133232_4483_105.jpg?v=1775108652",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402133233_4484_105.jpg?v=1775108652",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402133234_4485_105.jpg?v=1775108652",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402133229_4479_105.jpg?v=1775108652"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  },
+  "natural-coir-handwoven-coconut-palm-doormat": {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Natural Coir Doormat - Handwoven Eco-Friendly Coconut Fiber Welcome Mat",
+    "description": "Handcrafted Warmth for Your Home Bring the essence of the South Pacific to your doorstep with our Handcrafted Natural Coir Doormat. Each mat is meticulously handwoven by local artisans in Samoa, using 100% natural coconut fibers (coir). Why You'll Love It: Eco-Friendly & Sustainable: Made from renewable coconut husks, this mat is as kind to the planet as it is to your floors. Superior Durability: The tough coir fibers excel at scraping dirt, mud, and moisture from shoes, keeping your entryway pr",
+    "brand": {
+      "@type": "Brand",
+      "name": "EcoMafola Peace"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://ecomafola.com/product/natural-coir-handwoven-coconut-palm-doormat",
+      "price": "39.99",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "EcoMafola Peace"
+      }
+    },
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402130834_4471_105.jpg?v=1775109697",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402130840_4473_105.jpg?v=1775109697",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402130852_4477_105.jpg?v=1775109697",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402130844_4475_105.jpg?v=1775109697",
+      "https://cdn.shopify.com/s/files/1/0678/1871/7289/files/20260402130841_4474_105.jpg?v=1775109697"
+    ],
+    "material": "Natural Materials",
+    "origin": "Samoa",
+    "craftsmanship": "Handcrafted"
+  }
+}

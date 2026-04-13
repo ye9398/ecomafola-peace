@@ -19,5 +19,5 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-// 注册性能监控
+// Report web vitals after root render
 reportWebVitals(sendToAnalytics);

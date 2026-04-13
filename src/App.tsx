@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -15,15 +15,16 @@ import NotFoundPage from './pages/NotFoundPage'
 import ShippingReturnsPage from './pages/ShippingReturnsPage'
 import FaqPage from './pages/FaqPage'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import AnnouncementBar from './components/AnnouncementBar'
 import { AnalyticsProvider } from './components/AnalyticsProvider'
 
-// 管理后台页面（独立布局，无 Navbar/Footer）
-import AdminLogin from './pages/admin/AdminLogin'
-import AdminPage from './pages/admin/AdminPage'
-import ProductContentAdmin from './pages/admin/ProductContentAdmin'
-import HomeContentAdmin from './pages/admin/HomeContentAdmin'
-import BlogContentAdmin from './pages/admin/BlogContentAdmin'
+// 管理后台页面（懒加载，独立布局）
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'))
+const AdminPage = lazy(() => import('./pages/admin/AdminPage'))
+const ProductContentAdmin = lazy(() => import('./pages/admin/ProductContentAdmin'))
+const HomeContentAdmin = lazy(() => import('./pages/admin/HomeContentAdmin'))
+const BlogContentAdmin = lazy(() => import('./pages/admin/BlogContentAdmin'))
 
 // 懒加载页面组件
 import {
@@ -43,14 +44,15 @@ function App() {
   return (
    <AnalyticsProvider ga4MeasurementId={ga4MeasurementId}>
     <AuthProvider>
+     <CartProvider>
      <AnnouncementBar />
      <Routes>
        {/* 管理后台路由 - 独立布局，无 Navbar/Footer */}
-       <Route path="/dashboard/login" element={<AdminLogin />} />
-       <Route path="/dashboard" element={<AdminPage />} />
-       <Route path="/dashboard/products" element={<ProductContentAdmin />} />
-       <Route path="/dashboard/home" element={<HomeContentAdmin />} />
-       <Route path="/dashboard/blog" element={<BlogContentAdmin />} />
+       <Route path="/dashboard/login" element={<Suspense fallback={<LoadingSkeleton />}><AdminLogin /></Suspense>} />
+       <Route path="/dashboard" element={<Suspense fallback={<LoadingSkeleton />}><AdminPage /></Suspense>} />
+       <Route path="/dashboard/products" element={<Suspense fallback={<LoadingSkeleton />}><ProductContentAdmin /></Suspense>} />
+       <Route path="/dashboard/home" element={<Suspense fallback={<LoadingSkeleton />}><HomeContentAdmin /></Suspense>} />
+       <Route path="/dashboard/blog" element={<Suspense fallback={<LoadingSkeleton />}><BlogContentAdmin /></Suspense>} />
 
        {/* 前台页面路由 - 带 Navbar/Footer */}
        <Route path="/" element={
@@ -224,6 +226,7 @@ function App() {
 
      {/* 全局购物车抽屉 */}
      <SlideOverCheckout />
+     </CartProvider>
    </AuthProvider>
    </AnalyticsProvider>
   )

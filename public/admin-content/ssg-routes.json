@@ -1,0 +1,200 @@
+[
+  {
+    "route": "/",
+    "title": "EcoMafola Peace | Handcrafted Treasures from Samoa",
+    "description": "Authentic handcrafted goods from Samoa, made in partnership with local artisan cooperatives. Eco-friendly, sustainable, ocean-inspired.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/products",
+    "title": "All Products | Samoan Handcrafted Goods | EcoMafola Peace",
+    "description": "Browse our complete collection of Samoan handcrafted products. Coconut bowls, woven baskets, beach bags, home decor & jewelry.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/our-story",
+    "title": "Our Story | EcoMafola Peace - Supporting Samoan Artisans",
+    "description": "Learn about our mission to preserve traditional Samoan craftsmanship while supporting 240+ artisan families across the Pacific.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/impact",
+    "title": "Our Impact | Environmental & Social Responsibility | EcoMafola Peace",
+    "description": "See how EcoMafola Peace is making a difference through fair trade, environmental sustainability, and community support.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/contact",
+    "title": "Contact Us | EcoMafola Peace",
+    "description": "Get in touch with EcoMafola Peace. Questions about products, shipping, or custom orders? We are here to help.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/faq",
+    "title": "Frequently Asked Questions | EcoMafola Peace",
+    "description": "Find answers to common questions about EcoMafola Peace products, shipping, returns, and our Samoan artisan partnership.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/shipping-returns",
+    "title": "Shipping & Returns | EcoMafola Peace",
+    "description": "Learn about EcoMafola Peace shipping zones, delivery times, return policy, and our craftsmanship warranty for handcrafted products.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/privacy-policy",
+    "title": "Privacy Policy | EcoMafola Peace",
+    "description": "Read EcoMafola Peace privacy policy. Learn how we protect your personal information and respect your privacy.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/blog",
+    "title": "The Pacific Soul Blog | Samoan Craftsmanship & Culture | EcoMafola Peace",
+    "description": "Discover stories behind South Pacific craftsmanship, sustainable living tips, and island heritage from EcoMafola Peace.",
+    "ogImage": "/images/banner-main.jpg"
+  },
+  {
+    "route": "/product/samoan-handcrafted-coconut-bowl",
+    "title": "Samoan Handcrafted Coconut Bowl | EcoMafola Peace",
+    "description": "Hand-carved from fallen coconut shells, polished with virgin coconut oil. Each bowl is unique with natural patterns.",
+    "ogImage": "https://ecomafola.com/images/coconut-bowl.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Samoan Handcrafted Coconut Bowl",
+      "handle": "samoan-handcrafted-coconut-bowl",
+      "description": "Hand-carved from fallen coconut shells, polished with virgin coconut oil. Each bowl is unique with natural patterns.",
+      "price": "29.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/coconut-bowl.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/samoan-handwoven-grass-tote-bag",
+    "title": "Samoan Handwoven Grass Tote Bag | EcoMafola Peace",
+    "description": "Traditional pandanus weaving, eco-friendly shopping bag. Made by skilled artisans in Samoa.",
+    "ogImage": "https://ecomafola.com/images/grass-tote.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Samoan Handwoven Grass Tote Bag",
+      "handle": "samoan-handwoven-grass-tote-bag",
+      "description": "Traditional pandanus weaving, eco-friendly shopping bag. Made by skilled artisans in Samoa.",
+      "price": "34.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/grass-tote.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/samoan-handcrafted-shell-necklace",
+    "title": "Samoan Handcrafted Shell Necklace | EcoMafola Peace",
+    "description": "Naturally collected shells, traditional Pacific jewelry. Each piece tells a story of the ocean.",
+    "ogImage": "https://ecomafola.com/images/shell-necklace.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Samoan Handcrafted Shell Necklace",
+      "handle": "samoan-handcrafted-shell-necklace",
+      "description": "Naturally collected shells, traditional Pacific jewelry. Each piece tells a story of the ocean.",
+      "price": "24.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/shell-necklace.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/samoan-woven-basket",
+    "title": "Samoan Woven Basket | EcoMafola Peace",
+    "description": "Multi-purpose storage, traditional Samoan weaving. Perfect for home organization or as a decorative piece.",
+    "ogImage": "https://ecomafola.com/images/woven-basket.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Samoan Woven Basket",
+      "handle": "samoan-woven-basket",
+      "description": "Multi-purpose storage, traditional Samoan weaving. Perfect for home organization or as a decorative piece.",
+      "price": "39.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/woven-basket.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/natural-coconut-soap",
+    "title": "Natural Coconut Soap | EcoMafola Peace",
+    "description": "Made from pure coconut oil, gentle on skin. Traditional recipe passed down through generations.",
+    "ogImage": "https://ecomafola.com/images/coconut-soap.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Natural Coconut Soap",
+      "handle": "natural-coconut-soap",
+      "description": "Made from pure coconut oil, gentle on skin. Traditional recipe passed down through generations.",
+      "price": "12.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/coconut-soap.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/tapa-cloth-wall-art",
+    "title": "Tapa Cloth Wall Art | EcoMafola Peace",
+    "description": "Traditional Pacific bark cloth, hand-painted with cultural motifs. Authentic island art for your home.",
+    "ogImage": "https://ecomafola.com/images/tapa-cloth.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Tapa Cloth Wall Art",
+      "handle": "tapa-cloth-wall-art",
+      "description": "Traditional Pacific bark cloth, hand-painted with cultural motifs. Authentic island art for your home.",
+      "price": "89.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/tapa-cloth.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/samoan-handcrafted-natural-shell-coasters",
+    "title": "Samoan Handcrafted Natural Shell Coasters | EcoMafola Peace",
+    "description": "Set of 6 decorative shell coasters. Each coaster showcases natural ocean beauty.",
+    "ogImage": "https://ecomafola.com/images/shell-coasters.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Samoan Handcrafted Natural Shell Coasters",
+      "handle": "samoan-handcrafted-natural-shell-coasters",
+      "description": "Set of 6 decorative shell coasters. Each coaster showcases natural ocean beauty.",
+      "price": "27.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/shell-coasters.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/handwoven-papua-new-guinea-beach-bag",
+    "title": "Handwoven Papua New Guinea Beach Bag | EcoMafola Peace",
+    "description": "PNG artisan made, sustainable beach accessory. Spacious and durable for all your adventures.",
+    "ogImage": "https://ecomafola.com/images/beach-bag.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Handwoven Papua New Guinea Beach Bag",
+      "handle": "handwoven-papua-new-guinea-beach-bag",
+      "description": "PNG artisan made, sustainable beach accessory. Spacious and durable for all your adventures.",
+      "price": "34.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/beach-bag.jpg",
+      "availableForSale": true
+    }
+  },
+  {
+    "route": "/product/natural-coir-handwoven-coconut-palm-doormat",
+    "title": "Natural Coir Handwoven Coconut Palm Doormat | EcoMafola Peace",
+    "description": "Natural coconut fiber, durable entrance mat. Welcome guests with island style.",
+    "ogImage": "https://ecomafola.com/images/doormat.jpg",
+    "isProductPage": true,
+    "product": {
+      "title": "Natural Coir Handwoven Coconut Palm Doormat",
+      "handle": "natural-coir-handwoven-coconut-palm-doormat",
+      "description": "Natural coconut fiber, durable entrance mat. Welcome guests with island style.",
+      "price": "34.99",
+      "currencyCode": "USD",
+      "image": "https://ecomafola.com/images/doormat.jpg",
+      "availableForSale": true
+    }
+  }
+]

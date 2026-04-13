@@ -4,8 +4,15 @@ import { Lock } from 'lucide-react'
 
 /**
  * 管理后台登录页面
- * 简单的前端认证（生产环境需要后端支持）
+ *
+ * 安全说明：当前使用环境变量存储密码，仍为客户端验证。
+ * 生产环境应迁移到后端 API 认证（如 Supabase Auth）。
  */
+
+// 从环境变量读取密码，默认为空（不允许登录）
+const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || ''
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || ''
+
 export default function AdminLogin() {
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
@@ -14,9 +21,14 @@ export default function AdminLogin() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // 简单的前端验证（生产环境需要后端 API）
-    if (username === 'admin' && password === 'admin9396') {
+
+    // 如果环境变量未配置，提示联系管理员
+    if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+      setError('管理员凭证未配置，请联系站长')
+      return
+    }
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       localStorage.setItem('admin_authenticated', 'true')
       navigate('/dashboard')
     } else {

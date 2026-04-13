@@ -1,4 +1,5 @@
 import { createStorefrontApiClient } from '@shopify/storefront-api-client';
+import { getCacheKey, readFromCache, writeToCache } from './cache';
 
 // Shopify Storefront API Configuration
 const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || 'ecomafola-peace.myshopify.com';
@@ -9,67 +10,17 @@ if (!STOREFRONT_TOKEN) {
   throw new Error('VITE_SHOPIFY_STOREFRONT_TOKEN (or VITE_STOREFRONT_TOKEN) is required.');
 }
 
-// Cache Configuration
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const CACHE_PREFIX = 'shopify:';
 
-interface CachedData<T> {
-  data: T;
-  timestamp: number;
-}
-
-// Generate cache key
-function getCacheKey(prefix: string, variables: Record<string, any>): string {
-  return `${CACHE_PREFIX}${prefix}:${JSON.stringify(variables)}`;
-}
-
-// Read from cache
-function readFromCache<T>(cacheKey: string): T | null {
-  if (typeof window === 'undefined') return null;
-
-  const cached = localStorage.getItem(cacheKey);
-  if (!cached) return null;
-
-  try {
-    const { data, timestamp } = JSON.parse(cached) as CachedData<T>;
-    const isExpired = Date.now() - timestamp > CACHE_DURATION;
-
-    if (isExpired) {
-      localStorage.removeItem(cacheKey);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Cache read error:', error);
-    return null;
-  }
-}
-
-// Write to cache
-function writeToCache<T>(cacheKey: string, data: T): void {
-  if (typeof window === 'undefined') return;
-
-  try {
-    const cached: CachedData<T> = {
-      data,
-      timestamp: Date.now(),
-    };
-    localStorage.setItem(cacheKey, JSON.stringify(cached));
-  } catch (error) {
-    console.error('Cache write error:', error);
-  }
-}
-
-// Clear all Shopify cache
+/**
+ * Clear all Shopify cache
+ */
 export function clearShopifyCache() {
   if (typeof window === 'undefined') return;
 
   Object.keys(localStorage)
     .filter(key => key.startsWith(CACHE_PREFIX))
     .forEach(key => localStorage.removeItem(key));
-
-  console.log('[Shopify Cache] Cleared all cache');
 }
 
 export const shopifyClient = createStorefrontApiClient({

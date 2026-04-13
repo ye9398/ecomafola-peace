@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run preload-products && vite build",
+    "build": "npm run preload-products && node scripts/generate-ssg-routes.mjs && vite build",
     "preload-products": "node scripts/preload-products.mjs",
     "preview": "vite preview",
     "test": "vitest",
