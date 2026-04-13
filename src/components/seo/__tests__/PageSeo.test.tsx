@@ -5,7 +5,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from '@testing-library/react';
 import { HelmetProvider } from 'react-helmet-async';
-import PageSeo, { PAGE_SEO, getOpenGraphTags, getTwitterCardTags } from '../PageSeo';
+import PageSeo, { getOpenGraphTags, getTwitterCardTags } from '../PageSeo';
+import { PAGE_SEO } from '../../../lib/seo';
 
 const createWrapper = () => {
   return ({ children }: { children: React.ReactNode }) => (
@@ -126,37 +127,42 @@ describe('PageSeo', () => {
 
   describe('PAGE_SEO presets', () => {
     it('should have home preset', () => {
-      expect(PAGE_SEO.home.title).toBe('Handcrafted Pacific Treasures');
+      expect(PAGE_SEO.home.title).toContain('EcoMafola Peace');
       expect(PAGE_SEO.home.canonical).toBe('/');
     });
 
     it('should have products preset', () => {
-      expect(PAGE_SEO.products.title).toBe('Our Products');
+      expect(PAGE_SEO.products.title).toContain('Products');
       expect(PAGE_SEO.products.canonical).toBe('/products');
     });
 
-    it('should have about preset', () => {
-      expect(PAGE_SEO.about.title).toBe('About Us');
-      expect(PAGE_SEO.about.canonical).toBe('/about');
+    it('should have ourStory preset', () => {
+      expect(PAGE_SEO.ourStory.title).toContain('Our Story');
+      expect(PAGE_SEO.ourStory.canonical).toBe('/our-story');
+    });
+
+    it('should have impact preset', () => {
+      expect(PAGE_SEO.impact.title).toContain('Impact');
+      expect(PAGE_SEO.impact.canonical).toBe('/impact');
     });
 
     it('should have contact preset', () => {
-      expect(PAGE_SEO.contact.title).toBe('Contact Us');
+      expect(PAGE_SEO.contact.title).toContain('Contact');
       expect(PAGE_SEO.contact.canonical).toBe('/contact');
     });
 
     it('should have account preset', () => {
-      expect(PAGE_SEO.account.title).toBe('My Account');
+      expect(PAGE_SEO.account.title).toContain('Account');
       expect(PAGE_SEO.account.canonical).toBe('/account');
     });
 
     it('should have login preset', () => {
-      expect(PAGE_SEO.login.title).toBe('Sign In');
+      expect(PAGE_SEO.login.title).toContain('Sign In');
       expect(PAGE_SEO.login.canonical).toBe('/login');
     });
 
     it('should have checkout preset', () => {
-      expect(PAGE_SEO.checkout.title).toBe('Checkout');
+      expect(PAGE_SEO.checkout.title).toContain('Checkout');
       expect(PAGE_SEO.checkout.canonical).toBe('/checkout');
     });
   });

@@ -5,6 +5,8 @@
  * Used for server-side rendering and dynamic meta generation.
  */
 
+import { SEO_CONFIG, BRAND_INFO } from './seo-config';
+
 export interface PageSEO {
   title: string
   description: string
@@ -13,8 +15,8 @@ export interface PageSEO {
   ogImage?: string
 }
 
-const BASE_URL = 'https://ecomafola.com'
-const DEFAULT_IMAGE = '/og-default.jpg'
+const BASE_URL = SEO_CONFIG.baseUrl
+const DEFAULT_IMAGE = SEO_CONFIG.defaultOgImage
 
 /**
  * SEO configurations for all pages
@@ -161,21 +163,20 @@ export function generateOrganizationSchema() {
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     sameAs: [
-      'https://www.facebook.com/profile.php?id=61586686574243',
-      'https://www.instagram.com/ecomafola_official/',
-      'https://x.com/MeijiaXue62817',
-      'https://www.tiktok.com/@ecomafola',
+      BRAND_INFO.social.facebook,
+      BRAND_INFO.social.instagram,
+      BRAND_INFO.social.tiktok,
     ],
     description: 'Authentic handcrafted Pacific treasures from Samoa. Supporting traditional artisans through fair trade.',
     address: {
       '@type': 'PostalAddress',
-      addressLocality: 'Apia',
-      addressCountry: 'WS',
+      addressLocality: BRAND_INFO.headquarters.locality,
+      addressCountry: BRAND_INFO.headquarters.country,
     },
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Service',
-      email: 'hello@ecomafola.com',
+      email: BRAND_INFO.contactEmail,
     },
   }
 }

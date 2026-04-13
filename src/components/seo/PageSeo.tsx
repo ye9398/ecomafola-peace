@@ -23,6 +23,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
+import { BRAND_INFO, SEO_CONFIG } from '../../lib/seo-config';
 
 export interface PageSeoProps {
   /** Page title (without site name suffix) */
@@ -46,12 +47,13 @@ export interface PageSeoProps {
 }
 
 /**
- * Default SEO configuration.
+ * Default SEO configuration — delegates to centralized BRAND_INFO.
  */
 const DEFAULT_SEO = {
   type: 'website' as const,
-  siteName: 'EcoMafola Peace',
+  siteName: BRAND_INFO.siteName,
   twitterHandle: '@ecomafola',
+  baseUrl: SEO_CONFIG.baseUrl,
 };
 
 /**
@@ -103,7 +105,7 @@ export function getTwitterCardTags(props: PageSeoProps): Record<string, string> 
     'twitter:creator': twitterHandle,
     'twitter:title': `${title} | ${DEFAULT_SEO.siteName}`,
     'twitter:description': description,
-    'twitter:image': image || `${DEFAULT_SEO.siteName}/og-default.jpg`,
+    'twitter:image': image || `${DEFAULT_SEO.baseUrl}/og-default.jpg`,
   };
 }
 
@@ -174,48 +176,5 @@ export default function PageSeo({
   );
 }
 
-/**
- * Pre-defined SEO configurations for common pages.
- */
-export const PAGE_SEO = {
-  home: {
-    title: 'Handcrafted Pacific Treasures',
-    description:
-      'Discover handcrafted Pacific treasures from Samoa. EcoMafola Peace offers authentic, eco-friendly products that support traditional artisans.',
-    canonical: '/',
-  },
-  products: {
-    title: 'Our Products',
-    description:
-      'Browse our collection of handcrafted Pacific products. Each item is made with natural materials by skilled Samoan artisans.',
-    canonical: '/products',
-  },
-  about: {
-    title: 'About Us',
-    description:
-      'Learn about EcoMafola Peace mission to empower Samoan artisans through fair trade and preserve cultural heritage.',
-    canonical: '/about',
-  },
-  contact: {
-    title: 'Contact Us',
-    description:
-      'Get in touch with EcoMafola Peace. We are here to answer your questions about our products and shipping.',
-    canonical: '/contact',
-  },
-  account: {
-    title: 'My Account',
-    description: 'Manage your account and orders.',
-    canonical: '/account',
-  },
-  login: {
-    title: 'Sign In',
-    description: 'Sign in to your EcoMafola Peace account.',
-    canonical: '/login',
-  },
-  checkout: {
-    title: 'Checkout',
-    description: 'Complete your purchase securely.',
-    canonical: '/checkout',
-    type: 'website' as const,
-  },
-} as const;
+// PAGE_SEO page configurations have been consolidated into src/lib/seo.ts.
+// Import from there for page-specific SEO data.
