@@ -6,6 +6,7 @@ import {
   MapPin, Star, Search, Globe, Heart, Sparkles, Check
 } from 'lucide-react'
 import { getProductByHandle, getProductRecommendations } from '../lib/shopify'
+import { getProductContent } from '../lib/contentService'
 import { useCart } from '../context/CartContext'
 import { useGeoLocation, useShipping } from '../hooks/useShipping'
 import { getProductDescription } from '../data/productDescriptions'
@@ -460,13 +461,20 @@ const ProductDetailPage = () => {
   useEffect(() => {
     const loadCustomContent = async () => {
       try {
-        const response = await fetch('/admin-content/ecomafola-content.json')
-        if (response.ok) {
-          const data = await response.json()
-          setCustomContent(data.products?.[shopifyHandle] || null)
-        }
+        if (!shopifyHandle) return
+        const data = await getProductContent(shopifyHandle)
+        setCustomContent(data)
       } catch (err) {
-        console.error('Error loading custom content:', err)
+        // Fallback to static JSON
+        try {
+          const response = await fetch('/admin-content/ecomafola-content.json')
+          if (response.ok) {
+            const data = await response.json()
+            setCustomContent(data.products?.[shopifyHandle] || null)
+          }
+        } catch {
+          // Silently fail — use default descriptions
+        }
       }
     }
     loadCustomContent()

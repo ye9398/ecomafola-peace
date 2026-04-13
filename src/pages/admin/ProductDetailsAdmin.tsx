@@ -1,30 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Save, Download, LogOut, ChevronLeft, Package } from 'lucide-react'
-
-/**
- * 产品详情管理页面
- * 零风险设计：
- * - 只编辑补充内容（品牌故事、环保影响等）
- * - 不修改 Shopify 核心数据
- * - 数据存储在独立 JSON 文件
- */
-
-// 产品列表（与 Shopify handle 对应）
-const PRODUCTS = [
-  { handle: 'samoan-handcrafted-coconut-bowl', name: 'Coconut Bowl' },
-  { handle: 'samoan-woven-basket', name: 'Woven Basket' },
-  { handle: 'samoan-handwoven-grass-tote-bag', name: 'Woven Tote Bag' },
-  { handle: 'samoan-handcrafted-shell-necklace', name: 'Shell Necklace' },
-  { handle: 'handwoven-papua-new-guinea-beach-bag', name: 'Beach Bag' },
-  { handle: 'natural-coir-handwoven-coconut-palm-doormat', name: 'Doormat' },
-]
+import { Save, LogOut, ChevronLeft, Package } from 'lucide-react'
+import { getAllProducts } from '../lib/shopify'
+import { getProductContent, saveProductContent } from '../lib/contentService'
+import { isSupabaseConfigured } from '../lib/supabase'
 
 export default function ProductDetailsAdmin() {
   const navigate = useNavigate()
+  const [shopifyProducts, setShopifyProducts] = useState<{ handle: string; name: string }[]>([])
   const [selectedProduct, setSelectedProduct] = useState('')
   const [content, setContent] = useState<any>({})
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -33,20 +20,33 @@ export default function ProductDetailsAdmin() {
       navigate('/dashboard/login')
       return
     }
-
-    // 加载已保存的内容
-    loadContent()
+    loadProductsAndContent()
   }, [navigate])
 
-  const loadContent = async () => {
+  useEffect(() => {
+    if (!saved) return
+    const timer = setTimeout(() => setSaved(false), 3000)
+    return () => clearTimeout(timer)
+  }, [saved])
+
+  const loadProductsAndContent = async () => {
+    setLoading(true)
     try {
-      const response = await fetch('/admin-content/ecomafola-content.json')
-      if (response.ok) {
-        const data = await response.json()
-        setContent(data.products || {})
+      const products = await getAllProducts()
+      const productList = products.map((p: any) => ({ handle: p.handle, name: p.title }))
+      setShopifyProducts(productList)
+
+      // Load existing content from Supabase for all products
+      const contentMap: Record<string, any> = {}
+      for (const product of productList) {
+        const saved = await getProductContent(product.handle)
+        if (saved) {
+          contentMap[product.handle] = saved
+        }
       }
+      setContent(contentMap)
     } catch (error) {
-      console.error('Error loading content:', error)
+      console.error('Error loading products:', error)
     } finally {
       setLoading(false)
     }
@@ -57,20 +57,21 @@ export default function ProductDetailsAdmin() {
     navigate('/')
   }
 
-  const handleDownload = () => {
-    const dataStr = JSON.stringify({ products: content }, null, 2)
-    const blob = new Blob([dataStr], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'product-details-config.json'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+  const handleSavePublish = async () => {
+    if (!selectedProduct) return
+    setSaving(true)
+    try {
+      await saveProductContent(selectedProduct, content[selectedProduct] || {})
+      setSaved(true)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert('保存失败: ' + err.message)
+      } else {
+        alert('保存失败，请重试')
+      }
+    } finally {
+      setSaving(false)
+    }
   }
 
   const updateContent = (field: string, value: string) => {
@@ -92,10 +93,11 @@ export default function ProductDetailsAdmin() {
     )
   }
 
+  const selectedProductInfo = shopifyProducts.find(p => p.handle === selectedProduct)
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 顶部导航栏 */}
-      <header className="bg-white shadow">
+      <header className="bg-white shadow sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/dashboard')} className="text-gray-600 hover:text-gray-900">
@@ -105,13 +107,17 @@ export default function ProductDetailsAdmin() {
           </div>
           <div className="flex items-center gap-4">
             <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 transition-colors"
+              onClick={handleSavePublish}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
-              <Download size={20} />
-              <span>下载 JSON</span>
+              <Save size={20} />
+              <span>{saving ? '保存中...' : '保存并发布'}</span>
             </button>
             {saved && <span className="text-green-600">✓ 已保存</span>}
+            {!isSupabaseConfigured() && (
+              <span className="text-xs text-red-500">Supabase 未配置</span>
+            )}
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
@@ -123,9 +129,7 @@ export default function ProductDetailsAdmin() {
         </div>
       </header>
 
-      {/* 主内容区 */}
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* 产品选择器 */}
         <div className="mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             选择产品
@@ -136,7 +140,7 @@ export default function ProductDetailsAdmin() {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">请选择产品...</option>
-            {PRODUCTS.map((product) => (
+            {shopifyProducts.map((product) => (
               <option key={product.handle} value={product.handle}>
                 {product.name}
               </option>
@@ -149,11 +153,10 @@ export default function ProductDetailsAdmin() {
             <div className="flex items-center gap-3 pb-4 border-b">
               <Package className="w-6 h-6 text-blue-600" />
               <h2 className="text-xl font-bold text-gray-900">
-                {PRODUCTS.find(p => p.handle === selectedProduct)?.name}
+                {selectedProductInfo?.name}
               </h2>
             </div>
 
-            {/* 编辑字段 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 品牌故事 (Story)
@@ -191,12 +194,6 @@ export default function ProductDetailsAdmin() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="描述合作模式..."
               />
-            </div>
-
-            <div className="pt-4 border-t">
-              <p className="text-sm text-gray-500">
-                💡 <strong>提示：</strong>点击"下载 JSON"可以保存编辑的内容。下载的文件可以用于后续手动更新网站内容。
-              </p>
             </div>
           </div>
         ) : (

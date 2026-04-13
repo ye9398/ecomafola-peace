@@ -1,7 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cropper from 'react-easy-crop'
+import type { Area } from 'react-easy-crop'
 import { Save, Download, LogOut, ChevronLeft, Package, Image as ImageIcon, MessageSquare, Star, Upload, X, Plus, Trash2 } from 'lucide-react'
+import { getAllProducts } from '../../lib/shopify'
+import { getProductContent, saveProductContent, uploadSectionImage, uploadGalleryImage, type ProductContent } from '../../lib/contentService'
+import { isSupabaseConfigured } from '../../lib/supabase'
 
 /**
  * 产品完整内容管理页面 v2
@@ -66,9 +70,11 @@ export default function ProductContentAdmin() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const avatarInputRef = useRef<HTMLInputElement>(null)
+  const [shopifyProducts, setShopifyProducts] = useState<{ handle: string; name: string }[]>([])
   const [selectedProduct, setSelectedProduct] = useState('')
   const [content, setContent] = useState<Record<string, ProductContent>>({})
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeSection, setActiveSection] = useState<'story' | 'environmental' | 'partnership' | 'specifications' | 'guarantee' | 'faqs' | 'reviews' | 'gallery'>('story')
   
@@ -93,18 +99,44 @@ export default function ProductContentAdmin() {
       navigate('/dashboard/login')
       return
     }
-    loadContent()
+    loadProductsAndContent()
   }, [navigate])
 
-  const loadContent = async () => {
+  useEffect(() => {
+    if (!saved) return
+    const timer = setTimeout(() => setSaved(false), 3000)
+    return () => clearTimeout(timer)
+  }, [saved])
+
+  const loadProductsAndContent = async () => {
+    setLoading(true)
     try {
-      const response = await fetch('/admin-content/ecomafola-content.json')
-      if (response.ok) {
-        const data = await response.json()
-        setContent(data.products || {})
+      // Step 1: Fetch products from Shopify
+      const products = await getAllProducts()
+      const productList = products.map((p: any) => ({ handle: p.handle, name: p.title }))
+      setShopifyProducts(productList)
+
+      // Step 2: Fetch all content from Supabase
+      if (isSupabaseConfigured()) {
+        const supaContent: Record<string, ProductContent> = {}
+        for (const p of productList) {
+          const c = await getProductContent(p.handle)
+          if (c) supaContent[p.handle] = c
+        }
+        setContent(supaContent)
       }
     } catch (error) {
-      console.error('Error loading content:', error)
+      console.error('Error loading products and content:', error)
+      // Fallback: load from static JSON
+      try {
+        const response = await fetch('/admin-content/ecomafola-content.json')
+        if (response.ok) {
+          const data = await response.json()
+          setContent(data.products || {})
+        }
+      } catch {
+        // Use empty
+      }
     } finally {
       setLoading(false)
     }
@@ -158,7 +190,7 @@ export default function ProductContentAdmin() {
     })
   }, [])
 
-  const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
+  const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
@@ -199,12 +231,34 @@ export default function ProductContentAdmin() {
 
   /** 确认裁剪并保存 */
   const handleCropConfirm = async () => {
-    if (!croppedAreaPixels || !currentImage) return
+    if (!croppedAreaPixels || !currentImage || !selectedProduct) return
     try {
       const isSection = inlineCropSection && inlineCropSection !== 'gallery'
       const targetSize = isSection ? { width: TEMPLATE_SIZE.width, height: TEMPLATE_SIZE.height } : { width: 1200, height: 900 }
 
       const { dataUrl: croppedImage, compressedSizeKB: sizeKB } = await saveCroppedImage(currentImage, croppedAreaPixels, targetSize)
+
+      // Upload to Supabase Storage
+      let imageUrl = croppedImage
+      if (isSupabaseConfigured()) {
+        try {
+          const blob = await fetch(croppedImage).then(r => r.blob())
+          const file = new File([blob], 'image.jpeg', { type: 'image/jpeg' })
+          const sectionKey = inlineCropSection || 'gallery'
+          let publicUrl: string
+          if (sectionKey === 'gallery' && editingGalleryIndex !== null) {
+            publicUrl = (await uploadGalleryImage(selectedProduct, editingGalleryIndex, file)).publicUrl
+          } else {
+            const typedSection = sectionKey as 'story' | 'environmental' | 'partnership' | 'specifications' | 'guarantee'
+            publicUrl = (await uploadSectionImage(selectedProduct, typedSection, file)).publicUrl
+          }
+          imageUrl = publicUrl
+        } catch (uploadErr: unknown) {
+          const msg = uploadErr instanceof Error ? uploadErr.message : String(uploadErr)
+          console.warn('Supabase upload failed, using local dataURL:', msg)
+          // Continue with base64 as fallback
+        }
+      }
 
       if (isSection) {
         const section = inlineCropSection as Exclude<typeof inlineCropSection, 'gallery'>
@@ -214,12 +268,12 @@ export default function ProductContentAdmin() {
         if (section === 'specifications') {
           updatedProductContent.specifications = {
             ...(productContent.specifications || { size: '', weight: '', material: '', origin: '', care: '' }),
-            image: croppedImage
+            image: imageUrl
           }
         } else {
           updatedProductContent[section] = {
             ...(productContent[section] || { title: '', subtitle: '', content: '' }),
-            image: croppedImage
+            image: imageUrl
           }
         }
 
@@ -229,7 +283,7 @@ export default function ProductContentAdmin() {
         })
       } else if (editingGalleryIndex !== null) {
         const updatedGallery = [...(content[selectedProduct]?.gallery || [])]
-        updatedGallery[editingGalleryIndex] = croppedImage
+        updatedGallery[editingGalleryIndex] = imageUrl
         setContent({
           ...content,
           [selectedProduct]: { ...content[selectedProduct], gallery: updatedGallery },
@@ -239,7 +293,7 @@ export default function ProductContentAdmin() {
           ...content,
           [selectedProduct]: {
             ...content[selectedProduct],
-            gallery: [...(content[selectedProduct]?.gallery || []), croppedImage],
+            gallery: [...(content[selectedProduct]?.gallery || []), imageUrl],
           },
         })
       }
@@ -252,11 +306,11 @@ export default function ProductContentAdmin() {
       setEditingSectionImage(null)
       setAutoZoom(1)
       setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
-      
+
       alert(`图片已保存！\n裁剪尺寸：${targetSize.width}×${targetSize.height}\n压缩后大小：${sizeKB}KB`)
-    } catch (error) {
-      console.error('Error cropping image:', error)
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error)
+      console.error('Error cropping image:', msg)
     }
   }
 
@@ -280,7 +334,6 @@ export default function ProductContentAdmin() {
       },
     })
     setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
   }
 
   const handleAvatarSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>, reviewId: string) => {
@@ -308,7 +361,6 @@ export default function ProductContentAdmin() {
       )
       setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
       setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
     }
     reader.readAsDataURL(file)
     e.target.value = ''
@@ -321,22 +373,23 @@ export default function ProductContentAdmin() {
     )
     setContent({ ...content, [selectedProduct]: { ...content[selectedProduct], reviews: updated } })
     setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
   }, [content, selectedProduct])
 
-  const handleDownload = () => {
-    const dataStr = JSON.stringify({ products: content }, null, 2)
-    const blob = new Blob([dataStr], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'product-content-config.json'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+  const handleSavePublish = async () => {
+    if (!selectedProduct) return
+    setSaving(true)
+    try {
+      await saveProductContent(selectedProduct, content[selectedProduct])
+      setSaved(true)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert('保存失败: ' + err.message)
+      } else {
+        alert('保存失败，请重试')
+      }
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (loading) {
@@ -359,11 +412,12 @@ export default function ProductContentAdmin() {
           </div>
           <div className="flex items-center gap-4">
             <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 text-green-600 hover:text-green-700 transition-colors"
+              onClick={handleSavePublish}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <Download size={20} />
-              <span>下载 JSON</span>
+              <span>{saving ? '保存中...' : '保存并发布'}</span>
             </button>
             <button
               onClick={handleLogout}
