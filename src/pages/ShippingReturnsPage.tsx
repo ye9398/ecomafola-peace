@@ -156,7 +156,7 @@ function ShippingReturnsPage() {
               shipping, returns, or our products.
             </p>
             <a
-              href="mailto:hello@ecomafola-peace.com"
+              href="mailto:hello@ecomafola.com"
               className="inline-block bg-white text-ocean-blue font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors"
             >
               Contact Us

@@ -181,7 +181,7 @@ export function generateLocalBusinessSchema() {
     },
     url: 'https://ecomafola.com',
     telephone: '+685-123-4567',
-    email: 'hello@ecomafola-peace.com',
+    email: 'hello@ecomafola.com',
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],

@@ -174,7 +174,7 @@ export function generateOrganizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Service',
-      email: 'hello@ecomafola-peace.com',
+      email: 'hello@ecomafola.com',
     },
   }
 }

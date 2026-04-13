@@ -86,4 +86,4 @@ Allow: /rsl-license.txt
 # - Organization Schema includes: sameAs links for entity verification
 # - llms.txt provides structured content guidance
 # - RSL 1.0 license governs content usage (see /rsl-license.txt)
-# - Contact: hello@ecomafola-peace.com for licensing inquiries
+# - Contact: hello@ecomafola.com for licensing inquiries

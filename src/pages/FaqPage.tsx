@@ -118,7 +118,7 @@ function FaqPage() {
           </h1>
           <p className="text-lg text-gray-600 mb-8">
             Can't find what you're looking for?{' '}
-            <a href="mailto:hello@ecomafola-peace.com" className="text-tropical-green underline">
+            <a href="mailto:hello@ecomafola.com" className="text-tropical-green underline">
               Email us
             </a>{' '}
             and we'll respond within 24 hours.
