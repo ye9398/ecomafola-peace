@@ -187,10 +187,36 @@ const MOCK_PRODUCTS = {
 const PRODUCT_HANDLES = Object.keys(MOCK_PRODUCTS);
 
 /**
+ * Mock review data for aggregateRating in SSG pre-render
+ */
+const REVIEWS = {
+  'samoan-handcrafted-coconut-bowl': [{ rating: 5 }, { rating: 5 }, { rating: 4 }],
+  'samoan-handwoven-grass-tote-bag': [{ rating: 5 }, { rating: 5 }],
+  'samoan-woven-basket': [{ rating: 5 }],
+  'samoan-handcrafted-shell-necklace': [{ rating: 5 }],
+  'natural-coir-handwoven-coconut-palm-doormat': [{ rating: 4 }],
+  'samoan-handcrafted-natural-shell-coasters': [{ rating: 5 }],
+  'natural-coconut-soap': [{ rating: 5 }, { rating: 4 }],
+  'tapa-cloth-wall-art': [{ rating: 5 }, { rating: 5 }, { rating: 4 }],
+  'handwoven-papua-new-guinea-beach-bag': [{ rating: 5 }, { rating: 4 }],
+};
+
+function getAggregateRating(handle) {
+  const reviews = REVIEWS[handle] || [];
+  if (reviews.length === 0) return null;
+  const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+  return {
+    ratingValue: avg.toFixed(1),
+    reviewCount: reviews.length.toString(),
+  };
+}
+
+/**
  * Generate product page data for SSG.
  */
 function generateProductPage(handle, product) {
   const cleanDescription = product.description.replace(/<[^>]*>/g, '').substring(0, 160);
+  const aggregateRating = getAggregateRating(handle);
 
   return {
     route: `/product/${handle}`,
@@ -201,6 +227,7 @@ function generateProductPage(handle, product) {
     product: {
       ...product,
       description: cleanDescription,
+      ...(aggregateRating && { aggregateRating }),
     },
   };
 }

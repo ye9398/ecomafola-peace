@@ -13,7 +13,6 @@ import { getProductDescription } from '../data/productDescriptions'
 import { OptimizedImage } from '../components/OptimizedImage'
 import { ProductDetailContent } from '../components/ProductDetailContent'
 import { getHowToByHandle } from '../lib/howToSchema'
-import { getProductReviewSchemaByHandle } from '../lib/reviewSchema'
 import { smartTruncate } from '../lib/seo-config'
 
 // URL Parameter → Shopify handle mapping
@@ -739,10 +738,6 @@ const ProductDetailPage = () => {
         {/* HowTo Schema for Care Instructions - GEO Optimization */}
         <script type="application/ld+json">
           {JSON.stringify(getHowToByHandle(shopifyHandle))}
-        </script>
-        {/* Review Schema for Rich Results - GEO Optimization */}
-        <script type="application/ld+json">
-          {JSON.stringify(getProductReviewSchemaByHandle(shopifyHandle, product?.name || 'Product'))}
         </script>
       </Helmet>
 

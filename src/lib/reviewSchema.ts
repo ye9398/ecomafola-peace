@@ -278,6 +278,89 @@ export const MOCK_REVIEWS: Record<string, Review[]> = {
       verified: true,
       helpful: 5
     }
+  ],
+  'natural-coconut-soap': [
+    {
+      id: 'rev-010',
+      productId: 'natural-coconut-soap',
+      author: 'Maria S.',
+      rating: 5,
+      title: 'Gentle and natural',
+      body: 'My skin has never felt better! This coconut soap is incredibly gentle yet effective. No harsh chemicals, just pure natural ingredients.',
+      date: '2026-03-18',
+      verified: true,
+      helpful: 6
+    },
+    {
+      id: 'rev-011',
+      productId: 'natural-coconut-soap',
+      author: 'David T.',
+      rating: 4,
+      title: 'Great daily soap',
+      body: 'Switched from commercial soap and my skin feels much healthier. Lathers well and lasts a long time. Only wish it came in a larger bar size.',
+      date: '2026-03-14',
+      verified: true,
+      helpful: 4
+    }
+  ],
+  'tapa-cloth-wall-art': [
+    {
+      id: 'rev-012',
+      productId: 'tapa-cloth-wall-art',
+      author: 'Rachel P.',
+      rating: 5,
+      title: 'Stunning cultural masterpiece',
+      body: 'This tapa cloth is a work of art. The hand-painted motifs tell beautiful stories of Pacific heritage. It is the centerpiece of my living room.',
+      date: '2026-03-20',
+      verified: true,
+      helpful: 8
+    },
+    {
+      id: 'rev-013',
+      productId: 'tapa-cloth-wall-art',
+      author: 'Michael B.',
+      rating: 5,
+      title: 'Museum quality',
+      body: 'I collect Pacific art and this piece rivals museum-quality tapa cloth. The traditional bark cloth texture and hand-painted designs are extraordinary.',
+      date: '2026-03-16',
+      verified: true,
+      helpful: 5
+    },
+    {
+      id: 'rev-014',
+      productId: 'tapa-cloth-wall-art',
+      author: 'Sophie L.',
+      rating: 4,
+      title: 'Beautiful but needs careful handling',
+      body: 'Absolutely gorgeous piece with rich cultural meaning. The natural bark cloth is delicate so handle with care. Came with display instructions.',
+      date: '2026-03-09',
+      verified: true,
+      helpful: 3
+    }
+  ],
+  'handwoven-papua-new-guinea-beach-bag': [
+    {
+      id: 'rev-015',
+      productId: 'handwoven-papua-new-guinea-beach-bag',
+      author: 'Anna K.',
+      rating: 5,
+      title: 'Perfect beach companion',
+      body: 'This bag is incredibly spacious and sturdy. The PNG weaving technique creates a unique pattern that stands out at the beach.',
+      date: '2026-03-22',
+      verified: true,
+      helpful: 7
+    },
+    {
+      id: 'rev-016',
+      productId: 'handwoven-papua-new-guinea-beach-bag',
+      author: 'Tom H.',
+      rating: 4,
+      title: 'Great quality, unique design',
+      body: 'Love supporting PNG artisans through this purchase. The bag is well-made and the natural fibers are strong. Fits everything I need.',
+      date: '2026-03-11',
+      verified: true,
+      helpful: 4
+    }
   ]
 }
 

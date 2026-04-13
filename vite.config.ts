@@ -132,7 +132,16 @@ function generateRouteHTML(routeData: any, baseHTML: string): string {
       "image": product.image ? [product.image] : [],
       "material": "Natural Materials",
       "countryOfOrigin": product.countryOfOrigin || "Samoa",
-      "additionalProperty": additionalProperties
+      "additionalProperty": additionalProperties,
+      ...(product.aggregateRating && {
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": product.aggregateRating.ratingValue,
+          "reviewCount": product.aggregateRating.reviewCount,
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      })
     }
     // Product schema + BreadcrumbList
     const breadcrumbSchema = {
