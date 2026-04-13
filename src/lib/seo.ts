@@ -5,7 +5,7 @@
  * Used for server-side rendering and dynamic meta generation.
  */
 
-import { SEO_CONFIG, BRAND_INFO } from './seo-config';
+import { SEO_CONFIG, BRAND_INFO, smartTruncate } from './seo-config';
 
 export interface PageSEO {
   title: string
@@ -108,7 +108,7 @@ export function getProductSEO(product: {
 
   return {
     title: `${name}${priceStr} | EcoMafola Peace`,
-    description: product.description?.substring(0, 160) || `Handcrafted ${name} from Samoa. Authentic, sustainable, fair trade.` || 'Authentic Samoan handcrafted product.',
+    description: smartTruncate(product.description || `Handcrafted ${name} from Samoa. Authentic, sustainable, fair trade.`, 160),
     canonical: `/product/${handle}`,
     keywords: [`${name} Samoa`, 'handcrafted', 'eco-friendly', 'fair trade', 'Samoan artisan'],
     ogImage: product.image || DEFAULT_IMAGE,
@@ -126,7 +126,7 @@ export function getBlogPostSEO(post: {
 }): PageSEO {
   return {
     title: `${post.title} | The Pacific Soul Blog`,
-    description: post.excerpt?.substring(0, 160) || 'Read more on The Pacific Soul Blog by EcoMafola Peace.',
+    description: smartTruncate(post.excerpt || 'Read more on The Pacific Soul Blog by EcoMafola Peace.', 160),
     canonical: `/blog/${post.id}`,
     keywords: ['Pacific culture', 'Samoan traditions', 'handcrafted stories'],
     ogImage: post.image || DEFAULT_IMAGE,
@@ -145,7 +145,9 @@ export function getCollectionSEO(collection: {
 
   return {
     title: `${name} | Samoan Handcrafted Products`,
-    description: collection.description?.substring(0, 160) || `Browse our collection of ${name.toLowerCase()}. Authentic Samoan handcrafted products.`,
+    description: collection.description
+      ? smartTruncate(collection.description, 160)
+      : `Browse our collection of ${name.toLowerCase()}. Authentic Samoan handcrafted products.`,
     canonical: `/products/category/${collection.handle}`,
     keywords: [`${name} Samoa`, 'handcrafted', 'Pacific art', 'eco-friendly'],
     ogImage: DEFAULT_IMAGE,

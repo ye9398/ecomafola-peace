@@ -14,6 +14,7 @@ import { OptimizedImage } from '../components/OptimizedImage'
 import { ProductDetailContent } from '../components/ProductDetailContent'
 import { getHowToByHandle } from '../lib/howToSchema'
 import { getProductReviewSchemaByHandle } from '../lib/reviewSchema'
+import { smartTruncate } from '../lib/seo-config'
 
 // URL Parameter → Shopify handle mapping
 const URL_TO_SHOPIFY_HANDLE: Record<string, string> = {
@@ -606,7 +607,7 @@ const ProductDetailPage = () => {
     <div className="min-h-screen bg-coral-white pt-20">
       <Helmet>
         <title>{product?.name || 'Loading...'} | EcoMafola Peace</title>
-        <meta name="description" content={product?.description?.substring(0, 160) || 'Handcrafted eco-friendly products from Samoa'} />
+        <meta name="description" content={smartTruncate(product?.description || 'Handcrafted eco-friendly products from Samoa', 160)} />
         <link rel="canonical" href={`https://ecomafola.com/product/${shopifyHandle}`} />
         {/* Product Schema.org JSON-LD for SEO and GEO */}
         <script type="application/ld+json">
