@@ -16,42 +16,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  <url>
-    <loc>https://ecomafola.com/products/coconut-bowls</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ecomafola.com/products/woven-baskets</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ecomafola.com/products/beach-bags</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ecomafola.com/products/home-decor</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ecomafola.com/products/shell-jewelry</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ecomafola.com/products/wood-carvings</loc>
-    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
 
   <!-- Brand Pages -->
   <url>
@@ -91,6 +55,62 @@
     <lastmod>2026-04-13T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- Individual Product Pages -->
+  <url>
+    <loc>https://ecomafola.com/product/samoan-handcrafted-coconut-bowl</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/samoan-handwoven-grass-tote-bag</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/samoan-handcrafted-shell-necklace</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/samoan-woven-basket</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/natural-coconut-soap</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/tapa-cloth-wall-art</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/samoan-handcrafted-natural-shell-coasters</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/handwoven-papua-new-guinea-beach-bag</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/product/natural-coir-handwoven-coconut-palm-doormat</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <!-- Legal & Utility -->
