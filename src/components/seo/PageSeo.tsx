@@ -44,6 +44,8 @@ export interface PageSeoProps {
   twitterHandle?: string;
   /** Additional custom meta tags */
   extra?: Array<{ name?: string; property?: string; content: string }>;
+  /** Prevent search engine indexing (for private pages) */
+  noindex?: boolean;
 }
 
 /**
@@ -122,6 +124,7 @@ export default function PageSeo({
   siteName = DEFAULT_SEO.siteName,
   twitterHandle = DEFAULT_SEO.twitterHandle,
   extra = [],
+  noindex = false,
 }: PageSeoProps): JSX.Element {
   const openGraphTags = getOpenGraphTags({
     title,
@@ -150,6 +153,9 @@ export default function PageSeo({
       <title>{`${title} | ${siteName}`}</title>
       <meta name="description" content={description} />
       {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+
+      {/* Search Engine Indexing */}
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
 
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />

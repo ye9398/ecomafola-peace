@@ -104,7 +104,17 @@ function generateRouteHTML(routeData: any, baseHTML: string): string {
 
   let productSchema = ''
   if (isProductPage && product) {
-    const schema = {
+    const additionalProperties = [
+      { "@type": "PropertyValue", "name": "Sustainable", "value": "true" },
+      { "@type": "PropertyValue", "name": "Handmade", "value": "true" },
+      { "@type": "PropertyValue", "name": "Fair Trade", "value": "true" },
+      { "@type": "PropertyValue", "name": "Eco-Friendly", "value": "true" }
+    ]
+    if (product.craftsmanship) {
+      additionalProperties.push({ "@type": "PropertyValue", "name": "Craftsmanship", "value": product.craftsmanship })
+    }
+
+    const schema: any = {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": product.title,
@@ -121,10 +131,20 @@ function generateRouteHTML(routeData: any, baseHTML: string): string {
       },
       "image": product.image ? [product.image] : [],
       "material": "Natural Materials",
-      "origin": "Samoa",
-      "craftsmanship": "Handcrafted"
+      "countryOfOrigin": product.countryOfOrigin || "Samoa",
+      "additionalProperty": additionalProperties
     }
-    productSchema = `\n    <script type="application/ld+json">${JSON.stringify(schema)}</script>`
+    // Product schema + BreadcrumbList
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ecomafola.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://ecomafola.com/products" },
+        { "@type": "ListItem", "position": 3, "name": product.title, "item": canonical }
+      ]
+    }
+    productSchema = `\n    <script type="application/ld+json">${JSON.stringify(schema)}</script>\n    <script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`
   }
 
   // Replace title(s) - baseHTML has 1 title, replace it
@@ -161,7 +181,7 @@ function getOutputPath(route: string): string {
 function copyStaticAssets() {
   const staticFiles = [
     'sitemap.xml', 'robots.txt', 'llms.txt', 'llms-full.txt',
-    'rsl-license.txt', 'google-merchant-feed.txt', 'favicon.ico', 'logo.png'
+    'rsl-license.txt', 'google-merchant-feed.txt', 'BingSiteAuth.xml', 'favicon.ico', 'logo.png'
   ]
 
   for (const file of staticFiles) {

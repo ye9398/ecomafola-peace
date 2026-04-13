@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Package, FileText, Home, LogOut } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 export default function AdminPage() {
   const navigate = useNavigate()
@@ -41,7 +42,12 @@ export default function AdminPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <>
+      <Helmet>
+        <title>Dashboard | EcoMafola Peace</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-gray-50 font-sans">
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
           <div>
@@ -72,5 +78,6 @@ export default function AdminPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

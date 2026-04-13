@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lock } from 'lucide-react'
+import { Helmet } from 'react-helmet-async'
 
 /**
  * 管理后台登录页面
@@ -37,7 +38,12 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <>
+      <Helmet>
+        <title>Admin Login | EcoMafola Peace</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <Lock className="mx-auto h-12 w-12 text-gray-600" />
@@ -98,5 +104,6 @@ export default function AdminLogin() {
         </form>
       </div>
     </div>
+    </>
   )
 }

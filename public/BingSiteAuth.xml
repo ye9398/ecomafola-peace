@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+  <!-- Replace with your actual IndexNow API key from Bing Webmaster Tools:
+       1. Go to https://www.bing.com/webmasters
+       2. Navigate to IndexNow > API Access
+       3. Generate a new API key
+       4. Replace the placeholder below with your key
+  -->
+  <key>ecomafola-indexnow-placeholder-key</key>
+</validation>

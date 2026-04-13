@@ -66,6 +66,40 @@ export function OurStoryPage() {
             "dateModified": "2026-04-11"
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "Person",
+                "name": "Afioga Mele",
+                "jobTitle": "Master Weaver",
+                "description": "Master pandanus weaver from Savai'i, Samoa. Uses a traditional diamond weave pattern passed down through generations.",
+                "worksFor": { "@type": "Organization", "name": "EcoMafola Peace" },
+                "nationality": "WS",
+                "knowsAbout": ["Pandanus weaving", "Natural dyeing", "Traditional Samoan crafts"]
+              },
+              {
+                "@type": "Person",
+                "name": "Tavita Ioane",
+                "jobTitle": "Coconut Shell Carver",
+                "description": "Coconut bowl carver in Apia, Samoa. Sources shells from copra waste that would otherwise be burned.",
+                "worksFor": { "@type": "Organization", "name": "EcoMafola Peace" },
+                "nationality": "WS",
+                "knowsAbout": ["Coconut shell carving", "Sustainable materials", "Natural finishing"]
+              },
+              {
+                "@type": "Person",
+                "name": "Lani Tuatagaloa",
+                "jobTitle": "Shell Jewelry Artisan",
+                "description": "Shell jewelry maker in Fagali'i, Samoa with 40 years of experience. Leads a collective of six women artisans.",
+                "worksFor": { "@type": "Organization", "name": "EcoMafola Peace" },
+                "nationality": "WS",
+                "knowsAbout": ["Shell jewelry", "Natural harvesting", "Artisan leadership"]
+              }
+            ]
+          })}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-coral-white pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
