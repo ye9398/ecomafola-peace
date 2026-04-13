@@ -14,6 +14,8 @@ import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
 import { BlogListPage, BlogPostPage } from './pages/BlogPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import NotFoundPage from './pages/NotFoundPage'
+import ShippingReturnsPage from './pages/ShippingReturnsPage'
+import FaqPage from './pages/FaqPage'
 import { AuthProvider } from './context/AuthContext'
 import AnnouncementBar from './components/AnnouncementBar'
 import { AnalyticsProvider } from './components/AnalyticsProvider'
@@ -188,6 +190,20 @@ function App() {
          <div className="min-h-screen bg-coral-white">
            <Navbar />
            <main><PrivacyPolicyPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/shipping-returns" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><ShippingReturnsPage /></main>
+           <Footer />
+         </div>
+       } />
+       <Route path="/faq" element={
+         <div className="min-h-screen bg-coral-white">
+           <Navbar />
+           <main><FaqPage /></main>
            <Footer />
          </div>
        } />

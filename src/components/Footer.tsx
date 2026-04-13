@@ -23,8 +23,8 @@ const navLinks: Record<string, NavLinkItem[]> = {
   ],
   Support: [
     { label: 'Contact Us', href: '/contact' },
-    { label: 'Shipping & Returns', href: '/contact' },
-    { label: 'FAQ', href: '/contact' },
+    { label: 'Shipping & Returns', href: '/shipping-returns' },
+    { label: 'FAQ', href: '/faq' },
     { label: 'Track Order', href: '/track' },
   ],
 }

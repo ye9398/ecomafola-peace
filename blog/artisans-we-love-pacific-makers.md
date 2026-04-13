@@ -121,7 +121,11 @@ We don't ask you to buy because it's the right thing to do. We ask you to buy be
 
 That's it. That's the whole pitch.
 
-[Shop our full collection of handmade Pacific Islander products](/collections/all)
+[Shop our full collection of handmade Pacific Islander products](/products)
+
+**Looking for gift ideas?** Check out our [Sustainable Gift Guide 2026](/blog/sustainable-gift-guide-2026) with curated picks for every budget.
+
+**Learn more:** [Our Story](/our-story) | [Our Impact](/impact)
 
 ---
 

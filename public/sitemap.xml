@@ -106,4 +106,18 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- Support Pages -->
+  <url>
+    <loc>https://ecomafola.com/shipping-returns</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ecomafola.com/faq</loc>
+    <lastmod>2026-04-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

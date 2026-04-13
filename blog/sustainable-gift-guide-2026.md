@@ -169,3 +169,7 @@ It's rare, but it happens — these are natural materials traveling across ocean
 ---
 
 *Every piece in our collection starts with a person — someone with skill, time, and a reason to keep their craft alive. When you choose a handmade gift from ecomafola.com, you're not just giving something beautiful. You're keeping a tradition going. And that's a gift that keeps giving.*
+
+**Want to meet the makers behind these gifts?** Read our deep dive into [the Pacific Islander artisans we work with](/blog/artisans-we-love-pacific-makers).
+
+**Browse our full collection:** [Shop all handmade products](/products) | [Learn our story](/our-story)
