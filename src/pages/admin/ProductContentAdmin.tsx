@@ -15,15 +15,6 @@ import { isSupabaseConfigured } from '../../lib/supabase'
  * - 规格、保证、FAQs 等
  */
 
-const PRODUCTS = [
-  { handle: 'samoan-handcrafted-coconut-bowl', name: 'Coconut Bowl' },
-  { handle: 'samoan-woven-basket', name: 'Woven Basket' },
-  { handle: 'samoan-handwoven-grass-tote-bag', name: 'Woven Tote Bag' },
-  { handle: 'samoan-handcrafted-shell-necklace', name: 'Shell Necklace' },
-  { handle: 'handwoven-papua-new-guinea-beach-bag', name: 'Beach Bag' },
-  { handle: 'natural-coir-handwoven-coconut-palm-doormat', name: 'Doormat' },
-]
-
 interface Review {
   id: string
   author: string
@@ -113,6 +104,9 @@ export default function ProductContentAdmin() {
     try {
       // Step 1: Fetch products from Shopify
       const products = await getAllProducts()
+      if (!products.length) {
+        throw new Error('Shopify returned empty product list')
+      }
       const productList = products.map((p: any) => ({ handle: p.handle, name: p.title }))
       setShopifyProducts(productList)
 
@@ -126,7 +120,7 @@ export default function ProductContentAdmin() {
         setContent(supaContent)
       }
     } catch (error) {
-      console.error('Error loading products and content:', error)
+      console.error('Shopify API failed, falling back to JSON:', error)
       // Fallback: load from static JSON
       try {
         const response = await fetch('/admin-content/ecomafola-content.json')
@@ -136,6 +130,19 @@ export default function ProductContentAdmin() {
         }
       } catch {
         // Use empty
+      }
+      // Ensure shopifyProducts is set even on API failure
+      if (shopifyProducts.length === 0) {
+        const fallbackProducts = [
+          { handle: 'samoan-handcrafted-coconut-bowl', name: 'Coconut Bowl' },
+          { handle: 'samoan-woven-basket', name: 'Woven Basket' },
+          { handle: 'samoan-handwoven-grass-tote-bag', name: 'Woven Tote Bag' },
+          { handle: 'samoan-handcrafted-shell-necklace', name: 'Shell Necklace' },
+          { handle: 'handwoven-papua-new-guinea-beach-bag', name: 'Beach Bag' },
+          { handle: 'natural-coir-handwoven-coconut-palm-doormat', name: 'Doormat' },
+          { handle: 'samoan-handcrafted-natural-shell-coasters', name: 'Shell Coasters' },
+        ]
+        setShopifyProducts(fallbackProducts)
       }
     } finally {
       setLoading(false)
@@ -439,7 +446,7 @@ export default function ProductContentAdmin() {
             className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">请选择产品...</option>
-            {PRODUCTS.map((product) => (
+            {shopifyProducts.map((product) => (
               <option key={product.handle} value={product.handle}>
                 {product.name}
               </option>
