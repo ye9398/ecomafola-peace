@@ -9,10 +9,12 @@ import { ProductSkeleton } from './skeletons';
 import { CheckoutSkeleton } from './skeletons';
 import { PageSkeleton } from './skeletons';
 
-// These three pages are ONLY referenced here (not statically imported in App.tsx)
+// These pages are ONLY referenced here (not statically imported in App.tsx)
 export const LazyProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 export const LazyCheckoutPage = lazy(() => import('../pages/CheckoutPage'));
 export const LazyAccountOrdersPage = lazy(() => import('../pages/AccountOrdersPage'));
+export const LazyHomePage = lazy(() => import('../pages/HomePage'));
+export const LazyProductListPage = lazy(() => import('../pages/ProductListPage'));
 
 // ⛔ DO NOT add admin pages here — they are statically imported in App.tsx
 //    Adding them as lazy() causes Vite __vitePreload TypeError at runtime

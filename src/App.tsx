@@ -4,11 +4,9 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import LoadingSkeleton from './components/LoadingSkeleton'
 import SlideOverCheckout from './components/SlideOverCheckout'
-import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import AuthCallback from './pages/AuthCallback'
 import AccountPage from './pages/AccountPage'
-import ProductListPage from './pages/ProductListPage'
 import TrackOrderPage from './pages/TrackOrderPage'
 import { OurStoryPage, ImpactPage, ContactPage } from './pages/SubPages'
 import { BlogListPage, BlogPostPage } from './pages/BlogPage'
@@ -32,6 +30,8 @@ import {
   LazyProductDetailPage,
   LazyCheckoutPage,
   LazyAccountOrdersPage,
+  LazyHomePage,
+  LazyProductListPage,
   ProductDetailSuspense,
   CheckoutSuspense,
   AccountOrdersSuspense,
@@ -56,7 +56,11 @@ function App() {
        <Route path="/" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
-           <main><HomePage /></main>
+           <main>
+             <ProductDetailSuspense>
+               <LazyHomePage />
+             </ProductDetailSuspense>
+           </main>
            <Footer />
          </div>
        } />
@@ -65,14 +69,22 @@ function App() {
        <Route path="/products" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
-           <main><ProductListPage /></main>
+           <main>
+             <ProductDetailSuspense>
+               <LazyProductListPage />
+             </ProductDetailSuspense>
+           </main>
            <Footer />
          </div>
        } />
        <Route path="/products/category/:category" element={
          <div className="min-h-screen bg-coral-white">
            <Navbar />
-           <main><ProductListPage /></main>
+           <main>
+             <ProductDetailSuspense>
+               <LazyProductListPage />
+             </ProductDetailSuspense>
+           </main>
            <Footer />
          </div>
        } />
