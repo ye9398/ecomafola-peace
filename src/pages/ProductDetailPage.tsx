@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import {
@@ -43,6 +43,15 @@ const URL_TO_SHOPIFY_HANDLE: Record<string, string> = {
   'ceramic-soul-incense-holder': 'ceramic-soul-incense-holder',
   'pacific-artisan-gift-set': 'pacific-artisan-gift-set',
   'samoan-handcrafted-coconut-bowl': 'samoan-handcrafted-coconut-bowl',
+  // Long Shopify handles (from product URLs)
+  'samoan-handcrafted-coconut-bowl-100-natural-eco-friendly-artisan-serving-bowl': 'samoan-handcrafted-coconut-bowl',
+  'samoan-handwoven-grass-tote-bag-natural-eco-friendly-artisan-carry-all-shoulder-bag': 'samoan-handwoven-grass-tote-bag',
+  'samoan-handcrafted-shell-necklace-ocean-inspired-artisan-jewelry-natural-pendant': 'samoan-handcrafted-shell-necklace',
+  'samoan-woven-basket-natural-rattan-storage-decor-artisan-handmade-container': 'samoan-woven-basket',
+  'natural-coconut-soap-handmade-organic-skin-care-artisan-bar-soap': 'natural-coconut-soap',
+  'tapa-cloth-wall-art-handmade-pacific-heritage-decor-artisan-textile': 'tapa-cloth-wall-art',
+  'handwoven-papua-new-guinea-beach-bag-natural-fiber-tote-artisan-summer-carry-all': 'handwoven-papua-new-guinea-beach-bag',
+  'natural-coir-handwoven-coconut-palm-doormat-eco-friendly-rustic-entry-mat': 'natural-coir-handwoven-coconut-palm-doormat',
   'samoan-handwoven-grass-tote-bag': 'samoan-handwoven-grass-tote-bag',
   'samoan-handcrafted-shell-necklace': 'samoan-handcrafted-shell-necklace',
   'samoan-woven-basket': 'samoan-woven-basket',
@@ -62,6 +71,22 @@ const SHOPIFY_HANDLE_TO_DESCRIPTION: Record<string, string> = {
   'samoan-handcrafted-natural-shell-coasters': 'shell-coasters',
   'handwoven-papua-new-guinea-beach-bag': 'beachbag',
   'natural-coir-handwoven-coconut-palm-doormat': 'doormat',
+}
+
+// Normalize Supabase section data to string
+// Supabase stores sections as objects: { image, title, content, subtitle }
+// Static descriptions use plain strings
+function normalizeText(val: unknown): string {
+  if (typeof val === 'string') return val
+  if (val && typeof val === 'object') {
+    if ('content' in val) return String((val as any).content || '')
+  }
+  return ''
+}
+
+function normalizeArray(val: unknown): string[] {
+  if (Array.isArray(val)) return val
+  return []
 }
 
 // ---------- Inline Sub-components ----------
@@ -457,6 +482,28 @@ const ProductDetailPage = () => {
 
   const description = getProductDescription(descriptionHandle)
   const [customContent, setCustomContent] = useState<any>(null)
+
+  const mergedContent = useMemo(() => {
+    if (!customContent && !description) return null
+
+    const content = {
+      story: customContent ? normalizeText(customContent.story) : (description?.story || ''),
+      environmental: customContent ? normalizeText(customContent.environmental) : (description?.environmental || ''),
+      partnership: customContent ? normalizeText(customContent.partnership) : (description?.partnership || ''),
+      features: customContent ? normalizeArray(customContent.features) : (description?.features || []),
+      specifications: customContent && typeof customContent.specifications === 'object' && !Array.isArray(customContent.specifications)
+        ? { ...{ size: '', weight: '', material: '', origin: '', care: '' }, ...customContent.specifications }
+        : (description?.specifications || { size: '', weight: '', material: '', origin: '', care: '' }),
+      guarantee: customContent ? normalizeText(customContent.guarantee) : (description?.guarantee || ''),
+      shipping: customContent ? normalizeText(customContent.shipping) : (description?.shipping || ''),
+      faqs: customContent && Array.isArray(customContent.faqs) ? customContent.faqs : (description?.faqs || [])
+    }
+
+    const hasContent = content.story || content.environmental || content.partnership ||
+      content.features.length > 0 || content.guarantee || content.shipping || content.faqs.length > 0
+
+    return hasContent ? content : null
+  }, [customContent, description])
 
   useEffect(() => {
     const loadCustomContent = async () => {
@@ -1056,20 +1103,11 @@ const ProductDetailPage = () => {
           </section>
 
           {/* Extended Product Content for SEO/GEO - 350+ words */}
-          {description && (
+          {mergedContent && (
             <section className="mt-24 pt-16 border-t border-gray-100">
               <ProductDetailContent
-                content={{
-                  story: description.story,
-                  environmental: description.environmental,
-                  partnership: description.partnership,
-                  features: description.features,
-                  specifications: description.specifications,
-                  guarantee: description.guarantee,
-                  shipping: description.shipping,
-                  faqs: description.faqs
-                }}
-                productName={product.name}
+                content={mergedContent}
+                productName={product?.name || customContent?.title || ''}
               />
             </section>
           )}
