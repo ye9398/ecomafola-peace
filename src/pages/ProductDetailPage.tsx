@@ -353,7 +353,7 @@ const CompleteTheLook = ({ recommendations }: any) => {
           return (
             <Link key={p.id} to={`/product/${p.handle}`} className="group block">
               <div className="aspect-square rounded-[2rem] overflow-hidden bg-gray-50 mb-4 relative shadow-sm group-hover:shadow-xl transition-all duration-500">
-                <OptimizedImage src={image} alt={p.title} preset="card" loading="lazy" className="w-full h-full transition-transform duration-1000 group-hover:scale-110" />
+                <OptimizedImage src={image} alt={p.title} preset="card" className="w-full h-full transition-transform duration-1000 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-ocean-blue/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <h3 className="font-serif text-sm font-bold text-ocean-blue group-hover:text-tropical-green transition-colors line-clamp-1">{p.title}</h3>
@@ -843,7 +843,7 @@ const ProductDetailPage = () => {
                     activeImage === idx ? 'border-ocean-blue ring-2 ring-ocean-blue/20' : 'border-gray-200 hover:border-ocean-blue'
                   }`}
                 >
-                  <OptimizedImage src={img} alt={`${product.name} view ${idx + 1}`} preset="thumbnail" loading="lazy" className="w-full h-full object-cover" />
+                  <OptimizedImage src={img} alt={`${product.name} view ${idx + 1}`} preset="thumbnail" className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -958,7 +958,7 @@ const ProductDetailPage = () => {
             <div className="relative group lg:order-2">
               {(getCustom('story')?.image || (description as any).images?.story) && (
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <OptimizedImage src={getCustom('story')?.image || (description as any).images?.story} alt="Product Story" preset="detailDesktop" loading="lazy" className="w-full h-full" />
+                  <OptimizedImage src={getCustom('story')?.image || (description as any).images?.story} alt="Product Story" preset="detailDesktop" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -969,7 +969,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('environmental')?.image || (description as any).images?.environmental) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <OptimizedImage src={getCustom('environmental')?.image || (description as any).images?.environmental} alt="Environmental Impact" preset="detailDesktop" loading="lazy" className="w-full h-full" />
+                  <OptimizedImage src={getCustom('environmental')?.image || (description as any).images?.environmental} alt="Environmental Impact" preset="detailDesktop" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -990,7 +990,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('partnership')?.image || (description as any).images?.partnership) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <OptimizedImage src={getCustom('partnership')?.image || (description as any).images?.partnership} alt="Partnership Model" preset="detailDesktop" loading="lazy" className="w-full h-full" />
+                  <OptimizedImage src={getCustom('partnership')?.image || (description as any).images?.partnership} alt="Partnership Model" preset="detailDesktop" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -1011,7 +1011,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('specifications')?.image || (description as any).images?.specifications) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <OptimizedImage src={getCustom('specifications')?.image || (description as any).images?.specifications} alt="Specifications" preset="detailDesktop" loading="lazy" className="w-full h-full" />
+                  <OptimizedImage src={getCustom('specifications')?.image || (description as any).images?.specifications} alt="Specifications" preset="detailDesktop" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -1062,7 +1062,7 @@ const ProductDetailPage = () => {
             <div className="relative group">
               {(getCustom('guarantee')?.image || (description as any).images?.guarantee) && (
                 <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                  <OptimizedImage src={getCustom('guarantee')?.image || (description as any).images?.guarantee} alt="Quality Guarantee" preset="detailDesktop" loading="lazy" className="w-full h-full" />
+                  <OptimizedImage src={getCustom('guarantee')?.image || (description as any).images?.guarantee} alt="Quality Guarantee" preset="detailDesktop" className="w-full h-full" />
                 </div>
               )}
             </div>
@@ -1170,7 +1170,7 @@ const ProductDetailPage = () => {
                   {review.image && (
                     <div className="mt-auto pt-4">
                       <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-sm">
-                        <OptimizedImage src={review.image} alt="Customer Preview" preset="card" loading="lazy" className="w-full h-full" />
+                        <OptimizedImage src={review.image} alt="Customer Preview" preset="card" className="w-full h-full" />
                       </div>
                     </div>
                   )}

@@ -415,14 +415,14 @@ faqs: [
 { question: "Can I use these outdoors?", answer: "Yes! Shell coasters work well on patios and outdoor tables. Just bring them inside after use to protect from prolonged moisture exposure." }
 ],
 images: {
-story: "/product-images/shellcoasters-v5/product-story.jpg",
-environmental: "/product-images/shellcoasters-v5/eco-value.jpg",
-partnership: "/product-images/shellcoasters-v5/partnership-model.jpg",
-features: "/product-images/shellcoasters-v5/product-features.jpg",
-specifications: "/product-images/shellcoasters-v5/specifications.jpg",
-guarantee: "/product-images/shellcoasters-v5/quality-assurance.jpg",
-shipping: "/product-images/shellcoasters-v5/shipping-info.jpg",
-faqs: "/product-images/shellcoasters-v5/faq.jpg"
+story: "/product-images/coconutbowl-v5/product-story.jpg",
+environmental: "/product-images/coconutbowl-v5/eco-value.jpg",
+partnership: "/product-images/coconutbowl-v5/partnership-model.jpg",
+features: "/product-images/coconutbowl-v5/product-features.jpg",
+specifications: "/product-images/coconutbowl-v5/specifications.jpg",
+guarantee: "/product-images/coconutbowl-v5/quality-assurance.jpg",
+shipping: "/product-images/coconutbowl-v5/shipping-info.jpg",
+faqs: "/product-images/coconutbowl-v5/faq.jpg"
 }
 }
 ];

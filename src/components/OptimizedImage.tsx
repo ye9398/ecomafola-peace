@@ -80,6 +80,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   blurUp = false,
   className = '',
   onLoad,
+  loading: _loading, // Exclude from spread — loading is computed internally
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -120,10 +121,13 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Generate srcSet for responsive images
   const srcSet = targetWidth ? generateSrcSet(src, targetWidth) : undefined;
 
-  // Default sizes attribute
-  const defaultSizes = priority
-    ? sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px'
-    : sizes || getResponsiveSizes();
+  // Only set sizes attribute when we have a srcSet — sizes is meaningless
+  // without srcSet and can cause browsers to skip loading
+  const defaultSizes = srcSet
+    ? (priority
+      ? sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px'
+      : sizes || getResponsiveSizes())
+    : undefined;
 
   // Handle load callback
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -140,13 +144,17 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     .filter(Boolean)
     .join(' ');
 
+  // Use eager loading when no srcSet is generated — browsers may skip
+  // lazy loading for images without srcset/srcsizes
+  const hasSrcSet = !!srcSet;
+
   return (
     <img
       src={optimizedSrc || undefined}
-      srcSet={srcSet}
+      srcSet={srcSet || undefined}
       sizes={defaultSizes}
       alt={alt}
-      loading={priority ? 'eager' : 'lazy'}
+      loading={priority || !hasSrcSet ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}
       decoding="async"
       className={classNames}

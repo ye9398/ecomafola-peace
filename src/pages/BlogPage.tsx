@@ -84,7 +84,7 @@ export function BlogListPage() {
                 className="group bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all border border-ocean-blue/5"
               >
                 <div className="aspect-[4/3] overflow-hidden">
-                  <OptimizedImage src={post.image} alt={post.title} preset="card" loading="lazy" className="w-full h-full group-hover:scale-110 transition-transform duration-700" />
+                  <OptimizedImage src={post.image} alt={post.title} preset="card" className="w-full h-full group-hover:scale-110 transition-transform duration-700" />
                 </div>
                 <div className="p-8">
                   <div className="flex items-center gap-3 text-xs font-sans text-gray-400 mb-4">
@@ -186,7 +186,7 @@ export function BlogPostPage() {
             {post.title}
           </h1>
           <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl">
-            <OptimizedImage src={post.image} alt={post.title} preset="hero" loading="lazy" className="w-full h-full" />
+            <OptimizedImage src={post.image} alt={post.title} preset="hero" className="w-full h-full" />
           </div>
         </header>
 

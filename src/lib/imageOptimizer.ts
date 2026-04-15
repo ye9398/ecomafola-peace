@@ -192,6 +192,14 @@ export function generateSrcSet(
   const baseUrl = extractBaseUrl(imageUrl);
   if (!baseUrl) return '';
 
+  // Only generate srcSet for Shopify CDN URLs
+  const isShopifyUrl = baseUrl.includes('cdn.shopify.com');
+  if (!isShopifyUrl) {
+    // For non-Shopify URLs, don't generate srcSet — return empty string
+    // so the browser uses the src directly
+    return '';
+  }
+
   // Generate standard responsive breakpoints
   const breakpoints = [
     Math.min(300, baseWidth),
@@ -388,6 +396,14 @@ export function getOptimizedImageUrl(
 ): string | null {
   const baseUrl = extractBaseUrl(imageUrl);
   if (!baseUrl) return null;
+
+  // Only apply Shopify CDN optimizations to Shopify CDN URLs.
+  // External URLs (Unsplash, etc.) use their own query parameter formats,
+  // so we return them unchanged to avoid breaking the URL.
+  const isShopifyUrl = baseUrl.includes('cdn.shopify.com');
+  if (!isShopifyUrl) {
+    return baseUrl;
+  }
 
   const {
     width = 800,

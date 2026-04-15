@@ -258,11 +258,13 @@ export default defineConfig(({ mode }) => {
       // SSG Pre-rendering (production only)
       ...(isProd ? [ssgPreRender()] : []),
       // 仅在生产环境启用图片优化
+      // Note: AVIF conversion was causing corrupted base64 inline images,
+      // so we only optimize PNG/WebP and keep JPEG as progressive
       ...(isProd ? [ViteImageOptimizer({
         png: { quality: 80, compressionLevel: 9 },
         jpeg: { quality: 80, progressive: true },
         webp: { quality: 80, lossless: false },
-        avif: { quality: 70, compression: 'avif' },
+        // Disabled AVIF - it was converting images to corrupted base64
         svg: {
           multipass: true,
           plugins: [{
