@@ -484,7 +484,9 @@ const ProductDetailPage = () => {
   const [customContent, setCustomContent] = useState<any>(null)
 
   const mergedContent = useMemo(() => {
-    if (!customContent && !description) return null
+    if (!customContent && !description) {
+      return null
+    }
 
     const content = {
       story: customContent ? normalizeText(customContent.story) : (description?.story || ''),
@@ -516,11 +518,12 @@ const ProductDetailPage = () => {
         try {
           const response = await fetch('/admin-content/ecomafola-content.json')
           if (response.ok) {
-            const data = await response.json()
-            setCustomContent(data.products?.[shopifyHandle] || null)
+            const json = await response.json()
+            const fallback = json.products?.[shopifyHandle] || null
+            setCustomContent(fallback)
           }
         } catch {
-          // Silently fail — use default descriptions
+          // Both Supabase and fallback failed
         }
       }
     }
@@ -1103,8 +1106,9 @@ const ProductDetailPage = () => {
           </section>
 
           {/* Extended Product Content for SEO/GEO - 350+ words */}
-          {mergedContent && (
-            <section className="mt-24 pt-16 border-t border-gray-100">
+          {/* Only render when no Supabase data exists, to avoid duplicate content with classic sections */}
+          {mergedContent && !customContent && (
+            <section className="mt-24 pt-16 border-t border-gray-100" data-testid="extended-content" suppressHydrationWarning>
               <ProductDetailContent
                 content={mergedContent}
                 productName={product?.name || customContent?.title || ''}

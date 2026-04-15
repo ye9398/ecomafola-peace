@@ -366,6 +366,64 @@ guarantee: "/product-images/tapacloth-guarantee.jpg",
 shipping: "/product-images/tapacloth-shipping.jpg",
 faqs: "/product-images/tapacloth-faqs.jpg"
 }
+},
+{
+category: "home-decor",
+handle: "shell-coasters",
+title: "Handcrafted Natural Shell Coasters",
+subtitle: "Ocean Treasures from Samoan Artisan Workshops",
+story: `Every shell coaster in our collection begins its journey along Samoa's pristine shorelines, where artisans carefully select naturally shed shells that have been polished by the Pacific Ocean's gentle tides.\n\nOur Samoan partners have mastered the art of transforming these ocean-found treasures into functional art pieces. Each shell is cleaned by hand, backed with soft natural cork, and arranged into sets that showcase nature's incredible variety — from iridescent mother-of-pearl to warm amber cowrie and deep crimson clam shells.\n\nNo two coaster sets are identical. The natural variation in shell size, color, and pattern means your set carries nature's unique signature — a reminder that beauty and sustainability can coexist in your everyday rituals.`,
+environmental: ` **Ocean-Found Materials**\n\nEvery shell in our coaster sets is collected from beaches and shallow waters — never harvested from living organisms. We follow strict ecological guidelines to protect Samoa's marine habitats.\n\n **Plastic-Free Alternative**\n\nShell coasters replace synthetic cork, rubber, or plastic alternatives that persist in landfills for centuries. At the end of their life, they decompose naturally.\n\n **Carbon-Neutral Craft**\n\nThe entire production process — from collection to finishing — is entirely manual. No machinery, no factory emissions, no carbon footprint beyond shipping.`,
+partnership: ` **Coastal Artisan Network**\n\nOur shell coaster program employs 10 artisans from coastal villages around Apia. Each artisan receives:\n- Fair piece-rate compensation per completed set\n- Quarterly quality bonuses\n- Flexible schedules accommodating fishing and farming seasons\n- Access to marine conservation training\n\n **Marine Conservation Partnership**\n\n5% of all shell coaster sales fund Samoa's coral reef restoration programs. We've partnered with local marine biologists to monitor shell populations and beach health.`,
+features: [
+" Naturally Sourced Shells - Each set is one-of-a-kind",
+" Soft Cork Backing - Protects furniture from scratches",
+" Heat-Resistant - Handles hot mugs and glasses safely",
+" Easy to Clean - Wipe with damp cloth, air dry",
+" Set of 4 or 6 Coasters - Mix of shell types",
+" Gift-Ready Packaging - Beautiful recycled box"
+],
+specifications: {
+size: "Each coaster: approximately 4 inches (10cm) diameter",
+weight: "Set of 4: approximately 0.8 lbs (360g) | Set of 6: 1.2 lbs (540g)",
+material: "Natural seashells, cork backing, eco-friendly adhesive",
+origin: "Handcrafted in Apia, Upolu island, Samoa",
+care: "Wipe clean with damp cloth. Avoid prolonged soaking. Dry completely before stacking. Do not use abrasive cleaners."
+},
+guarantee: `**Natural Beauty Promise**
+
+We guarantee your shell coasters against craftsmanship defects for 2 years. If shells detach from backing, adhesive fails, or shells crack under normal use, we'll replace the affected pieces free of charge.
+
+Due to the natural origin of materials, slight variations in shell color, size, and pattern are expected and celebrated — they are not defects. Each set is inspected before shipping to ensure quality standards.
+
+If your coasters arrive damaged, contact us within 7 days for immediate replacement.`,
+shipping: `**Carefully Packed for Fragile Items**
+
+ Processing: Orders ship within 24 hours in protective packaging
+
+ Delivery Times:
+- Australia & New Zealand: 2-5 business days
+- United States & Canada: 5-8 business days
+- United Kingdom & Europe: 7-10 business days
+- Asia Pacific: 3-7 business days
+
+ Packaging: Recycled cardboard inserts with biodegradable padding
+ Tracking: Full tracking included on all orders`,
+faqs: [
+{ question: "Are these shells from live animals?", answer: "No. We only use shells that have been naturally shed or washed ashore. Our artisans never harvest from living creatures or damage marine ecosystems." },
+{ question: "Will hot cups damage the coasters?", answer: "Shell coasters are naturally heat-resistant and handle hot mugs and glasses without issue. However, avoid placing extremely hot items directly from the stove or oven." },
+{ question: "Can I use these outdoors?", answer: "Yes! Shell coasters work well on patios and outdoor tables. Just bring them inside after use to protect from prolonged moisture exposure." }
+],
+images: {
+story: "/product-images/shellcoasters-v5/product-story.jpg",
+environmental: "/product-images/shellcoasters-v5/eco-value.jpg",
+partnership: "/product-images/shellcoasters-v5/partnership-model.jpg",
+features: "/product-images/shellcoasters-v5/product-features.jpg",
+specifications: "/product-images/shellcoasters-v5/specifications.jpg",
+guarantee: "/product-images/shellcoasters-v5/quality-assurance.jpg",
+shipping: "/product-images/shellcoasters-v5/shipping-info.jpg",
+faqs: "/product-images/shellcoasters-v5/faq.jpg"
+}
 }
 ];
 //  handle
